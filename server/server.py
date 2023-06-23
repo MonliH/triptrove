@@ -34,4 +34,4 @@ async def destinations(query: str):
             },
         )
 
-        return res.json()
+        return res.json()["data"]["attractionsProduct"]["searchAutoComplete"]["destinations"]
