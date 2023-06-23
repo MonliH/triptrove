@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 import httpx
 
 app = FastAPI()
@@ -35,3 +36,68 @@ async def destinations(query: str):
         )
 
         return res.json()["data"]["attractionsProduct"]["searchAutoComplete"]["destinations"]
+
+@app.get("/flightDestinations")
+async def flightDestinations(query: str):
+    async with httpx.AsyncClient() as client:
+        res = await client.get(
+            f"https://flights.booking.com/api/autocomplete/en?q={query}&accessToken=",
+        )
+
+        return res.json()
+
+class Location(BaseModel):
+    code: str
+    city: str
+    cityName: str
+    country: str
+
+class GetFlights(BaseModel):
+    adults: int
+    children: int
+    departDate: str
+    returnDate: str
+    fromLocation: Location
+    toLocation: Location
+
+@app.post("/flightsToDestination")
+async def flightsToDestination(body: GetFlights):
+    async with httpx.AsyncClient() as client:
+        res = await client.get(
+            f"https://flights.booking.com/api/flights/",
+            params={
+                "type": "ROUNDTRIP",
+                "adults": body.adults,
+                "cabinClass": "ECONOMY",
+                "children": body.children,
+                "from": body.fromLocation.city + ".CITY",
+                "to": body.toLocation.city + ".CITY",
+                "fromCountry": body.fromLocation.country,
+                "toCountry": body.toLocation.country,
+                "fromLocationName": body.fromLocation.cityName,
+                "toLocationName": body.toLocation.cityName,
+                "depart": body.departDate,
+                "return": body.returnDate,
+                "sort": "CHEAPEST",
+                "travelPurpose": "leisure",
+                "aid": 304142,
+                "label": "gen173nr-1FEghwYWNrYWdlcyiCAjjoB0gzWARoJ4gBAZgBMbgBB8gBDNgBAegBAfgBAogCAagCA7gCvrPYpAbAAgHSAiQ5ZDQ1MDI0Ny1jMzEyLTQ3YzUtYWI5My0zN2EyYTcwNjk3ZjHYAgXgAgE",
+                "enableVI": 1
+            },
+            headers={
+                "Accept": "*/*",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/114.0",
+                "Accept-Language": "en-US,en;q=0.5",
+                "X-Requested-From": "clientFetch",
+                "X-Flights-Context-Name": "search_results",
+                "X-Booking-Affiliate-Id": "304142",
+                "X-Booking-Label": "gen173nr-1FEghwYWNrYWdlcyiCAjjoB0gzWARoJ4gBAZgBMbgBB8gBDNgBAegBAfgBAogCAagCA7gCvrPYpAbAAgHSAiQ5ZDQ1MDI0Ny1jMzEyLTQ3YzUtYWI5My0zN2EyYTcwNjk3ZjHYAgXgAgE"
+            },
+            timeout=None
+        )
+
+        offers = res.json()["flightOffers"]
+        oneToUse = offers[0]
+        price = sum([item["travellerPriceBreakdown"]["total"]["units"] for item in oneToUse["travellerPrices"]])
+
+        return {"details": offers[0]["segments"], "price": price}
