@@ -12,6 +12,7 @@ import {
   Spacer,
   Image,
   Link,
+  VStack,
 } from "@chakra-ui/react";
 import First from "./FormPages/First";
 import Second from "./FormPages/Second";
@@ -209,7 +210,8 @@ const MultiStepForm: React.FC = () => {
   console.log(hotel);
 
   return (
-    <Flex direction="column" align="center" h="full" justify="center">
+    <Flex direction="column" align="center"  justify="center">
+      <VStack direction="column" w="full" h="100vh" align="center" justify="center">
       <Heading fontSize="5xl">TripTrove</Heading>
       <Text mt={2}>Discover Your Next Trip</Text>
       {conditionalComponent()}
@@ -241,6 +243,7 @@ const MultiStepForm: React.FC = () => {
           </button>
         )}
       </Flex>
+      </VStack>
       <Box w={"min(800px,95vw)"}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
