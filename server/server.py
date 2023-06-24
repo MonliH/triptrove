@@ -12,6 +12,19 @@ async def root():
     return {"message": "Hello World"}
 
 
+def json_to_text(data):
+    options = []  # Charge amount is in USD, maybe use a converter API
+
+    for item in data:
+        string = ""
+        string += f"Location: {item['ufiDetails']['bCityName']}, {item['ufiDetails']['countryName']} \n"
+        string += f"Name: {item['name']} \n"
+        string += f"Price: {item['representativePrice']['chargeAmount']} \n"
+        string += f"Description: {item['description']} \n"
+        options.append(string)
+    return options
+
+
 @app.get("/results")
 async def locations(ufi: int):
     async with httpx.AsyncClient() as client:
@@ -29,7 +42,7 @@ async def locations(ufi: int):
                         "extractFilterOptions": True,
                         "extractSorters": True,
                         "extractSections": False,
-                        "limit": 2,
+                        "limit": 5,
                         "source": "search_results",
                         "page": 1
                     },
@@ -51,20 +64,20 @@ async def locations(ufi: int):
         data = res.json()
         products = data["data"]["attractionsProduct"]["searchProducts"]["products"]
 
-        information = {}
+        information = []
         not_want = ["uniqueSellingPoints", "labels", "itinerary", "poweredBy", "__typename", "accessibility",
                     "supplierInfo", "postBookingInfo", "primaryLabel", "operatedBy", "flags", "slug", "applicableTerms",
                     "onSiteRequirements", "covid", "guideSupportedLanguages", "audioSupportedLanguages", "healthSafety",
                     "contextUfiDetails", "isBookable", "additionalBookingInfo", "typicalFrequency", "supportedFeatures",
                     "offers"]
 
-        for product in products:
-            print(product.items())
+        for i, product in enumerate(products):
+            information.append({})
             for key, value in product.items():
                 if key not in not_want:
-                    information[key] = value
+                    information[i][key] = value
 
-        return information  # Only returns key information
+        return json_to_text(information)
 
 
 @app.get("/destinations")
@@ -92,6 +105,7 @@ async def destinations(query: str):
 
         return res.json()["data"]["attractionsProduct"]["searchAutoComplete"]["destinations"]
 
+
 @app.get("/flightDestinations")
 async def flightDestinations(query: str):
     async with httpx.AsyncClient() as client:
@@ -101,11 +115,13 @@ async def flightDestinations(query: str):
 
         return res.json()
 
+
 class Location(BaseModel):
     code: str
     city: str
     cityName: str
     country: str
+
 
 class GetFlights(BaseModel):
     adults: int
@@ -114,6 +130,7 @@ class GetFlights(BaseModel):
     returnDate: str
     fromLocation: Location
     toLocation: Location
+
 
 @app.post("/flightsToDestination")
 async def flightsToDestination(body: GetFlights):
