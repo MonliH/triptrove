@@ -24,7 +24,9 @@ origins = [
     "http://localhost:3000",
     "localhost:3000",
     "https://triptrove.vercel.app",
+    "http://triptrove.vercel.app",
     "https://triptrove.tech",
+    "http://triptrove.tech"
 ]
 
 app.add_middleware(
@@ -32,7 +34,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 BOOKING_URL = "https://www.booking.com/dml/graphql"
