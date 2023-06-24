@@ -1,4 +1,8 @@
 from fastapi import FastAPI
+import re
+from fastapi.responses import PlainTextResponse
+import asyncio
+from datetime import datetime, timedelta
 from pydantic import BaseModel
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,18 +33,19 @@ async def root():
     return {"message": "Hello World"}
 
 
-def json_to_text(data):
+def json_to_text(data, dates):
     options = []  # Charge amount is in USD, maybe use a converter API
 
-    for i, item in enumerate(data):
+    for i, (item, date) in enumerate(zip(data, dates)):
         string = ""
-        string += f"ID: {i} \n"
-        string += f"Location: {item['ufiDetails']['bCityName']}, {item['ufiDetails']['countryName']} \n"
-        string += f"Name: {item['name']} \n"
-        string += f"Price: {item['representativePrice']['chargeAmount']} \n"
-        string += f"Cancellation date: {item['cancellationPolicy']['until']} \n"
+        string += f"ID: {i}\n"
+        string += f"Location: {item['ufiDetails']['bCityName']}, {item['ufiDetails']['countryName']}\n"
+        string += f"Name: {item['name']}\n"
+        string += f"Price: {item['representativePrice']['chargeAmount']}\n"
+        string += f"Dates Available: " + ", ".join(span['start_date'].strftime('%Y-%m-%d') + " to " + span["end_date"].strftime('%Y-%m-%d') for span in date)
+        string += "\n"
         try:
-            string += f"Duration: {item['offers'][0]['typicalDuration']['label']} \n"
+            string += f"{item['offers'][0]['typicalDuration']['label']}\n"
         except:
             pass
         string += f"Description: {item['description']}"
@@ -48,19 +53,24 @@ def json_to_text(data):
     return options
 
 
-SYSTEM_PROMPT = """You are to be a travel agent who takes in a large number of attractions in a city and compiles them into a tourist plan for a person who is looking to visit that region. The person will specify their goals and wishes for the trip.
+SYSTEM_PROMPT = """You are to be a travel agent who takes in a large number of attractions in a city and compiles them into an itinerary for a person who is looking to visit that region. The person will specify their goals and wishes for the trip, and you must personalize the itinerary for the person.
 
-You should not schedule multiple events that overlap. Only state the ID and justify why you chose that attraction for the specific person. Always reply with a travel plan, even if you don't have much data about a person.
+You should not schedule multiple events that overlap. Only state the ID of the attraction, the date of the attraction, and justify why you chose that attraction for the specific person. You may schedule multiple attractions on one day if they are short. Always reply with a travel plan, even if you don't have much data about a person.
 
 For example:
 
+Day 1 (2021-06-01):
 ID: 1
+Date: 2021-06-01
 Justification: <justification>
 
 ID: 4
+Date: 2021-06-01
 Justification: <justification>
 
+Day 2 (2021-06-02):
 ID: 8
+Date: 2021-06-02
 Justification: <justification>
 
 ..."""
@@ -109,34 +119,96 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
 
         information = []
         not_want = ["uniqueSellingPoints", "labels", "itinerary", "poweredBy", "__typename", "accessibility",
-                    "supplierInfo", "postBookingInfo", "primaryLabel", "operatedBy", "flags", "slug", "applicableTerms",
+                    "supplierInfo", "postBookingInfo", "primaryLabel", "operatedBy", "flags", "applicableTerms",
                     "onSiteRequirements", "covid", "guideSupportedLanguages", "audioSupportedLanguages", "healthSafety",
                     "contextUfiDetails", "isBookable", "additionalBookingInfo", "typicalFrequency", "supportedFeatures"]
+        not_want = []
 
         for i, product in enumerate(products):
             information.append({})
             for key, value in product.items():
-                if key not in not_want:
+                if key == "description":
+                    information[i][key] = value.replace("\r", "").replace("\n\n", "\n").replace("\n", " ")
+                elif key not in not_want:
                     information[i][key] = value
 
-        model_input = "\n\n".join(json_to_text(information))
+        dates = await asyncio.gather(*[get_dates(client, info["id"], start_date, end_date) for info in information])
+
+        model_input = "\n\n".join(json_to_text(information, dates))
         response = openai.ChatCompletion.create(
             model=MODEL,
-            messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization}],
+            messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
         )  
         print(response)
         content = response["choices"][0]["message"]["content"]
-        id_split = content.split("ID: ")
-        picked_items = []
-        for v in id_split:
-            lines = v.strip().split("\n", 1)
-            try:
-                if len(lines) == 2:
-                    picked_items.append((int(lines[0]), lines[1].split("Justification: ", 1)[1]))
-            except:
-                pass
-        return {"bookings": {i:information[i] for i, _ in picked_items}, "attractions": picked_items}
+        days = content.split("\nDay ")
+        schedule_per_day = {}
+        ids = []
+        for day in days:
+            a = day.split(":\n")
+            day_id = a[0]
+            split_day = day_id.split(" ")
+            if len(split_day) == 2 and split_day[0].isdigit() and split_day[1].startswith("("):
+                activities = a[1].split("\n\n")
+                rest = list(filter(bool, [dict(map(lambda x: (x[0], x[1].strip()), filter(lambda x: len(x)==2, chunks(re.split("\n|:", act), 2)))) for act in activities]))
+                ids.extend([int(r["ID"]) for r in rest])
+                schedule_per_day[day_id] = rest
 
+        return {"schedule": schedule_per_day, "bookings": {i: information[i] for i in ids}}
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+async def get_dates(session, ufi, start_date, end_date):
+    res = await session.post(
+        BOOKING_URL,
+        json={
+            "extensions": {},
+            "operationName": "GetAvailabilityCalendar",
+            "query": availability_query,
+            "variables": {
+                "input": {
+                    "id": ufi
+                },
+                "contextParams": {
+                    "urlCode": "",
+                    "test": False,
+                    "showInactive": False,
+                }
+            }   
+        }
+    )
+    dates = res.json()
+    dates = dates["data"]["attractionsProduct"]["getAvailabilityCalendar"]["availabilityCalendar"]["availableDates"]
+    date_ranges = list(find_date_windows(dates, start_date, end_date))
+
+    return date_ranges
+
+
+ONE_DAY = timedelta(days=1)
+
+def find_date_windows(dates, start_date, end_date):
+    # guard against getting empty list
+    if not dates:
+        return
+    
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    # convert strings to sorted list of datetime.dates
+    dates = [o for o in (datetime.strptime(d, '%Y-%m-%d') for d in dates) if o >= start_date and o <= end_date]
+    dates.sort()
+
+    # build list of window starts and matching ends
+    lastStart = lastEnd = dates[0]
+    for d in dates[1:]:
+        if d-lastEnd > ONE_DAY:
+            yield {'start_date':lastStart, 'end_date':lastEnd}
+            lastStart = d
+        lastEnd = d
+    yield {'start_date':lastStart, 'end_date':lastEnd}
 
 
 @app.get("/destinations")
@@ -280,6 +352,8 @@ async def flightsToDestination(body: GetFlights):
         price = sum([item["travellerPriceBreakdown"]["total"]["units"] for item in oneToUse["travellerPrices"]])
 
         return {"details": offers[0]["segments"], "price": price}
+
+availability_query ='query GetAvailabilityCalendar($input: AttractionAvailabilityCalendarInput, $contextParams: AttractionsContextParamsInput) {\n  attractionsProduct {\n    getAvailabilityCalendar(input: $input, contextParams: $contextParams) {\n      ... on AttractionAvailabilityCalendarResponse {\n        availabilityCalendar {\n          availableDates\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n' 
 
 query =  "query SearchProducts($input: AttractionsProductSearchInput!, $contextParams: AttractionsContextParamsInput, $fullProductInfo: Boolean!) {\n  attractionsProduct {\n    searchProducts(input: $input, contextParams: $contextParams) {\n      ... on AttractionsProductSearchResponse {\n        filterOptions {\n          destinationFilters {\n            ...FilterOptionFragment\n            __typename\n          }\n          labelFilters {\n            ...FilterOptionFragment\n            __typename\n          }\n          priceFilters {\n            ...FilterOptionFragment\n            __typename\n          }\n          typeFilters {\n            ...FilterOptionFragment\n            __typename\n          }\n          ufiFilters {\n            ...FilterOptionFragment\n            __typename\n          }\n          __typename\n        }\n        filterStats {\n          filteredProductCount\n          unfilteredProductCount\n          __typename\n        }\n        unavailableProducts\n        products {\n          ...AttractionsProductFragment @include(if: $fullProductInfo)\n          ...AttractionsProductCardFragment @skip(if: $fullProductInfo)\n          __typename\n        }\n        sections {\n          attr_book_score {\n            ...AttractionsProductFragment @include(if: $fullProductInfo)\n            ...AttractionsProductCardFragment @skip(if: $fullProductInfo)\n            __typename\n          }\n          distance_to_hotel {\n            ...AttractionsProductFragment @include(if: $fullProductInfo)\n            ...AttractionsProductCardFragment @skip(if: $fullProductInfo)\n            __typename\n          }\n          trending {\n            ...AttractionsProductFragment @include(if: $fullProductInfo)\n            ...AttractionsProductCardFragment @skip(if: $fullProductInfo)\n            __typename\n          }\n          __typename\n        }\n        autoExtendBanner {\n          hasNearbyProducts\n          hasOwnProducts\n          nearbyProductFirstIndex\n          __typename\n        }\n        sorters {\n          name\n          value\n          __typename\n        }\n        defaultSorter {\n          name\n          value\n          __typename\n        }\n        noResultsForQuery\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment FilterOptionFragment on FilterOption {\n  image {\n    url\n    __typename\n  }\n  name\n  productCount\n  tagname\n  childFilterOptions {\n    name\n    tagname\n    productCount\n    __typename\n  }\n  __typename\n}\n\nfragment AttractionsProductFragment on AttractionsProduct {\n  accessibility\n  additionalInfo\n  additionalBookingInfo {\n    childRatesApplicability {\n      label\n      __typename\n    }\n    freeForChildren {\n      age {\n        label\n        __typename\n      }\n      __typename\n    }\n    onlyRegularTickets {\n      label\n      __typename\n    }\n    participantsPerBooking {\n      label\n      __typename\n    }\n    __typename\n  }\n  addresses {\n    arrival {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    attraction {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    departure {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    entrance {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    guestPickup {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    meeting {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    pickup {\n      ...AttractionsAddressFragment\n      __typename\n    }\n    __typename\n  }\n  applicableTerms {\n    policyProvider\n    __typename\n  }\n  audioSupportedLanguages\n  cancellationPolicy {\n    comparedTo\n    hasFreeCancellation\n    isStillRefundable\n    percentage\n    period\n    until\n    __typename\n  }\n  covid\n  dietOptions\n  description\n  guideSupportedLanguages\n  healthSafety\n  id\n  isBookable\n  labels {\n    text\n    type\n    __typename\n  }\n  name\n  notIncluded\n  offers {\n    additionalInfo\n    availabilityType\n    benefits {\n      freeAudioGuide {\n        label\n        value\n        __typename\n      }\n      freeDrink {\n        label\n        value\n        __typename\n      }\n      freeTransportation {\n        label\n        value\n        __typename\n      }\n      inStoreDiscount {\n        label\n        value\n        __typename\n      }\n      priorityLane {\n        label\n        value\n        __typename\n      }\n      skipTheLine {\n        label\n        value\n        __typename\n      }\n      __typename\n    }\n    description\n    id\n    items {\n      constraint {\n        label\n        maxAge\n        maxGroupSize\n        minAge\n        minGroupSize\n        numAdults\n        numChildren\n        numPeople\n        type\n        __typename\n      }\n      duration {\n        label\n        value\n        __typename\n      }\n      id\n      label\n      maxPerReservation\n      minPerReservation\n      tieredPricing\n      travelerCountRequired\n      type\n      __typename\n    }\n    label\n    languageOptions {\n      label\n      language\n      type\n      __typename\n    }\n    locationInstructions\n    notIncluded\n    reservationRestrictions {\n      adultRequiredForReservation\n      maxOfferItemsPerReservation\n      minOfferItemsPerReservation\n      __typename\n    }\n    typicalDuration {\n      label\n      value\n      __typename\n    }\n    typicalFrequency {\n      label\n      value\n      __typename\n    }\n    whatsIncluded\n    __typename\n  }\n  onSiteRequirements {\n    adultSupervisionRequired {\n      label\n      maxAge\n      __typename\n    }\n    age {\n      label\n      min\n      max\n      __typename\n    }\n    clothingCoveringShouldersKneesRequired {\n      label\n      __typename\n    }\n    comfortableFootwearRecommended {\n      label\n      __typename\n    }\n    drivingLicenseRequired {\n      label\n      __typename\n    }\n    earlyArrival {\n      label\n      minutes\n      __typename\n    }\n    height {\n      label\n      min\n      max\n      __typename\n    }\n    noAlcoholDuringDryDays {\n      label\n      __typename\n    }\n    noAlcoholDuringRamadan {\n      label\n      __typename\n    }\n    onlyOperatesInGoodWeather {\n      label\n      __typename\n    }\n    proofOfIdentityRequired {\n      label\n      __typename\n    }\n    ticketCollection {\n      label\n      __typename\n    }\n    unsuitable {\n      label\n      pregnant\n      reducedMobility\n      __typename\n    }\n    voucherPrintingRequired {\n      label\n      value\n      __typename\n    }\n    weight {\n      label\n      min\n      max\n      __typename\n    }\n    writtenConsentForChildren {\n      label\n      maxAge\n      __typename\n    }\n    __typename\n  }\n  operatedBy\n  photos {\n    ...PhotoTypesFragment\n    __typename\n  }\n  pickupTypes {\n    type\n    __typename\n  }\n  postBookingInfo\n  poweredBy\n  primaryLabel {\n    text\n    type\n    __typename\n  }\n  primaryPhoto {\n    ...PhotoTypesFragment\n    __typename\n  }\n  representativePrice {\n    chargeAmount\n    currency\n    publicAmount\n    __typename\n  }\n  restrictions\n  reviewsStats {\n    allReviewsCount\n    isGoodScore\n    percentage\n    numericStats {\n      average\n      total\n      __typename\n    }\n    providerNumericStats {\n      average\n      total\n      providerName\n      __typename\n    }\n    __typename\n  }\n  shortDescription\n  supplierInfo {\n    isIndividual\n    details {\n      address\n      name\n      __typename\n    }\n    __typename\n  }\n  supportedFeatures {\n    alternativeTimeSlotsPartiallySupported\n    alternativeTimeSlotsSupported\n    liveAvailabilityCheckPartiallySupported\n    liveAvailabilityCheckSupported\n    isDisneyProduct\n    __typename\n  }\n  slug\n  taxonomy {\n    categories {\n      label\n      slug\n      __typename\n    }\n    tags {\n      label\n      slug\n      __typename\n    }\n    type {\n      label\n      slug\n      __typename\n    }\n    __typename\n  }\n  timeZone\n  typicalDuration {\n    label\n    value\n    __typename\n  }\n  typicalFrequency {\n    label\n    value\n    __typename\n  }\n  ufi\n  ufiDetails {\n    ...UfiDetailsFragment\n    __typename\n  }\n  contextUfiDetails {\n    ...UfiDetailsFragment\n    __typename\n  }\n  uniqueSellingPoints\n  whatsIncluded\n  flags {\n    flag\n    value\n    rank\n    __typename\n  }\n  itinerary {\n    type\n    __typename\n  }\n  __typename\n}\n\nfragment AttractionsAddressFragment on AttractionsAddress {\n  address\n  city\n  country\n  googlePlaceId\n  id\n  instructions\n  latitude\n  locationType\n  longitude\n  publicTransport\n  zip\n  __typename\n}\n\nfragment PhotoTypesFragment on AttractionsPhoto {\n  hereProductPageDesktop\n  hereProductPageMobile\n  gallery\n  small\n  __typename\n}\n\nfragment UfiDetailsFragment on AttractionLocationResponse {\n  attractionsCount\n  bCityName\n  bInCityName\n  banners {\n    content\n    title\n    type\n    __typename\n  }\n  image\n  latitude\n  longitude\n  ufi\n  url {\n    city\n    country\n    prefix\n    __typename\n  }\n  countryName\n  __typename\n}\n\nfragment AttractionsProductCardFragment on AttractionsProduct {\n  id\n  slug\n  name\n  primaryPhoto {\n    small\n    __typename\n  }\n  cancellationPolicy {\n    hasFreeCancellation\n    __typename\n  }\n  shortDescription\n  ufiDetails {\n    bCityName\n    bInCityName\n    ufi\n    __typename\n  }\n  flags {\n    flag\n    value\n    rank\n    __typename\n  }\n  representativePrice {\n    chargeAmount\n    currency\n    publicAmount\n    __typename\n  }\n  reviewsStats {\n    allReviewsCount\n    isGoodScore\n    percentage\n    numericStats {\n      average\n      total\n      __typename\n    }\n    providerNumericStats {\n      average\n      total\n      providerName\n      __typename\n    }\n    __typename\n  }\n  typicalDuration {\n    label\n    __typename\n  }\n  primaryLabel {\n    text\n    type\n    __typename\n  }\n  __typename\n}\n"
 
