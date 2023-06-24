@@ -51,18 +51,54 @@ const Second: React.FC<SecondProps> = ({
       align="center"
       justify="centert"
       style={{
-        transition:"0.5s"
+        transition: "0.5s",
       }}
-     
     >
       <Flex direction="column" width="100%" mt={3}>
-        <Text>Enter Your Location</Text>
-        <Input ref={ref} style={{ width: "90%" }} />
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+          Enter Your Location:
+        </Text>
+        <Input
+          boxShadow=" 0px 2px 3px #ccc"
+          borderBottom="0.25em solid #c6be9f"
+          borderTop="1px solid #ffffff"
+          bg="#ffffff"
+          outline="none"
+          borderColor="transparent"
+          borderRadius="20px"
+          outlineColor="transparent"
+          _focus={{
+            // outline: "none",
+            border: "1px solid #ffffff",
+            boxShadow: "none",
+          }}
+          _hover={{
+            outline: "none",
+          }}
+          ref={ref}
+          
+        />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text>What kind of trip would you like this to be?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">What kind of trip would you like this to be?</Text>
         <Input
-          style={{ width: "90%" }}
+         boxShadow=" 0px 2px 3px #ccc"
+         borderBottom="0.25em solid #c6be9f"
+         borderTop="1px solid #ffffff"
+         bg="#ffffff"
+         outline="none"
+         borderColor="transparent"
+         borderRadius="20px"
+         outlineColor="transparent"
+         fontSize={16}
+         _focus={{
+           // outline: "none",
+           border: "1px solid #ffffff",
+           boxShadow: "none",
+         }}
+         _hover={{
+           outline: "none",
+         }}
           placeholder="What kind of Trip? i.e. relaxation"
           value={forms.interests}
           onChange={(e: any) => {
@@ -74,9 +110,24 @@ const Second: React.FC<SecondProps> = ({
         />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text>What Continent Would You like to visit?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >What Continent Would You like to visit?</Text>
         <Select
-          style={{ width: "90%" }}
+         boxShadow=" 0px 2px 3px #ccc"
+         borderBottom="0.25em solid #c6be9f"
+         borderTop="1px solid #ffffff"
+         bg="#ffffff"
+         outline="none"
+         borderColor="transparent"
+         borderRadius="20px"
+         outlineColor="transparent"
+         _focus={{
+           // outline: "none",
+           border: "1px solid #ffffff",
+           boxShadow: "none",
+         }}
+         _hover={{
+           outline: "none",
+         }}
           placeholder="Continent"
           onChange={(e: any) => {
             setFormData({ ...forms, continent: e.target.value });

@@ -139,32 +139,30 @@ const MultiStepForm: React.FC = () => {
       {conditionalComponent()}
       <Flex direction="row" align="center" justify="space-evenly" d="flex">
         {page > 0 && page < 3 && (
-          <Button
-            colorScheme="blue"
-            variant="outline"
-            w={20}
-            mt={3}
+          <button
+          className="pushable back"
             onClick={() => setPage(page - 1)}
           >
+             <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front">
             Back
-          </Button>
+            </span>
+          </button>
         )}
         {page < 3 && (
-          <Button
-            colorScheme="blue"
-            color="white"
-            onClick={handleSubmit}
-            w={20}
-            mt={3}
-            ml={3}
-          >
-            {page === 0 || page === 1 ? "Next" : "Submit"}
-          </Button>
+          <button onClick={handleSubmit} mt={10} ml={3} className="pushable">
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front">
+              {page === 0 || page === 1 ? "Next" : "Submit"}
+            </span>
+          </button>
         )}
       </Flex>
       {(loadingFlights || flights !== null) && (
         <Box mt={10}>
-          <Skeleton isLoaded={flights !== null} >
+          <Skeleton isLoaded={flights !== null}>
             <Heading textAlign="center">Flight</Heading>
           </Skeleton>
           <Skeleton isLoaded={flights !== null}>

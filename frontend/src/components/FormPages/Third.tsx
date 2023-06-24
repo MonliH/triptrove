@@ -22,9 +22,26 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
   return (
     <Flex direction="column" align="center">
       <Flex direction="column" width="100%" mt={3}>
-        <Text>How Many Children?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Children?</Text>
         <NumberInput>
           <NumberInputField
+            boxShadow=" 0px 2px 3px #ccc"
+            borderBottom="0.25em solid #c6be9f"
+            borderTop="1px solid #ffffff"
+            bg="#ffffff"
+            outline="none"
+            borderColor="transparent"
+            borderRadius="20px"
+            outlineColor="transparent"
+            fontSize={16}
+            _focus={{
+              // outline: "none",
+              border: "1px solid #ffffff",
+              boxShadow: "none",
+            }}
+            _hover={{
+              outline: "none",
+            }}
             onChange={(e: any) =>
               setFormData({ ...forms, adults: parseInt(e.target.value) })
             }
@@ -32,9 +49,26 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
         </NumberInput>
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text>How Many Adults?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Adults?</Text>
         <NumberInput>
           <NumberInputField
+            boxShadow=" 0px 2px 3px #ccc"
+            borderBottom="0.25em solid #c6be9f"
+            borderTop="1px solid #ffffff"
+            bg="#ffffff"
+            outline="none"
+            borderColor="transparent"
+            borderRadius="20px"
+            outlineColor="transparent"
+            fontSize={16}
+            _focus={{
+              // outline: "none",
+              border: "1px solid #ffffff",
+              boxShadow: "none",
+            }}
+            _hover={{
+              outline: "none",
+            }}
             onChange={(e: any) =>
               setFormData({ ...forms, children: parseInt(e.target.value) })
             }
@@ -42,10 +76,27 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
         </NumberInput>
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text>When are you planning on going?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >When are you planning on going?</Text>
         <Flex direction="row" align="center">
           <Text mr={2}>From </Text>
           <Input
+            boxShadow=" 0px 2px 3px #ccc"
+            borderBottom="0.25em solid #c6be9f"
+            borderTop="1px solid #ffffff"
+            bg="#ffffff"
+            outline="none"
+            borderColor="transparent"
+            borderRadius="20px"
+            outlineColor="transparent"
+            fontSize={16}
+            _focus={{
+              // outline: "none",
+              border: "1px solid #ffffff",
+              boxShadow: "none",
+            }}
+            _hover={{
+              outline: "none",
+            }}
             w="50%"
             type="datetime-local"
             mr={2}
@@ -58,6 +109,23 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
           />
           <Text mr={2}>To:</Text>
           <Input
+            boxShadow=" 0px 2px 3px #ccc"
+            borderBottom="0.25em solid #c6be9f"
+            borderTop="1px solid #ffffff"
+            bg="#ffffff"
+            outline="none"
+            borderColor="transparent"
+            borderRadius="20px"
+            outlineColor="transparent"
+            fontSize={16}
+            _focus={{
+              // outline: "none",
+              border: "1px solid #ffffff",
+              boxShadow: "none",
+            }}
+            _hover={{
+              outline: "none",
+            }}
             w="50%"
             type="datetime-local"
             mr={2}
