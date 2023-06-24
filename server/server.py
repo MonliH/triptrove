@@ -266,7 +266,12 @@ async def flightsToDestination(body: GetFlights):
             timeout=None
         )
 
-        offers = res.json()["flightOffers"]
+        offers = res.json()
+        if "error" in offers:
+            # no flight
+            return []
+
+        offers = offers["flightOffers"]
         oneToUse = offers[0]
         price = sum([item["travellerPriceBreakdown"]["total"]["units"] for item in oneToUse["travellerPrices"]])
 

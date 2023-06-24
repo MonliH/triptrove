@@ -57,13 +57,13 @@ const Second: React.FC<SecondProps> = ({
     >
       <Flex direction="column" width="100%" mt={3}>
         <Text>Enter Your Location</Text>
-        <Input ref={ref} style={{ width: "90%" }} defaultValue="Amsterdam" />
+        <Input ref={ref} style={{ width: "90%" }} />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
         <Text>What kind of trip would you like this to be?</Text>
         <Input
           style={{ width: "90%" }}
-          defaultValue="What kind of Trip? i.e. relaxation"
+          placeholder="What kind of Trip? i.e. relaxation"
           value={forms.interests}
           onChange={(e: any) => {
             setFormData({
