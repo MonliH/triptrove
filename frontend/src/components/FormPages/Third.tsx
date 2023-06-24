@@ -34,7 +34,7 @@ const Third: React.FC<ThirdProp> = ({
   setDates
 }) => {
   useEffect(() => {
-    if (forms.adults && forms.children && forms.startDate && forms.endDate) {
+    if (forms.adults && forms.startDate && forms.endDate) {
       setDisabled(false);
     } else {
       setDisabled(true);

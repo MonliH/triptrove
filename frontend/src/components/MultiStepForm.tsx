@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Flex,
   Heading,
@@ -10,6 +10,8 @@ import {
   Image,
   Link,
   VStack,
+  Popover,
+  Tooltip,
 } from "@chakra-ui/react";
 import First from "./FormPages/First";
 import Second from "./FormPages/Second";
@@ -18,12 +20,13 @@ import End from "./FormPages/End";
 import { placeholderAttraction } from "@/lib/placeholder";
 import Zoom from "react-reveal/Zoom";
 import Fade from "react-reveal/Fade";
+import { randomRoll } from "@/lib/places";
 
 export const IMAGE_CDN = "https://cf2.bstatic.com";
 
 export interface FormValues {
   continent: string | null;
-  city: string | null;
+  city: [string, number] | null;
   formatted_address: string;
   interests: string;
   adults: number;
@@ -83,7 +86,7 @@ const MultiStepForm: React.FC = () => {
             timeout={300}
             setDisabled={setDisable}
             dates={dates}
-            setDates ={setDates}
+            setDates={setDates}
           />
         );
       case 3:
@@ -108,16 +111,18 @@ const MultiStepForm: React.FC = () => {
 
   const [attractions, setAttractions] = useState<null | AttractionsReq>(null);
   const [loadingAttractions, setLoadingAttractions] = useState(false);
-  const destination = "paris";
+  const [destination, setDestination] = useState<{
+    cityName: string;
+    country: string;
+  } | null>(null);
 
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
-  const [dates,setDates] = useState({
+  const [dates, setDates] = useState({
     startDate: new Date(),
     endDate: new Date(),
-  })
-
+  });
 
   function handleSubmit() {
     //...stuff
@@ -125,19 +130,24 @@ const MultiStepForm: React.FC = () => {
       setPage(page + 1);
       setTransitionState(!transitionState);
     } else {
+      console.log(formData);
       if (
-        formData.continent &&
+        (formData.continent || formData.city) &&
         formData.formatted_address &&
         formData.interests &&
         formData.adults &&
-        formData.children &&
         formData.budget &&
         formData.startDate &&
         formData.endDate
       ) {
+        const newDest = formData.city
+          ? formData.city[0]
+          : randomRoll(formData.continent ?? "Europe");
+        setDestination((p) =>
+          p ? { ...p, cityName: newDest } : { cityName: newDest, country: "" }
+        );
         if (page == 2) {
           setPage(page + 1);
-          console.log(formData)
         }
         (async () => {
           setLoadingFlights(true);
@@ -154,19 +164,21 @@ const MultiStepForm: React.FC = () => {
             )}`
           ).then((response) => response.json());
           const to = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${destination}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${newDest}`
           ).then((response) => response.json());
 
           const fromCity = from.find((e: any) => e.type == "CITY");
           const fromAirport = from.find((e: any) => e.type == "AIRPORT");
-          const toCity = to.find((e: any) => e.type == "CITY");
           const toAirport = to.find((e: any) => e.type == "AIRPORT");
+          setDestination((p) => (p ? { ...p, country: toAirport.countryName } : {country: toAirport.countryName, cityName: ""}));
 
           (async () => {
             const toInfo = await fetch(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${destination}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${newDest}`
             ).then((response) => response.json());
-            const toLocationUfi = toInfo[0].ufi;
+            const toLocationUfi = formData.city
+              ? formData.city[1]
+              : toInfo[0].ufi;
 
             (async () => {
               const hotel = await fetch(
@@ -275,10 +287,14 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
+          <Tooltip label={"Fill in all fields before continuing!"} isDisabled={!disable}>
           <button
             disabled={disable}
             onClick={handleSubmit}
             className={`${disable ? "Pushdisabled" : "pushable"}`}
+            style={{
+              cursor: disable ? "not-allowed" : "pointer",
+            }}
           >
             <span className={`shadow`}></span>
             <span className={`${disable ? "dedge" : "edge"}`}></span>
@@ -289,10 +305,18 @@ const MultiStepForm: React.FC = () => {
                 ? "Submit"
                 : "Re-roll"}
             </span>
-          </button>
+          </button></Tooltip>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"} mt={10}>
+      <Box w={"min(800px,95vw)"} >
+        {destination && (
+          <Box borderLeft="3px solid" pl="3" mb="10">
+          <Text fontSize="lg" fontWeight="bold">Your Destination</Text>
+          <Heading fontSize="5xl">
+            {[destination?.cityName, destination?.country].filter((e) => e).join(", ")}
+          </Heading>
+          </Box>
+        )}
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
             <HStack align="center">
@@ -318,72 +342,82 @@ const MultiStepForm: React.FC = () => {
                     const carrier = flight.legs[0].carriersData[0];
 
                     return (
-                      <Zoom>
-                      <Box key={i + " flights"}>
-                        <HStack
-                          bg="#ffffff"
-                          borderRadius="20px"
-                          mt={5}
-                          p={10}
-                          boxShadow="base"
-                        >
-                          <Box mr="7">
-                            <img src={carrier.logo}></img>
-                            <Text>{carrier.name}</Text>
-                          </Box>
-                          <Box>
-                            <Text fontSize="4xl">
-                              {departDate.toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}
-                            </Text>
-                            <HStack>
-                              <Text>
-                                {flight.legs[0].departureAirport.code}
-                              </Text>
-                              <Box w={1} h={1} bg="black" borderRadius="50%" />
-                              <Text>
-                                {departDate.toLocaleDateString("en-US", {
-                                  month: "short",
-                                  day: "numeric",
+                      <Zoom key={i + " flights"}>
+                        <Box>
+                          <HStack
+                            bg="#ffffff"
+                            borderRadius="20px"
+                            mt={5}
+                            p={10}
+                            boxShadow="base"
+                          >
+                            <Box mr="7">
+                              <img src={carrier.logo}></img>
+                              <Text>{carrier.name}</Text>
+                            </Box>
+                            <Box>
+                              <Text fontSize="4xl">
+                                {departDate.toLocaleTimeString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
                                 })}
                               </Text>
-                            </HStack>
-                          </Box>
-                          <Box
-                            w={40}
-                            border="1px solid"
-                            borderColor="gray.300"
-                            mx="5"
-                          ></Box>
-                          <Box>
-                            <Text fontSize="4xl">
-                              {arriveDate.toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              })}
-                            </Text>
-                            <HStack>
-                              <Text>
-                                {
-                                  flight.legs[flight.legs.length - 1]
-                                    .arrivalAirport.code
-                                }
-                              </Text>
-                              <Box w={1} h={1} bg="black" borderRadius="50%" />
-                              <Text>
-                                {arriveDate.toLocaleDateString("en-US", {
-                                  month: "short",
-                                  day: "numeric",
+                              <HStack>
+                                <Text>
+                                  {flight.legs[0].departureAirport.code}
+                                </Text>
+                                <Box
+                                  w={1}
+                                  h={1}
+                                  bg="black"
+                                  borderRadius="50%"
+                                />
+                                <Text>
+                                  {departDate.toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </Text>
+                              </HStack>
+                            </Box>
+                            <Box
+                              w={40}
+                              border="1px solid"
+                              borderColor="gray.300"
+                              mx="5"
+                            ></Box>
+                            <Box>
+                              <Text fontSize="4xl">
+                                {arriveDate.toLocaleTimeString("en-US", {
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  hour12: true,
                                 })}
                               </Text>
-                            </HStack>
-                          </Box>
-                        </HStack>
-                      </Box>
+                              <HStack>
+                                <Text>
+                                  {
+                                    flight.legs[flight.legs.length - 1]
+                                      .arrivalAirport.code
+                                  }
+                                </Text>
+                                <Box
+                                  w={1}
+                                  h={1}
+                                  bg="black"
+                                  borderRadius="50%"
+                                />
+                                <Text>
+                                  {arriveDate.toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </Text>
+                              </HStack>
+                            </Box>
+                          </HStack>
+                        </Box>
                       </Zoom>
                     );
                   })}
@@ -417,58 +451,58 @@ const MultiStepForm: React.FC = () => {
             </HStack>
             <Skeleton isLoaded={hotel !== null}>
               <Zoom>
-              <Box>
-                <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
-                  <Image
-                    borderRadius={20}
-                    src={
-                      IMAGE_CDN +
-                      hotel?.basicPropertyData?.photos?.main?.lowResJpegUrl
-                        ?.relativeUrl
-                    }
-                  ></Image>
-                  <Spacer />
-                  <Box>
-                    <HStack>
-                      <Box>
-                        <Link
-                          fontWeight="bold"
-                          fontSize="2xl"
-                          href={`https://booking.com/hotel/${hotel?.basicPropertyData?.location?.countryCode}/${hotel?.basicPropertyData?.pageName}.html`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {hotel?.displayName?.text}
-                        </Link>
+                <Box>
+                  <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
+                    <Image
+                      borderRadius={20}
+                      src={
+                        IMAGE_CDN +
+                        hotel?.basicPropertyData?.photos?.main?.lowResJpegUrl
+                          ?.relativeUrl
+                      }
+                    ></Image>
+                    <Spacer />
+                    <Box>
+                      <HStack>
+                        <Box>
+                          <Link
+                            fontWeight="bold"
+                            fontSize="2xl"
+                            href={`https://booking.com/hotel/${hotel?.basicPropertyData?.location?.countryCode}/${hotel?.basicPropertyData?.pageName}.html`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {hotel?.displayName?.text}
+                          </Link>
+                          <Text>
+                            {hotel?.basicPropertyData?.location?.address},{" "}
+                            {hotel?.basicPropertyData?.location?.city}
+                          </Text>
+                        </Box>
+                        <Spacer></Spacer>
+                      </HStack>
+                      <Text mt={5} color="#54C4D6">
+                        Rating:
+                      </Text>
+                      <Box
+                        p="3"
+                        border="1px solid"
+                        borderColor="#54C4D6"
+                        borderRadius="md"
+                      >
+                        <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
+                          {hotel?.basicPropertyData?.reviewScore?.score}/10
+                        </Box>
                         <Text>
-                          {hotel?.basicPropertyData?.location?.address},{" "}
-                          {hotel?.basicPropertyData?.location?.city}
+                          {
+                            hotel?.basicPropertyData?.reviewScore
+                              ?.totalScoreTextTag?.translation
+                          }
                         </Text>
                       </Box>
-                      <Spacer></Spacer>
-                    </HStack>
-                    <Text mt={5} color="#54C4D6">
-                      Rating:
-                    </Text>
-                    <Box
-                      p="3"
-                      border="1px solid"
-                      borderColor="#54C4D6"
-                      borderRadius="md"
-                    >
-                      <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
-                        {hotel?.basicPropertyData?.reviewScore?.score}/10
-                      </Box>
-                      <Text>
-                        {
-                          hotel?.basicPropertyData?.reviewScore
-                            ?.totalScoreTextTag?.translation
-                        }
-                      </Text>
                     </Box>
-                  </Box>
-                </HStack>
-              </Box>
+                  </HStack>
+                </Box>
               </Zoom>
             </Skeleton>
           </>
@@ -539,10 +573,9 @@ const MultiStepForm: React.FC = () => {
                           const attra = (attractions ?? placeholderAttraction)
                             .bookings[event.ID];
                           return (
-                            <Zoom>
+                            <Zoom key={j + " info"}>
                               <Box
                                 my="3"
-                                key={j + " info"}
                                 bg="#ffffff"
                                 p={5}
                                 borderRadius={20}
@@ -615,9 +648,7 @@ const MultiStepForm: React.FC = () => {
         {attractions !== null && (
           <Box mt="2">
             <Heading>Budget Breakdown</Heading>
-            <Box>
-
-            </Box>
+            <Box></Box>
           </Box>
         )}
       </Box>
