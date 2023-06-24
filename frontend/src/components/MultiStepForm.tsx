@@ -240,8 +240,7 @@ const MultiStepForm: React.FC = () => {
         justify="center"
         overflowY="hidden"
       >
-        <Heading fontSize="5xl">TripTrove</Heading>
-        <Text mt={2}>Discover Your Next Trip</Text>
+        <img src={'/tripLogo.png'} h="80%"/>
         {conditionalComponent()}
         <Flex
           direction="row"

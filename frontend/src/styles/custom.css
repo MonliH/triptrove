@@ -24,7 +24,7 @@
     font-size: 1.25rem;
     width:10rem;
     color: red;
-    background: rgb(219, 219, 219);
+    background: white;
     will-change: transform;
     
     transform: translateY(-4px);
