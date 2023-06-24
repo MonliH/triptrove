@@ -19,7 +19,6 @@ type ThirdProp = {
 };
 
 const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) => {
-  console.log(forms.adults);
   return (
     <Flex direction="column" align="center">
       <Flex direction="column" width="100%" mt={3}>
@@ -27,7 +26,6 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
         <NumberInput
             value={forms.adults}
             onChange={(e: any) =>{
-              console.log("hi", parseInt(e.target.value));
               setFormData(f => ({ ...f, adults: parseInt(e || "0") }))}
             }
         >
