@@ -28,6 +28,7 @@ origins = [
     "https://triptrove.tech",
     "http://triptrove.tech"
     "www.triptrove.tech",
+    "https://www.triptrove.tech/"
 ]
 
 app.add_middleware(
