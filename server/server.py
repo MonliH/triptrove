@@ -2,6 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
+import openai
+import dotenv
+import os
+
+dotenv.load_dotenv(".env")
+
+openai.organization = os.environ["OPENAI_ORG"]
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 app = FastAPI()
 
