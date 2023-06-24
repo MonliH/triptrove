@@ -168,11 +168,11 @@ const MultiStepForm: React.FC = () => {
               "My goals and wishes for this trip are " +
                 formData.interests +
                 ". I am travelling with " +
-                formData.children
+                (formData.children
                 ? formData.children
-                : "no" + " children and " + formData.adults
+                : "no") + " children and " + (formData.adults
                 ? formData.adults
-                : "no" + " adults."
+                : "no") + " adults."
             )}&end_date=${endDate}&start_date=${startDate}`
           ).then((response) => response.json());
 
@@ -209,7 +209,6 @@ const MultiStepForm: React.FC = () => {
   }
 
   const [page, setPage] = useState(0);
-  console.log(hotel);
 
   return (
     <Flex direction="column" align="center"  justify="center">
