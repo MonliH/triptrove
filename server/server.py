@@ -20,9 +20,16 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+    "localhost:3000",
+    "https://triptrove.vercel.app",
+    "https://triptrove.tech",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
