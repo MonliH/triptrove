@@ -1,11 +1,8 @@
 import React, { Fragment, useState } from "react";
 import {
   Flex,
-  Center,
   Heading,
   Text,
-  Input,
-  Button,
   Box,
   Skeleton,
   HStack,
@@ -53,12 +50,18 @@ const MultiStepForm: React.FC = () => {
     endDate: "",
   });
   const [transitionState, setTransitionState] = useState(false);
-  const [disable,setDisable] = useState(true)
+  const [disable, setDisable] = useState(true);
 
   const conditionalComponent = () => {
     switch (page) {
       case 0:
-        return <First forms={formData} setFormData={setFormData} setDisabled={setDisable} />;
+        return (
+          <First
+            forms={formData}
+            setFormData={setFormData}
+            setDisabled={setDisable}
+          />
+        );
       case 1:
         return (
           <Second
@@ -66,7 +69,7 @@ const MultiStepForm: React.FC = () => {
             setFormData={setFormData}
             transition={transitionState}
             timeout={300}
-            setDisabled={setDisable} 
+            setDisabled={setDisable}
           />
         );
       case 2:
@@ -76,13 +79,19 @@ const MultiStepForm: React.FC = () => {
             setFormData={setFormData}
             transition={transitionState}
             timeout={300}
-            setDisabled={setDisable} 
+            setDisabled={setDisable}
           />
         );
       case 3:
         return <End loading={loadingFlights} />;
       default:
-        return <First forms={formData} setFormData={setFormData} setDisabled={setDisable}  />;
+        return (
+          <First
+            forms={formData}
+            setFormData={setFormData}
+            setDisabled={setDisable}
+          />
+        );
     }
   };
 
@@ -196,24 +205,24 @@ const MultiStepForm: React.FC = () => {
             setLoadingAttractions(false);
           })();
 
-        const flight = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fromLocation: fromAirport,
-              toLocation: toAirport,
-              adults: formData.adults,
-              children: formData.children,
-              departDate: startDate,
-              returnDate: endDate,
-              flightBudget: formData.budget * 0.3,
-            }),
-          }
-        ).then((response) => response.json());
+          const flight = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                fromLocation: fromAirport,
+                toLocation: toAirport,
+                adults: formData.adults,
+                children: formData.children,
+                departDate: startDate,
+                returnDate: endDate,
+                flightBudget: formData.budget * 0.3,
+              }),
+            }
+          ).then((response) => response.json());
 
           if (flight.length == 0) {
             setFlights({ details: [], info: null, price: 0 });
@@ -223,7 +232,7 @@ const MultiStepForm: React.FC = () => {
           setLoadingFlights(false);
         })();
       } else {
-        console.log("not all values filled")
+        console.log("not all values filled");
       }
     }
   }
@@ -240,7 +249,7 @@ const MultiStepForm: React.FC = () => {
         justify="center"
         overflowY="hidden"
       >
-        <img src={'/tripLogo.png'} h="80%"/>
+        <img src={"/tripLogo.png"} />
         {conditionalComponent()}
         <Flex
           direction="row"
@@ -256,10 +265,14 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          <button disabled={disable} onClick={handleSubmit} className={`pushable`}>
+          <button
+            disabled={disable}
+            onClick={handleSubmit}
+            className={`pushable`}
+          >
             <span className={`shadow`}></span>
-            <span className={`${disable? 'dedge' :'edge'}`}></span>
-            <span className={`${disable? 'disabled' :'front'}`}>
+            <span className={`${disable ? "dedge" : "edge"}`}></span>
+            <span className={`${disable ? "disabled" : "front"}`}>
               {page === 0 || page === 1
                 ? "Next"
                 : page == 2
@@ -272,45 +285,27 @@ const MultiStepForm: React.FC = () => {
       <Box w={"min(800px,95vw)"}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
-            <Heading mb={3} color="#54C4D6">
-              Flight
-            </Heading>
-            <Skeleton isLoaded={flights !== null}>
-              <HStack align="center">
-                <Spacer />
-                {flights && flights.details.length > 0 && (
+            <HStack align="center">
+              <Heading mb={3} color="#54C4D6">
+                Flight
+              </Heading>
+              <Spacer />
+              <Skeleton isLoaded={flights !== null}>
+                {((flights && flights.details.length > 0) ||
+                  flights === null) && (
                   <Text fontSize="2xl" color="#54C4D6">
-                    Total Ticket Price: ${flights.price}
+                    Total Ticket Price: ${flights?.price}
                   </Text>
                 )}
-              </HStack>
-            </Skeleton>
+              </Skeleton>
+            </HStack>
             <Skeleton isLoaded={flights !== null}>
               {flights && flights.details.length > 0 ? (
                 <Box>
                   {flights.details.map((flight, i) => {
-                    console.log(flights);
-
-                    const token = "d6a1f_H4sIAAAAAAAA_0WQbY-iMBSFf43zjUJbsDJJM2FUXEZeXARd_dJgRWR0ZGM7I_rr9w5MsrnpPc85aW5vetT6r3o2zcO5ro5aGbJAVaObqtAlks2HebhC2zXNqb5UZlFfzU2WLLyU2G95bJG3PDSJaUDJ581L2WpDXSV_qnclKpTkeDpPfsyVDxFZzRds60VdJBvNbURf3Qgnsf0r7sMrnyXeyk87t-fR-HYLJ1MVZarX-nZPrJOKH7mKJuoe32_fp00e0zacBHAnJ8kjHie51WYWnq39QEVW4GSZv8jy7WaZ6eJ3flLrkz8P_e12-a5f00cA845pOPEGdNI9XErYHSGbubjzTaE4c-2epebE7XGvebpOo3zTW83pEFM26lzLMcFDF2FCXAp96LAnVZ5LqevmMi_vfGlTQgz4yM8LoUYqsoQxCxvE6YN4QHxP-IFjMwM--vMM2Qr80HL--wEZN4V1OlQAAwr7e5WwUFfAx44xwsCF2IRoZqPlGP1h4HfCXoFI4VCQvaC0sPcSsBSUHdgI6CCm0GtBfsa9i2AN8hDHj9FXS_4BoOCoLjoCAAA.";
                     const departDate = new Date(flight.departureTime);
                     const arriveDate = new Date(flight.arrivalTime);
                     const carrier = flight.legs[0].carriersData[0];
-                    const params = {
-                      type: "ROUNDTRIP",
-                      adults: formData.adults,
-                      cabinClass: "ECONOMY",
-                      children: formData.children,
-                      from: flight.departureAirport.city + ".CITY",
-                      to: flight.arrivalAirport.city + ".CITY",
-                      fromCountry: flight.departureAirport.country,
-                      toCountry: flight.arrivalAirport.country,
-                      fromLocationName: flight.departureAirport.cityName,
-                      toLocationName: flight.arrivalAirport.cityName,
-                      depart: flight.departureTime.split("T")[0],
-                      return: flight.arrivalTime.split("T")[0],
-                      sort: "BEST",
-                      travelPurpose: "leisure",
-                    };
 
                     return (
                       <Box key={i + " flights"}>
@@ -323,8 +318,7 @@ const MultiStepForm: React.FC = () => {
                         >
                           <Box mr="7">
                             <img src={carrier.logo}></img>
-                            <Link href={`https://flights.booking.com/flights/${flight.departureAirport.city}.CITY-${flight.arrivalAirport.city}/${token}/`+new URLSearchParams(params).toString()}>
-                            {carrier.name}</Link>
+                            <Text>{carrier.name}</Text>
                           </Box>
                           <Box>
                             <Text fontSize="4xl">
@@ -393,22 +387,24 @@ const MultiStepForm: React.FC = () => {
         )}
         {(loadingHotel || hotel !== null) && (
           <>
-            <Heading mt={5} mb={3} color="#54C4D6">
-              Hotel
-            </Heading>
+            <HStack>
+              <Heading mt={5} mb={3} color="#54C4D6">
+                Hotel
+              </Heading>
+              <Spacer />
+              <Skeleton isLoaded={hotel !== null}>
+                <Text fontSize="2xl" color="#54C4D6">
+                  Hotel Price: $
+                  {hotel &&
+                    Math.round(
+                      hotel.priceDisplayInfo.displayPrice.amountPerStay
+                        .amountUnformatted
+                    )}
+                </Text>
+              </Skeleton>
+            </HStack>
             <Skeleton isLoaded={hotel !== null}>
               <Box>
-                <HStack>
-                  <Spacer />
-                  <Text fontSize="2xl" color="#54C4D6">
-                    Hotel Price: $
-                    {hotel &&
-                      Math.round(
-                        hotel.priceDisplayInfo.displayPrice.amountPerStay
-                          .amountUnformatted
-                      )}
-                  </Text>
-                </HStack>
                 <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
                   <Image
                     borderRadius={20}
@@ -465,12 +461,10 @@ const MultiStepForm: React.FC = () => {
         )}
         {(loadingAttractions || attractions !== null) && (
           <>
-            <Heading mt={10} color="#54C4D6">
-              Selected Itinerary
-            </Heading>
-            <Skeleton mt={10} isLoaded={attractions !== null}>
-              <HStack mt={10}>
-                <Spacer />
+            <HStack mt={10}>
+              <Heading color="#54C4D6">Selected Itinerary</Heading>
+              <Spacer />
+              <Skeleton isLoaded={attractions !== null}>
                 <Text fontSize="2xl" color="#54C4D6">
                   Total Itinerary Price: $
                   {Math.round(
@@ -485,7 +479,9 @@ const MultiStepForm: React.FC = () => {
                       .reduce((a, b) => a + b, 0)
                   )}
                 </Text>
-              </HStack>
+              </Skeleton>
+            </HStack>
+            <Skeleton mt={10} isLoaded={attractions !== null}>
               <Box>
                 {Object.entries(
                   (attractions ?? placeholderAttraction).schedule
