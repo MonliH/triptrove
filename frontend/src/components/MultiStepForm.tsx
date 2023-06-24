@@ -232,13 +232,13 @@ const MultiStepForm: React.FC = () => {
           </button>
         )}
         {page < 3 && (
-          <Button onClick={handleSubmit} mt={10} ml={3} className="pushable">
+          <button onClick={handleSubmit} className="pushable">
             <span className="shadow"></span>
             <span className="edge"></span>
             <span className="front">
               {page === 0 || page === 1 ? "Next" : "Submit"}
             </span>
-          </Button>
+          </button>
         )}
       </Flex>
       <Box w={"min(800px,95vw)"}>
