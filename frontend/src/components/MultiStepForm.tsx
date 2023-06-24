@@ -277,7 +277,7 @@ const MultiStepForm: React.FC = () => {
           <button
             disabled={disable}
             onClick={handleSubmit}
-            className={`pushable`}
+            className={`${disable ? "Pushdisabled" : "pushable"}`}
           >
             <span className={`shadow`}></span>
             <span className={`${disable ? "dedge" : "edge"}`}></span>
