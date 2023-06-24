@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   Flex,
@@ -51,6 +51,35 @@ const Third: React.FC<ThirdProp> = ({
 
     return `${year}-${month}-${day}`;
   }
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const onChange = (dates: [Date, Date]) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const customInput = <Input
+              boxShadow="0px 2px 3px #ccc"
+              borderBottom="0.25em solid #c6be9f"
+              borderTop="1px solid #ffffff"
+              bg="#ffffff"
+              outline="none"
+              borderColor="transparent"
+              borderRadius="20px"
+              outlineColor="transparent"
+              fontSize={16}
+              _focus={{
+                // outline: "none",
+                border: "1px solid #ffffff",
+                boxShadow: "none",
+              }}
+              _hover={{
+                outline: "none",
+              }}
+  ></Input>;
+
 
   return (
     <Fade right>
@@ -121,59 +150,18 @@ const Third: React.FC<ThirdProp> = ({
           <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
             When are you planning on going?
           </Text>
-          <Flex direction="row" align="center">
-            <Text mr={2}>From: </Text>
             <DatePicker
               className="date"
-              format="yyyy-MM-dd"
-              boxShadow=" 0px 2px 3px #ccc"
-              borderBottom="0.25em solid #c6be9f"
-              borderTop="1px solid #ffffff"
-              bg="#ffffff"
-              outline="none"
-              borderColor="transparent"
-              borderRadius="20px"
-              outlineColor="transparent"
-              fontSize={16}
-              _focus={{
-                // outline: "none",
-                border: "1px solid #ffffff",
-                boxShadow: "none",
-              }}
-              _hover={{
-                outline: "none",
-              }}
-              selected={dates.startDate}
-              onChange={(date: any) => {
-                setFormData({ ...forms, startDate: formatDate(date) });
-                setDates({...dates, startDate:date});
+              selected={startDate}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              customInput={customInput}
+              onChange={([start, end]: [Date, Date]) => {
+                onChange([start, end]);
+                setFormData({ ...forms, startDate: start.toISOString().split("T")[0], endDate: end ? end.toISOString().split("T")[0] : "" });
               }}
             />
-            <Text mr={2}>To:</Text>
-            <DatePicker
-              className="date"
-              format="yyyy-MM-dd"
-              borderRadius="20px"
-              outlineColor="transparent"
-              fontSize={16}
-              _focus={{
-                // outline: "none",
-                border: "1px solid #ffffff",
-                boxShadow: "none",
-              }}
-              _hover={{
-                outline: "none",
-              }}
-              selected={dates.endDate}
-              onChange={(date: any) => {
-                var newD = date.toString().split(" ").slice(0, 4).join(" ");
-                const formattedDate = formatDate(newD);
-
-                setFormData({ ...forms, endDate: formattedDate });
-                setDates({...dates, endDate:date});
-              }}
-            />
-          </Flex>
         </Flex>
       </Flex>
     </Fade>
