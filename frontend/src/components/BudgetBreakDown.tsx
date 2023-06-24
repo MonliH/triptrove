@@ -123,7 +123,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = () => {
           />
         </PieChart>
         <Flex direction="column" align="center" justify="center">
-          <VStack d="flex" align="center" justify="center">
+          <VStack display="flex" align="center" justify="center">
             <HStack align="center" justify="center">
               <Circle size="40px" bg="#0088FE" color="white" />
 
