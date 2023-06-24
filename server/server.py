@@ -29,7 +29,12 @@ def json_to_text(data):
         string += f"Location: {item['ufiDetails']['bCityName']}, {item['ufiDetails']['countryName']} \n"
         string += f"Name: {item['name']} \n"
         string += f"Price: {item['representativePrice']['chargeAmount']} \n"
-        string += f"Description: {item['description']} \n"
+        string += f"Cancellation date: {item['cancellationPolicy']['until']} \n"
+        try:
+            string += f"Duration: {item['offers'][0]['typicalDuration']['label']} \n"
+        except:
+            print("none")
+        string += f"Description: {item['description']}"
         options.append(string)
     return options
 
@@ -71,22 +76,27 @@ async def locations(ufi: int):
         )
 
         data = res.json()
+
+
         products = data["data"]["attractionsProduct"]["searchProducts"]["products"]
 
         information = []
         not_want = ["uniqueSellingPoints", "labels", "itinerary", "poweredBy", "__typename", "accessibility",
                     "supplierInfo", "postBookingInfo", "primaryLabel", "operatedBy", "flags", "slug", "applicableTerms",
                     "onSiteRequirements", "covid", "guideSupportedLanguages", "audioSupportedLanguages", "healthSafety",
-                    "contextUfiDetails", "isBookable", "additionalBookingInfo", "typicalFrequency", "supportedFeatures",
-                    "offers"]
+                    "contextUfiDetails", "isBookable", "additionalBookingInfo", "typicalFrequency", "supportedFeatures"]
 
         for i, product in enumerate(products):
             information.append({})
             for key, value in product.items():
                 if key not in not_want:
                     information[i][key] = value
+        print(information[0]['offers'][0]['typicalDuration']['label'])
 
         return json_to_text(information)
+
+        return data
+
 
 
 @app.get("/destinations")
