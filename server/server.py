@@ -114,7 +114,6 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
 
         data = res.json()
 
-
         products = data["data"]["attractionsProduct"]["searchProducts"]["products"]
 
         information = []
@@ -284,7 +283,9 @@ async def hotels(body: HotelRequest):
             timeout=None
         )
 
-        offers = res.json()["data"]["searchQueries"]["search"]["results"][0]
+        result = res.json()
+        print(result)
+        offers = result["data"]["searchQueries"]["search"]["results"][0]
 
         return offers
 

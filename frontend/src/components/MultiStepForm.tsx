@@ -95,6 +95,9 @@ const MultiStepForm: React.FC = () => {
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
+  const startDate = formData.startDate.split('T')[0];
+  const endDate = formData.endDate.split('T')[0];
+
   function handleSubmit() {
     //...stuff
     if (page != 2) {
@@ -139,12 +142,12 @@ const MultiStepForm: React.FC = () => {
                 body: JSON.stringify({
                   adults: formData.adults,
                   children: formData.children,
-                  departDate: formData.startDate,
-                  returnDate: formData.endDate,
+                  departDate: startDate,
+                  returnDate: endDate,
                   maxPrice:
                     (formData.budget * 0.3) /
-                    ((new Date(formData.endDate).getTime() -
-                      new Date(formData.startDate).getTime()) /
+                    ((new Date(endDate).getTime() -
+                      new Date(startDate).getTime()) /
                       (1000 * 60 * 60 * 24)),
                   ufi: toLocationUfi,
                   cityName: toInfo[0].cityName,
@@ -170,7 +173,7 @@ const MultiStepForm: React.FC = () => {
                 : "no" + " children and " + formData.adults
                 ? formData.adults
                 : "no" + " adults."
-            )}&end_date=${formData.endDate}&start_date=${formData.startDate}`
+            )}&end_date=${endDate}&start_date=${startDate}`
           ).then((response) => response.json());
 
           setAttractions(attractions);
@@ -189,8 +192,8 @@ const MultiStepForm: React.FC = () => {
               toLocation: toAirport,
               adults: formData.adults,
               children: formData.children,
-              departDate: formData.startDate,
-              returnDate: formData.endDate,
+              departDate: startDate,
+              returnDate: endDate,
             }),
           }
         ).then((response) => response.json());
