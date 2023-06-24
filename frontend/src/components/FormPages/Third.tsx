@@ -22,7 +22,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
   return (
     <Flex direction="column" align="center">
       <Flex direction="column" width="100%" mt={3}>
-        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Children?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Adults?</Text>
         <NumberInput
             value={forms.adults}
             onChange={(e: any) =>{
@@ -51,7 +51,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
         </NumberInput>
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Adults?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Children?</Text>
         <NumberInput
             value={forms.children}
             onChange={(e: any) =>

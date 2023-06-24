@@ -287,7 +287,10 @@ async def hotels(body: HotelRequest):
         )
 
         result = res.json()
-        offers = result["data"]["searchQueries"]["search"]["results"][0]
+        hotels = result["data"]["searchQueries"]["search"]["results"]
+        if len(hotels) == 0:
+            return {"error": "No hotels found to satisfy your budget!"}
+        offers = hotels[0]
 
         return offers
 
@@ -307,6 +310,7 @@ class GetFlights(BaseModel):
     returnDate: str
     fromLocation: Location
     toLocation: Location
+    flightBudget: int
 
 
 @app.post("/flightsToDestination")
@@ -327,7 +331,7 @@ async def flightsToDestination(body: GetFlights):
                 "toLocationName": body.toLocation.cityName,
                 "depart": body.departDate,
                 "return": body.returnDate,
-                "sort": "CHEAPEST",
+                "sort": "BEST",
                 "travelPurpose": "leisure",
                 "aid": 304142,
                 "label": "gen173nr-1FEghwYWNrYWdlcyiCAjjoB0gzWARoJ4gBAZgBMbgBB8gBDNgBAegBAfgBAogCAagCA7gCvrPYpAbAAgHSAiQ5ZDQ1MDI0Ny1jMzEyLTQ3YzUtYWI5My0zN2EyYTcwNjk3ZjHYAgXgAgE",
@@ -351,10 +355,19 @@ async def flightsToDestination(body: GetFlights):
             return []
 
         offers = offers["flightOffers"]
-        oneToUse = offers[0]
-        price = sum([item["travellerPriceBreakdown"]["total"]["units"] for item in oneToUse["travellerPrices"]])
+        difference = 10000000
+        closestToBudget = 0
+        for i, offer in enumerate(offers[1:]):
+            price = sum([item["travellerPriceBreakdown"]["total"]["units"] for item in offer["travellerPrices"]])
+            newDiff = abs(price - body.flightBudget)
 
-        return {"details": offers[0]["segments"], "price": price}
+            if newDiff < difference:
+                difference = newDiff
+                closestToBudget = i + 1
+        
+        offerToUse = offers[closestToBudget]
+
+        return {"details": offerToUse["segments"], "price": sum([item["travellerPriceBreakdown"]["total"]["units"] for item in offerToUse["travellerPrices"]])}
 
 availability_query ='query GetAvailabilityCalendar($input: AttractionAvailabilityCalendarInput, $contextParams: AttractionsContextParamsInput) {\n  attractionsProduct {\n    getAvailabilityCalendar(input: $input, contextParams: $contextParams) {\n      ... on AttractionAvailabilityCalendarResponse {\n        availabilityCalendar {\n          availableDates\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n' 
 

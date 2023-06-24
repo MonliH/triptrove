@@ -38,7 +38,6 @@ export default function Main() {
   };
 
   const [activeUfi, setActiveUfi] = useState<number | null>(null);
-  console.log(autocomplete);
 
   return (
     <Box pt="32" px="64">
