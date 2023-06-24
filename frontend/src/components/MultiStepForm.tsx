@@ -19,6 +19,8 @@ import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
 import End from "./FormPages/End";
 import { placeholderAttraction } from "@/lib/placeholder";
+import Zoom from 'react-reveal/Zoom';
+
 
 const IMAGE_CDN = "https://cf2.bstatic.com";
 
@@ -74,8 +76,8 @@ const MultiStepForm: React.FC = () => {
             timeout={300}
           />
         );
-       case 3:
-         return <End loading={loadingFlights} />;
+      case 3:
+        return <End loading={loadingFlights} />;
       default:
         return <First forms={formData} setFormData={setFormData} />;
     }
@@ -95,17 +97,17 @@ const MultiStepForm: React.FC = () => {
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
-  const startDate = formData.startDate.split('T')[0];
-  const endDate = formData.endDate.split('T')[0];
+  const startDate = formData.startDate.split("T")[0];
+  const endDate = formData.endDate.split("T")[0];
 
   function handleSubmit() {
     //...stuff
-    if (page <2) {
+    if (page < 2) {
       setPage(page + 1);
       setTransitionState(!transitionState);
     } else {
-      if(page==2){
-       setPage(page + 1);
+      if (page == 2) {
+        setPage(page + 1);
       }
       (async () => {
         setLoadingFlights(true);
@@ -170,11 +172,10 @@ const MultiStepForm: React.FC = () => {
               "My goals and wishes for this trip are " +
                 formData.interests +
                 ". I am travelling with " +
-                (formData.children
-                ? formData.children
-                : "no") + " children and " + (formData.adults
-                ? formData.adults
-                : "no") + " adults."
+                (formData.children ? formData.children : "no") +
+                " children and " +
+                (formData.adults ? formData.adults : "no") +
+                " adults."
             )}&end_date=${endDate}&start_date=${startDate}`
           ).then((response) => response.json());
 
@@ -213,49 +214,57 @@ const MultiStepForm: React.FC = () => {
   const [page, setPage] = useState(0);
 
   return (
-    <Flex direction="column" align="center"  justify="center">
-      <VStack direction="column" w="full" h={page==3? "50vh" : "100vh"} align="center" justify="center">
-      <Heading fontSize="5xl">TripTrove</Heading>
-      <Text mt={2}>Discover Your Next Trip</Text>
-      {conditionalComponent()}
-      <Flex
-        direction="row"
+    <Flex direction="column" align="center" justify="center">
+      <VStack
+        direction="column"
+        w="full"
+        h={page == 3 ? "50vh" : "100vh"}
         align="center"
-        justify="space-evenly"
-        display="flex"
+        justify="center"
       >
-        {page > 0 && (
-          <button
-          className="pushable back"
-            onClick={() => setPage(page - 1)}
-          >
-             <span className="shadow"></span>
-            <span className="edge"></span>
-            <span className="front">
-            {page<3? "Back" : "Edit"}
-            </span>
-          </button>
-        )}
-         
+        <Heading fontSize="5xl">TripTrove</Heading>
+        <Text mt={2}>Discover Your Next Trip</Text>
+        {conditionalComponent()}
+        <Flex
+          direction="row"
+          align="center"
+          justify="space-evenly"
+          display="flex"
+        >
+          {page > 0 && (
+            <button className="pushable back" onClick={() => setPage(page - 1)}>
+              <span className="shadow"></span>
+              <span className="edge"></span>
+              <span className="front">{page < 3 ? "Back" : "Edit"}</span>
+            </button>
+          )}
+
           <button onClick={handleSubmit} className="pushable">
             <span className="shadow"></span>
             <span className="edge"></span>
             <span className="front">
-              {page === 0 || page === 1 ? "Next" : page==2? "Submit" :"ReRoll"}
+              {page === 0 || page === 1
+                ? "Next"
+                : page == 2
+                ? "Submit"
+                : "ReRoll"}
             </span>
           </button>
-        
-      </Flex>
+        </Flex>
       </VStack>
       <Box w={"min(800px,95vw)"}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
+            <Heading mb={3} color="#54C4D6">
+              Flight
+            </Heading>
             <Skeleton isLoaded={flights !== null}>
               <HStack align="center">
-                <Heading mb={5} color="#54C4D6">Flight</Heading>
                 <Spacer />
                 {flights && flights.details.length > 0 && (
-                  <Text fontSize="2xl" color="#54C4D6">Total Ticket Price: ${flights.price}</Text>
+                  <Text fontSize="2xl" color="#54C4D6">
+                    Total Ticket Price: ${flights.price}
+                  </Text>
                 )}
               </HStack>
             </Skeleton>
@@ -269,8 +278,14 @@ const MultiStepForm: React.FC = () => {
 
                     return (
                       <Box key={i + " flights"}>
-                        <HStack bg="#ffffff" borderRadius="20px" mt={5} p={10} boxShadow="base">
-                          < Box mr="7">
+                        <HStack
+                          bg="#ffffff"
+                          borderRadius="20px"
+                          mt={5}
+                          p={10}
+                          boxShadow="base"
+                        >
+                          <Box mr="7">
                             <img src={carrier.logo}></img>
                             <Text>{carrier.name}</Text>
                           </Box>
@@ -340,189 +355,202 @@ const MultiStepForm: React.FC = () => {
           </Box>
         )}
         {(loadingHotel || hotel !== null) && (
-          <Skeleton isLoaded={hotel !== null}>
-            <Box>
-              <HStack>
-                <Heading mb={5} color="#54C4D6" >Hotel</Heading>
-                <Spacer />
-                <Text fontSize="2xl" color="#54C4D6">
-                  Hotel Price:
-                  $
-                  {hotel &&
-                    Math.round(
-                      hotel.priceDisplayInfo.displayPrice.amountPerStay
-                        .amountUnformatted
-                    )}
-                </Text>
-              </HStack>
-              <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
-                <Image
-                  borderRadius={20}
-                  src={
-                    IMAGE_CDN +
-                    hotel?.basicPropertyData?.photos?.main?.lowResJpegUrl
-                      ?.relativeUrl
-                  }
-                ></Image>
-                <Spacer />
-                <Box>
-                  <HStack>
-                    <Box>
-                      <Link
-                        fontWeight="bold"
-                        fontSize="2xl"
-                        href={`https://booking.com/hotel/${hotel?.basicPropertyData?.location?.countryCode}/${hotel?.basicPropertyData?.pageName}.html`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {hotel?.displayName?.text}
-                      </Link>
+          <>
+            <Heading mt={5} mb={3} color="#54C4D6">
+              Hotel
+            </Heading>
+            <Skeleton isLoaded={hotel !== null}>
+              <Box>
+                <HStack>
+                  <Spacer />
+                  <Text fontSize="2xl" color="#54C4D6">
+                    Hotel Price: $
+                    {hotel &&
+                      Math.round(
+                        hotel.priceDisplayInfo.displayPrice.amountPerStay
+                          .amountUnformatted
+                      )}
+                  </Text>
+                </HStack>
+                <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
+                  <Image
+                    borderRadius={20}
+                    src={
+                      IMAGE_CDN +
+                      hotel?.basicPropertyData?.photos?.main?.lowResJpegUrl
+                        ?.relativeUrl
+                    }
+                  ></Image>
+                  <Spacer />
+                  <Box>
+                    <HStack>
+                      <Box>
+                        <Link
+                          fontWeight="bold"
+                          fontSize="2xl"
+                          href={`https://booking.com/hotel/${hotel?.basicPropertyData?.location?.countryCode}/${hotel?.basicPropertyData?.pageName}.html`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {hotel?.displayName?.text}
+                        </Link>
+                        <Text>
+                          {hotel?.basicPropertyData?.location?.address},{" "}
+                          {hotel?.basicPropertyData?.location?.city}
+                        </Text>
+                      </Box>
+                      <Spacer></Spacer>
+                    </HStack>
+                    <Text mt={5} color="#54C4D6">
+                      Rating:
+                    </Text>
+                    <Box
+                      p="3"
+                      border="1px solid"
+                      borderColor="#54C4D6"
+                      borderRadius="md"
+                    >
+                      <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
+                        {hotel?.basicPropertyData?.reviewScore?.score}/10
+                      </Box>
                       <Text>
-                        {hotel?.basicPropertyData?.location?.address},{" "}
-                        {hotel?.basicPropertyData?.location?.city}
+                        {
+                          hotel?.basicPropertyData?.reviewScore
+                            ?.totalScoreTextTag?.translation
+                        }
                       </Text>
                     </Box>
-                    <Spacer></Spacer>
-                  </HStack>
-                  <Text mt={5} color="#54C4D6">Rating:</Text>
-                  <Box
-                    p="3"
-                    border="1px solid"
-                    borderColor="#54C4D6"
-                    borderRadius="md"
-                  >
-                    <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
-                      {hotel?.basicPropertyData?.reviewScore?.score}/10
-                    </Box>
-                    <Text>
-                      {
-                        hotel?.basicPropertyData?.reviewScore?.totalScoreTextTag
-                          ?.translation
-                      }
-                    </Text>
                   </Box>
-                </Box>
-              </HStack>
-            </Box>
-          </Skeleton>
+                </HStack>
+              </Box>
+            </Skeleton>
+          </>
         )}
         {(loadingAttractions || attractions !== null) && (
-          <Skeleton isLoaded={attractions !== null}>
-            <HStack>
-              <Heading>Selected Itinerary</Heading>
-              <Spacer />
-              <Text fontSize="2xl">
-                $
-                {Math.round(
-                  Object.values((attractions ?? placeholderAttraction).bookings)
-                    .map(
-                      (booking) =>
-                        booking.representativePrice.publicAmount *
-                        (formData.adults + formData.children)
+          <>
+            <Heading mt={10} color="#54C4D6"  >Selected Itinerary</Heading>
+            <Skeleton mt={10} isLoaded={attractions !== null}>
+              <HStack mt={10}>
+                <Spacer />
+                <Text fontSize="2xl" color="#54C4D6" >
+                  Total Itinerary Price: $
+                  {Math.round(
+                    Object.values(
+                      (attractions ?? placeholderAttraction).bookings
                     )
-                    .reduce((a, b) => a + b, 0)
-                )}
-              </Text>
-            </HStack>
-            <Box>
-              {Object.entries(
-                (attractions ?? placeholderAttraction).schedule
-              ).map(([date, events], i) => {
-                const d = date.split(" (");
-                const actualDate = new Date(d[1].slice(0, d[1].length - 1));
-                const day = parseInt(d[0]);
+                      .map(
+                        (booking) =>
+                          booking.representativePrice.publicAmount *
+                          (formData.adults + formData.children)
+                      )
+                      .reduce((a, b) => a + b, 0)
+                  )}
+                </Text>
+              </HStack>
+              <Box>
+                {Object.entries(
+                  (attractions ?? placeholderAttraction).schedule
+                ).map(([date, events], i) => {
+                  const d = date.split(" (");
+                  const actualDate = new Date(d[1].slice(0, d[1].length - 1));
+                  const day = parseInt(d[0]);
 
-                return (
-                  <HStack alignItems="stretch" key={i + " attractions"}>
-                    <Box position="relative">
-                      <Box
-                        w={4}
-                        h={4}
-                        bgColor="gray.400"
-                        borderRadius="50%"
-                        position="absolute"
-                        top="5"
-                      />
-                      <Box
-                        h={"full"}
-                        mx={2}
-                        borderLeft="1px solid"
-                        borderColor="gray.400"
-                      ></Box>
-                    </Box>
-                    <Box key={i}>
-                      <Text fontSize="xl" mt="3">
-                        Day {day} (
-                        {actualDate.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                        )
-                      </Text>
-                      {events.map((event, j) => {
-                        const attra = (attractions ?? placeholderAttraction)
-                          .bookings[event.ID];
-                        return (
-                          <Box my="3" key={j + " info"}>
-                            <HStack>
-                              <Image
-                                src={attra.primaryPhoto.small}
-                                borderRadius={6}
-                                h={"44"}
-                              ></Image>
-                            
-                              <Box ml="2">
-                                <HStack>
-                                  <Link
-                                    href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
-                                    fontSize="2xl"
-                                    fontWeight="bold"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                  return (
+                    <HStack alignItems="stretch" key={i + " attractions"}>
+                      <Box position="relative">
+                        <Box
+                          w={4}
+                          h={4}
+                          bgColor="#54C4D6"
+                          borderRadius="50%"
+                          position="absolute"
+                          top="5"
+                        />
+                        <Box
+                          h={"full"}
+                          mx={2}
+                          borderLeft="3px solid"
+                          borderColor="#54C4D6"
+                        ></Box>
+                      </Box>
+                      <Box key={i}>
+                        <Text fontSize="xl" mt="3" color="#0095ab">
+                          Day {day} (
+                          {actualDate.toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          )
+                        </Text>
+                        {events.map((event, j) => {
+                          const attra = (attractions ?? placeholderAttraction)
+                            .bookings[event.ID];
+                          return (
+                            <Zoom>
+
+                            <Box my="3" key={j + " info"}  bg="#ffffff" p={5} borderRadius={20} shadow="base">
+                              <HStack>
+                                <Image
+                                  src={attra.primaryPhoto.small}
+                                  borderRadius={6}
+                                  h={"44"}
+                                ></Image>
+
+                                <Box ml="2">
+                                  <HStack>
+                                    <Link
+                                      href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
+                                      fontSize="2xl"
+                                      fontWeight="bold"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {attra.name}
+                                    </Link>
+                                    <Spacer />
+                                    <Text fontSize="2xl" color="#54C4D6">
+                                      $
+                                      {Math.round(
+                                        attra.representativePrice.publicAmount *
+                                          (formData.adults + formData.children)
+                                      )}
+                                    </Text>
+                                  </HStack>
+                                  <Text>{attra.shortDescription}</Text>
+                                  <Box
+                                    px={4}
+                                    py={3}
+                                    mt={5}
+                                    borderRadius="8"
+                                    position="relative"
+                                    border="2px solid"
+                                    borderColor={"yellow.300"}
+                                    boxShadow="0px 4px 21px 0px rgba(255, 241, 116, 0.25)"
                                   >
-                                    {attra.name}
-                                  </Link>
-                                  <Spacer />
-                                  <Text fontSize="2xl">
-                                    $
-                                    {Math.round(
-                                      attra.representativePrice.publicAmount *
-                                        (formData.adults + formData.children)
-                                    )}
-                                  </Text>
-                                </HStack>
-                                <Text>{attra.shortDescription}</Text>
-                                <Box
-                                  px={4}
-                                  py={3}
-                                  mt={5}
-                                  borderRadius="8"
-                                  position="relative"
-                                  border="2px solid"
-                                  borderColor={"yellow.300"}
-                                  boxShadow="0px 4px 21px 0px rgba(255, 241, 116, 0.25)"
-                                >
-                                  <Text
-                                    position="absolute"
-                                    bgColor="white"
-                                    fontSize="sm"
-                                    top="-3"
-                                  >
-                                    Comments
-                                  </Text>
-                                  <Text>{event.Justification}</Text>
+                                    <Text
+                                      position="absolute"
+                                      bgColor="white"
+                                      fontSize="sm"
+                                      top="-3"
+                                    >
+                                      Comments
+                                    </Text>
+                                    <Text>{event.Justification}</Text>
+                                  </Box>
                                 </Box>
-                              </Box>
-                            </HStack>
-                          </Box>
-                        );
-                      })}
-                    </Box>
-                  </HStack>
-                );
-              })}
-            </Box>
-          </Skeleton>
+                              </HStack>
+                            </Box>
+                            </Zoom>
+
+                          );
+                        })}
+                      </Box>
+                    </HStack>
+                  );
+                })}
+              </Box>
+            </Skeleton>
+          </>
         )}
         {attractions !== null && (
           <Box mt="2">

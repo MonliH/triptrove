@@ -9,7 +9,6 @@ const End:React.FC<EndProps> = ({loading}) => {
     
     return (
         <>
-        {loading && (<Heading textAlign="center" color="blue">Generating Trip Plan</Heading>)}
     
     </>
         )
