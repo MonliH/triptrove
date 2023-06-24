@@ -116,7 +116,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout,setD
               outline: "none",
             }}
             w="50%"
-            type="datetime-local"
+            type="date"
             mr={2}
             value={forms.startDate}
             onChange={(e: any) => {
@@ -146,7 +146,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout,setD
               outline: "none",
             }}
             w="50%"
-            type="datetime-local"
+            type="date"
             mr={2}
             value={forms.endDate}
             onChange={(e: any) => {
