@@ -1,15 +1,19 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Dispatch, SetStateAction } from "react";
 import { Flex, Heading, Text, Input, Select } from "@chakra-ui/react";
 import { usePlacesWidget } from "react-google-autocomplete";
 
 import { FormValues } from "../MultiStepForm";
+import Fade from "react-reveal/Fade"
+
 
 type SecondProps = {
   forms: FormValues;
   setFormData: Dispatch<SetStateAction<FormValues>>;
   transition: boolean;
   timeout: Number;
+  setDisabled:Dispatch<SetStateAction<boolean>>;
+
 };
 const transitions = {
   entering: {
@@ -34,6 +38,7 @@ const Second: React.FC<SecondProps> = ({
   setFormData,
   transition,
   timeout,
+  setDisabled
 }) => {
   const { ref } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
@@ -45,14 +50,22 @@ const Second: React.FC<SecondProps> = ({
     },
   });
 
+  useEffect(()=>{
+    if(forms.formatted_address && forms.interests && forms.continent){
+      setDisabled(false)
+    }
+    else{
+      setDisabled(true)
+    }
+  },[forms])
+
   return (
+    <Fade right >
     <Flex
       direction="column"
       align="center"
       justify="centert"
-      style={{
-        transition: "0.5s",
-      }}
+      
     >
       <Flex direction="column" width="100%" mt={3}>
         <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
@@ -142,6 +155,7 @@ const Second: React.FC<SecondProps> = ({
         </Select>
       </Flex>
     </Flex>
+    </Fade>
   );
 };
 

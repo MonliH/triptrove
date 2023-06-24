@@ -1,5 +1,5 @@
 import React from "react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction,useEffect } from "react";
 import {
   Flex,
   Heading,
@@ -10,16 +10,30 @@ import {
 } from "@chakra-ui/react";
 
 import { FormValues } from "../MultiStepForm";
+import Fade from "react-reveal/Fade"
 
 type ThirdProp = {
   forms: FormValues;
   setFormData: Dispatch<SetStateAction<FormValues>>;
   transition:boolean;
   timeout:Number;
+  setDisabled:Dispatch<SetStateAction<boolean>>;
+
 };
 
-const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) => {
+const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout,setDisabled }) => {
+ 
+ useEffect(()=>{
+  if(forms.adults && forms.children && forms.startDate && forms.endDate){
+    setDisabled(false)
+  }
+  else{
+    setDisabled(true)
+  }
+ },[forms])
+
   return (
+    <Fade right>
     <Flex direction="column" align="center">
       <Flex direction="column" width="100%" mt={3}>
         <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Children?</Text>
@@ -142,6 +156,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
         </Flex>
       </Flex>
     </Flex>
+    </Fade>
   );
 };
 

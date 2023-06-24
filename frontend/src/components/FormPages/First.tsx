@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import {
   Flex,
   Center,
@@ -11,15 +11,27 @@ import {
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
 import { FormValues } from "../MultiStepForm";
+import Zoom from "react-reveal/Zoom"
 
 type FirstProps = {
   forms: FormValues;
   setFormData: Dispatch<SetStateAction<FormValues>>;
+  setDisabled:Dispatch<SetStateAction<boolean>>;
 };
 
-const First: React.FC<FirstProps> = ({ forms, setFormData }) => {
+const First: React.FC<FirstProps> = ({ forms, setFormData,setDisabled }) => {
   const format = (val: string) => `$` + val;
   const parse = (val: string) => val.replace(/^\$/, "");
+  
+
+  useEffect(()=>{
+    if( forms.budget<10 && forms.budget==0){
+      setDisabled(true)
+    }
+    else{
+      setDisabled(false)
+    }
+  },[forms.budget])
 
   return (
     <Flex

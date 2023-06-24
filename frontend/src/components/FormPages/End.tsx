@@ -8,9 +8,7 @@ type EndProps = {
 const End:React.FC<EndProps> = ({loading}) => {
     
     return (
-        <>
-    
-    </>
+     <h1></h1>
         )
 }
 export default End;

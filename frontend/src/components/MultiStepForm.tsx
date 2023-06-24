@@ -19,8 +19,8 @@ import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
 import End from "./FormPages/End";
 import { placeholderAttraction } from "@/lib/placeholder";
-import Zoom from 'react-reveal/Zoom';
-
+import Zoom from "react-reveal/Zoom";
+import Fade from "react-reveal/Fade";
 
 const IMAGE_CDN = "https://cf2.bstatic.com";
 
@@ -53,11 +53,12 @@ const MultiStepForm: React.FC = () => {
     endDate: "",
   });
   const [transitionState, setTransitionState] = useState(false);
+  const [disable,setDisable] = useState(true)
 
   const conditionalComponent = () => {
     switch (page) {
       case 0:
-        return <First forms={formData} setFormData={setFormData} />;
+        return <First forms={formData} setFormData={setFormData} setDisabled={setDisable} />;
       case 1:
         return (
           <Second
@@ -65,6 +66,7 @@ const MultiStepForm: React.FC = () => {
             setFormData={setFormData}
             transition={transitionState}
             timeout={300}
+            setDisabled={setDisable} 
           />
         );
       case 2:
@@ -74,12 +76,13 @@ const MultiStepForm: React.FC = () => {
             setFormData={setFormData}
             transition={transitionState}
             timeout={300}
+            setDisabled={setDisable} 
           />
         );
       case 3:
         return <End loading={loadingFlights} />;
       default:
-        return <First forms={formData} setFormData={setFormData} />;
+        return <First forms={formData} setFormData={setFormData} setDisabled={setDisable}  />;
     }
   };
 
@@ -106,121 +109,135 @@ const MultiStepForm: React.FC = () => {
       setPage(page + 1);
       setTransitionState(!transitionState);
     } else {
-      if (page == 2) {
-        setPage(page + 1);
-      }
-      (async () => {
-        setLoadingFlights(true);
-        setFlights(null);
-        setLoadingAttractions(true);
-        setAttractions(null);
-        setHotel(null);
-        setLoadingHotel(true);
-        const from = await fetch(
-          `${
-            process.env.NEXT_PUBLIC_BACKEND_URL
-          }/flightDestinations?query=${encodeURIComponent(
-            formData.formatted_address.split(",")[0]
-          )}`
-        ).then((response) => response.json());
-        const to = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${destination}`
-        ).then((response) => response.json());
-
-        const fromCity = from.find((e: any) => e.type == "CITY");
-        const fromAirport = from.find((e: any) => e.type == "AIRPORT");
-        const toCity = to.find((e: any) => e.type == "CITY");
-        const toAirport = to.find((e: any) => e.type == "AIRPORT");
-
+      if (
+        formData.continent &&
+        formData.formatted_address &&
+        formData.interests &&
+        formData.adults &&
+        formData.children &&
+        formData.budget &&
+        formData.startDate &&
+        formData.endDate
+      ) {
+        if (page == 2) {
+          setPage(page + 1);
+        }
         (async () => {
-          const toInfo = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${destination}`
-          ).then((response) => response.json());
-          const toLocationUfi = toInfo[0].ufi;
-
-          (async () => {
-            const hotel = await fetch(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}/hotels`,
-              {
-                method: "POST",
-                body: JSON.stringify({
-                  adults: formData.adults,
-                  children: formData.children,
-                  departDate: startDate,
-                  returnDate: endDate,
-                  maxPrice:
-                    (formData.budget * 0.3) /
-                    ((new Date(endDate).getTime() -
-                      new Date(startDate).getTime()) /
-                      (1000 * 60 * 60 * 24)),
-                  ufi: toLocationUfi,
-                  cityName: toInfo[0].cityName,
-                }),
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            ).then((response) => response.json());
-            setHotel(hotel);
-            setLoadingHotel(false);
-          })();
-
-          const attractions = await fetch(
+          setLoadingFlights(true);
+          setFlights(null);
+          setLoadingAttractions(true);
+          setAttractions(null);
+          setHotel(null);
+          setLoadingHotel(true);
+          const from = await fetch(
             `${
               process.env.NEXT_PUBLIC_BACKEND_URL
-            }/results?ufi=${toLocationUfi}&personalization=${encodeURIComponent(
-              "My goals and wishes for this trip are " +
-                formData.interests +
-                ". I am travelling with " +
-                (formData.children ? formData.children : "no") +
-                " children and " +
-                (formData.adults ? formData.adults : "no") +
-                " adults."
-            )}&end_date=${endDate}&start_date=${startDate}`
+            }/flightDestinations?query=${encodeURIComponent(
+              formData.formatted_address.split(",")[0]
+            )}`
+          ).then((response) => response.json());
+          const to = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${destination}`
           ).then((response) => response.json());
 
-          setAttractions(attractions);
-          setLoadingAttractions(false);
-        })();
+          const fromCity = from.find((e: any) => e.type == "CITY");
+          const fromAirport = from.find((e: any) => e.type == "AIRPORT");
+          const toCity = to.find((e: any) => e.type == "CITY");
+          const toAirport = to.find((e: any) => e.type == "AIRPORT");
 
-        const flight = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              fromLocation: fromAirport,
-              toLocation: toAirport,
-              adults: formData.adults,
-              children: formData.children,
-              departDate: startDate,
-              returnDate: endDate,
-            }),
+          (async () => {
+            const toInfo = await fetch(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${destination}`
+            ).then((response) => response.json());
+            const toLocationUfi = toInfo[0].ufi;
+
+            (async () => {
+              const hotel = await fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/hotels`,
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    adults: formData.adults,
+                    children: formData.children,
+                    departDate: startDate,
+                    returnDate: endDate,
+                    maxPrice:
+                      (formData.budget * 0.3) /
+                      ((new Date(endDate).getTime() -
+                        new Date(startDate).getTime()) /
+                        (1000 * 60 * 60 * 24)),
+                    ufi: toLocationUfi,
+                    cityName: toInfo[0].cityName,
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              ).then((response) => response.json());
+              setHotel(hotel);
+              setLoadingHotel(false);
+            })();
+
+            const attractions = await fetch(
+              `${
+                process.env.NEXT_PUBLIC_BACKEND_URL
+              }/results?ufi=${toLocationUfi}&personalization=${encodeURIComponent(
+                "My goals and wishes for this trip are " +
+                  formData.interests +
+                  ". I am travelling with " +
+                  (formData.children ? formData.children : "no") +
+                  " children and " +
+                  (formData.adults ? formData.adults : "no") +
+                  " adults."
+              )}&end_date=${endDate}&start_date=${startDate}`
+            ).then((response) => response.json());
+
+            setAttractions(attractions);
+            setLoadingAttractions(false);
+          })();
+
+          const flight = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                fromLocation: fromAirport,
+                toLocation: toAirport,
+                adults: formData.adults,
+                children: formData.children,
+                departDate: startDate,
+                returnDate: endDate,
+              }),
+            }
+          ).then((response) => response.json());
+
+          if (flight.length == 0) {
+            setFlights({ details: [], info: null, price: 0 });
+          } else {
+            setFlights(flight);
           }
-        ).then((response) => response.json());
-
-        if (flight.length == 0) {
-          setFlights({ details: [], info: null, price: 0 });
-        } else {
-          setFlights(flight);
-        }
-        setLoadingFlights(false);
-      })();
+          setLoadingFlights(false);
+        })();
+      } else {
+        console.log("not all values filled")
+      }
     }
   }
 
   const [page, setPage] = useState(0);
 
   return (
-    <Flex direction="column" align="center" justify="center">
+    <Flex direction="column" align="center" justify="center" overflowY="hidden">
       <VStack
         direction="column"
         w="full"
         h={page == 3 ? "50vh" : "100vh"}
         align="center"
         justify="center"
+        overflowY="hidden"
       >
         <Heading fontSize="5xl">TripTrove</Heading>
         <Text mt={2}>Discover Your Next Trip</Text>
@@ -239,10 +256,10 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          <button onClick={handleSubmit} className="pushable">
-            <span className="shadow"></span>
-            <span className="edge"></span>
-            <span className="front">
+          <button disabled={disable} onClick={handleSubmit} className={`pushable`}>
+            <span className={`shadow`}></span>
+            <span className={`${disable? 'dedge' :'edge'}`}></span>
+            <span className={`${disable? 'disabled' :'front'}`}>
               {page === 0 || page === 1
                 ? "Next"
                 : page == 2
@@ -428,11 +445,13 @@ const MultiStepForm: React.FC = () => {
         )}
         {(loadingAttractions || attractions !== null) && (
           <>
-            <Heading mt={10} color="#54C4D6"  >Selected Itinerary</Heading>
+            <Heading mt={10} color="#54C4D6">
+              Selected Itinerary
+            </Heading>
             <Skeleton mt={10} isLoaded={attractions !== null}>
               <HStack mt={10}>
                 <Spacer />
-                <Text fontSize="2xl" color="#54C4D6" >
+                <Text fontSize="2xl" color="#54C4D6">
                   Total Itinerary Price: $
                   {Math.round(
                     Object.values(
@@ -458,14 +477,16 @@ const MultiStepForm: React.FC = () => {
                   return (
                     <HStack alignItems="stretch" key={i + " attractions"}>
                       <Box position="relative">
-                        <Box
-                          w={4}
-                          h={4}
-                          bgColor="#54C4D6"
-                          borderRadius="50%"
-                          position="absolute"
-                          top="5"
-                        />
+                        <Fade left>
+                          <Box
+                            w={4}
+                            h={4}
+                            bgColor="#54C4D6"
+                            borderRadius="50%"
+                            position="absolute"
+                            top="5"
+                          />
+                        </Fade>
                         <Box
                           h={"full"}
                           mx={2}
@@ -474,74 +495,83 @@ const MultiStepForm: React.FC = () => {
                         ></Box>
                       </Box>
                       <Box key={i}>
-                        <Text fontSize="xl" mt="3" color="#0095ab">
-                          Day {day} (
-                          {actualDate.toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                          )
-                        </Text>
+                        <Fade left>
+                          <Text fontSize="xl" mt="3" color="#0095ab">
+                            Day {day} (
+                            {actualDate.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                            )
+                          </Text>
+                        </Fade>
                         {events.map((event, j) => {
                           const attra = (attractions ?? placeholderAttraction)
                             .bookings[event.ID];
                           return (
                             <Zoom>
+                              <Box
+                                my="3"
+                                key={j + " info"}
+                                bg="#ffffff"
+                                p={5}
+                                borderRadius={20}
+                                shadow="base"
+                              >
+                                <HStack>
+                                  <Image
+                                    src={attra.primaryPhoto.small}
+                                    borderRadius={6}
+                                    h={"44"}
+                                  ></Image>
 
-                            <Box my="3" key={j + " info"}  bg="#ffffff" p={5} borderRadius={20} shadow="base">
-                              <HStack>
-                                <Image
-                                  src={attra.primaryPhoto.small}
-                                  borderRadius={6}
-                                  h={"44"}
-                                ></Image>
-
-                                <Box ml="2">
-                                  <HStack>
-                                    <Link
-                                      href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
-                                      fontSize="2xl"
-                                      fontWeight="bold"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
+                                  <Box ml="2">
+                                    <HStack>
+                                      <Link
+                                        href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
+                                        fontSize="2xl"
+                                        fontWeight="bold"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {attra.name}
+                                      </Link>
+                                      <Spacer />
+                                      <Text fontSize="2xl" color="#54C4D6">
+                                        $
+                                        {Math.round(
+                                          attra.representativePrice
+                                            .publicAmount *
+                                            (formData.adults +
+                                              formData.children)
+                                        )}
+                                      </Text>
+                                    </HStack>
+                                    <Text>{attra.shortDescription}</Text>
+                                    <Box
+                                      px={4}
+                                      py={3}
+                                      mt={5}
+                                      borderRadius="8"
+                                      position="relative"
+                                      border="2px solid"
+                                      borderColor={"yellow.300"}
+                                      boxShadow="0px 4px 21px 0px rgba(255, 241, 116, 0.25)"
                                     >
-                                      {attra.name}
-                                    </Link>
-                                    <Spacer />
-                                    <Text fontSize="2xl" color="#54C4D6">
-                                      $
-                                      {Math.round(
-                                        attra.representativePrice.publicAmount *
-                                          (formData.adults + formData.children)
-                                      )}
-                                    </Text>
-                                  </HStack>
-                                  <Text>{attra.shortDescription}</Text>
-                                  <Box
-                                    px={4}
-                                    py={3}
-                                    mt={5}
-                                    borderRadius="8"
-                                    position="relative"
-                                    border="2px solid"
-                                    borderColor={"yellow.300"}
-                                    boxShadow="0px 4px 21px 0px rgba(255, 241, 116, 0.25)"
-                                  >
-                                    <Text
-                                      position="absolute"
-                                      bgColor="white"
-                                      fontSize="sm"
-                                      top="-3"
-                                    >
-                                      Comments
-                                    </Text>
-                                    <Text>{event.Justification}</Text>
+                                      <Text
+                                        position="absolute"
+                                        bgColor="white"
+                                        fontSize="sm"
+                                        top="-3"
+                                      >
+                                        Comments
+                                      </Text>
+                                      <Text>{event.Justification}</Text>
+                                    </Box>
                                   </Box>
-                                </Box>
-                              </HStack>
-                            </Box>
+                                </HStack>
+                              </Box>
                             </Zoom>
-
                           );
                         })}
                       </Box>
