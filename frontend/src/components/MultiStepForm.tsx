@@ -153,7 +153,6 @@ const MultiStepForm: React.FC = () => {
                 },
               }
             ).then((response) => response.json());
-            console.log(hotel);
             setHotel(hotel);
             setLoadingHotel(false);
           })();

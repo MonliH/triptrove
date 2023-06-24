@@ -19,11 +19,18 @@ type ThirdProp = {
 };
 
 const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) => {
+  console.log(forms.adults);
   return (
     <Flex direction="column" align="center">
       <Flex direction="column" width="100%" mt={3}>
         <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Children?</Text>
-        <NumberInput>
+        <NumberInput
+            value={forms.adults}
+            onChange={(e: any) =>{
+              console.log("hi", parseInt(e.target.value));
+              setFormData(f => ({ ...f, adults: parseInt(e || "0") }))}
+            }
+        >
           <NumberInputField
             boxShadow=" 0px 2px 3px #ccc"
             borderBottom="0.25em solid #c6be9f"
@@ -42,15 +49,17 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             _hover={{
               outline: "none",
             }}
-            onChange={(e: any) =>
-              setFormData(f => ({ ...f, adults: parseInt(e.target.value) }))
-            }
           />
         </NumberInput>
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
         <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center" >How Many Adults?</Text>
-        <NumberInput>
+        <NumberInput
+            value={forms.children}
+            onChange={(e: any) =>
+              setFormData(f => ({ ...f, children: parseInt(e || "0") }))
+            }
+        >
           <NumberInputField
             boxShadow=" 0px 2px 3px #ccc"
             borderBottom="0.25em solid #c6be9f"
@@ -69,9 +78,6 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             _hover={{
               outline: "none",
             }}
-            onChange={(e: any) =>
-              setFormData(f => ({ ...f, children: parseInt(e.target.value) }))
-            }
           />
         </NumberInput>
       </Flex>
@@ -100,10 +106,11 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             w="50%"
             type="datetime-local"
             mr={2}
+            value={forms.startDate}
             onChange={(e: any) => {
               setFormData(f => ({
                 ...f,
-                startDate: e.target.value.split("T")[0],
+                startDate: e.target.value,
               }));
             }}
           />
@@ -129,8 +136,9 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             w="50%"
             type="datetime-local"
             mr={2}
+            value={forms.endDate}
             onChange={(e: any) => {
-              setFormData(f => ({ ...f, endDate: e.target.value.split("T")[0] }));
+              setFormData(f => ({ ...f, endDate: e.target.value }));
             }}
           />
         </Flex>
