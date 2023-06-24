@@ -4,19 +4,21 @@ import First from "./FormPages/First";
 import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
 
+export interface FormValues {
+  continent: string;
+  formatted_address: string;
+  interests: string;
+  adults: number;
+  budget: number;
+  children: number;
+  startDate: string;
+  endDate: string;
+}
+
 const MultiStepForm: React.FC = () => {
-  const [formData, setFormData] = useState<{
-    continent: string;
-    location: string;
-    interests: string;
-    adults: number;
-    budget: number;
-    children: number;
-    startDate: string;
-    endDate: string;
-  }>({
+  const [formData, setFormData] = useState<FormValues>({
     continent: "",
-    location: "",
+    formatted_address: "",
     interests: "",
     adults: 0,
     children: 0,
@@ -39,11 +41,41 @@ const MultiStepForm: React.FC = () => {
   };
   function handleSubmit() {
     //...stuff
-    if(page!=2){
-    setPage(page + 1);
-    }
-    else{
-        console.log(formData)
+    if (page != 2) {
+      setPage(page + 1);
+    } else {
+      console.log(formData);
+      (async () => {
+        const from = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${encodeURIComponent(formData.formatted_address.split(",")[0])}`
+        ).then((response) => response.json());
+        const to = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=paris`
+        ).then((response) => response.json());
+
+        const fromCity = from.find((e: any) => e.type == "CITY");
+        const fromAirport = from.find((e: any) => e.type == "AIRPORT");
+        const toCity = to.find((e: any) => e.type == "CITY");
+        const toAirport = to.find((e: any) => e.type == "AIRPORT");
+
+        const flight = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
+          {method: "POST",
+          headers: {
+          "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+          fromLocation: fromAirport,
+          toLocation: toAirport,
+          adults: formData.adults,
+          children: formData.children,
+          departDate: formData.startDate,
+          returnDate: formData.endDate,
+          })
+          }
+        ).then((response) => response.json());
+        console.log(flight);
+      })();
     }
   }
 

@@ -9,17 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
-
-type FormValues = {
-  continent: string;
-  location: string;
-  interests: string;
-  adults: number;
-  budget: number;
-  children: number;
-  startDate: string,
-  endDate:string,
-};
+import { FormValues } from "../MultiStepForm";
 
 type FirstProps = {
   forms: FormValues;
@@ -52,7 +42,7 @@ const First: React.FC<FirstProps> = ({ forms, setFormData }) => {
             budget: parseInt(parse(valueString)),
           });
         }}
-        required
+        isRequired
       >
         <NumberInputField />
       </NumberInput>

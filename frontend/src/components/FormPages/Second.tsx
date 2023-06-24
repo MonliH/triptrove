@@ -3,16 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Flex, Heading, Text, Input, Select } from "@chakra-ui/react";
 import { usePlacesWidget } from "react-google-autocomplete";
 
-type FormValues = {
-  continent: string;
-  location: string;
-  interests: string;
-  adults: number;
-  budget: number;
-  children: number;
-  startDate: string;
-  endDate: string;
-};
+import { FormValues } from "../MultiStepForm";
 
 type SecondProps = {
   forms: FormValues;

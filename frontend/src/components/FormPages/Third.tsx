@@ -9,16 +9,7 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 
-type FormValues = {
-  continent: string;
-  location: string;
-  interests: string;
-  adults: number;
-  budget: number;
-  children: number;
-  startDate: string;
-  endDate: string;
-};
+import { FormValues } from "../MultiStepForm";
 
 type ThirdProp = {
   forms: FormValues;
