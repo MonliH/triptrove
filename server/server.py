@@ -50,7 +50,7 @@ def json_to_text(data):
 
 SYSTEM_PROMPT = """You are to be a travel agent who takes in a large number of attractions in a city and compiles them into a tourist plan for a person who is looking to visit that region. The person will specify their goals and wishes for the trip.
 
-You should not schedule multiple events that overlap. Only state the ID and justify why you chose that attraction for the specific person.
+You should not schedule multiple events that overlap. Only state the ID and justify why you chose that attraction for the specific person. Always reply with a travel plan, even if you don't have much data about a person.
 
 For example:
 
@@ -58,6 +58,9 @@ ID: 1
 Justification: <justification>
 
 ID: 4
+Justification: <justification>
+
+ID: 8
 Justification: <justification>
 
 ..."""
@@ -121,6 +124,7 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
             model=MODEL,
             messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization}],
         )  
+        print(response)
         content = response["choices"][0]["message"]["content"]
         id_split = content.split("ID: ")
         picked_items = []
