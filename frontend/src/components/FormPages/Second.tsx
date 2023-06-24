@@ -75,7 +75,7 @@ const Second: React.FC<SecondProps> = ({
           _hover={{
             outline: "none",
           }}
-          ref={ref}
+          ref={ref as any}
           
         />
       </Flex>
