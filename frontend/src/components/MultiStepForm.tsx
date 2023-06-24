@@ -317,6 +317,7 @@ const MultiStepForm: React.FC = () => {
                     const carrier = flight.legs[0].carriersData[0];
 
                     return (
+                      <Zoom>
                       <Box key={i + " flights"}>
                         <HStack
                           bg="#ffffff"
@@ -382,6 +383,7 @@ const MultiStepForm: React.FC = () => {
                           </Box>
                         </HStack>
                       </Box>
+                      </Zoom>
                     );
                   })}
                 </Box>
@@ -413,6 +415,7 @@ const MultiStepForm: React.FC = () => {
               </Skeleton>
             </HStack>
             <Skeleton isLoaded={hotel !== null}>
+              <Zoom>
               <Box>
                 <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
                   <Image
@@ -465,6 +468,7 @@ const MultiStepForm: React.FC = () => {
                   </Box>
                 </HStack>
               </Box>
+              </Zoom>
             </Skeleton>
           </>
         )}
@@ -541,7 +545,7 @@ const MultiStepForm: React.FC = () => {
                                 bg="#ffffff"
                                 p={5}
                                 borderRadius={20}
-                                shadow="base"
+                                className="eventBox"
                               >
                                 <HStack>
                                   <Image
