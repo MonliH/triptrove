@@ -14,13 +14,13 @@ import { FormValues } from "../MultiStepForm";
 type ThirdProp = {
   forms: FormValues;
   setFormData: Dispatch<SetStateAction<FormValues>>;
+  transition:boolean;
+  timeout:Number;
 };
 
-const Third: React.FC<ThirdProp> = ({ forms, setFormData }) => {
+const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) => {
   return (
     <Flex direction="column" align="center">
-      <Heading>Some Final Details</Heading>
-      <Text mt={2}>Your almost there :)</Text>
       <Flex direction="column" width="100%" mt={3}>
         <Text>How Many Children?</Text>
         <NumberInput>

@@ -8,9 +8,33 @@ import { FormValues } from "../MultiStepForm";
 type SecondProps = {
   forms: FormValues;
   setFormData: Dispatch<SetStateAction<FormValues>>;
+  transition: boolean;
+  timeout: Number;
+};
+const transitions = {
+  entering: {
+    display: "block",
+  },
+  entered: {
+    opacity: 1,
+    display: "block",
+  },
+  exiting: {
+    opacity: 0,
+    display: "block",
+  },
+  exited: {
+    opacity: "0",
+    display: "none",
+  },
 };
 
-const Second: React.FC<SecondProps> = ({ forms, setFormData }) => {
+const Second: React.FC<SecondProps> = ({
+  forms,
+  setFormData,
+  transition,
+  timeout,
+}) => {
   const { ref } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
     onPlaceSelected: (place) => {
@@ -22,9 +46,15 @@ const Second: React.FC<SecondProps> = ({ forms, setFormData }) => {
   });
 
   return (
-    <Flex direction="column" align="center">
-      <Heading>Just Some Important Info</Heading>
-      <Text mt={2}>Please Fill in the information for best results</Text>
+    <Flex
+      direction="column"
+      align="center"
+      justify="centert"
+      style={{
+        transition:"0.5s"
+      }}
+     
+    >
       <Flex direction="column" width="100%" mt={3}>
         <Text>Enter Your Location</Text>
         <Input ref={ref} style={{ width: "90%" }} defaultValue="Amsterdam" />
@@ -46,6 +76,7 @@ const Second: React.FC<SecondProps> = ({ forms, setFormData }) => {
       <Flex direction="column" width="100%" mt={3}>
         <Text>What Continent Would You like to visit?</Text>
         <Select
+          style={{ width: "90%" }}
           placeholder="Continent"
           onChange={(e: any) => {
             setFormData({ ...forms, continent: e.target.value });

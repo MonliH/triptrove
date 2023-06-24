@@ -22,15 +22,14 @@ const First: React.FC<FirstProps> = ({ forms, setFormData }) => {
 
   return (
     <Flex
-      mt={20}
+      mt={10}
       alignContent={"center"}
       justifyContent={"center"}
       direction="column"
       w="100%"
       align="center"
     >
-      <Heading>Welcome!</Heading>
-      <Text mt={2}>Enter Your Budget</Text>
+      <Text mt={2}>Enter Your Budget:</Text>
       <NumberInput
         //placeholder="Enter Your Budget"
         value={forms.budget? format(forms.budget.toString()) : format("0")}

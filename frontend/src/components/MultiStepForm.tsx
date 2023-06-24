@@ -26,23 +26,27 @@ const MultiStepForm: React.FC = () => {
     startDate: "",
     endDate: "",
   });
+  const [transitionState, setTransitionState] = useState(false)
+
 
   const conditionalComponent = () => {
     switch (page) {
       case 0:
-        return <First forms={formData} setFormData={setFormData} />;
+        return <First forms={formData} setFormData={setFormData}/>;
       case 1:
-        return <Second forms={formData} setFormData={setFormData} />;
+        return <Second forms={formData} setFormData={setFormData}  transition={transitionState} timeout={300}/>;
       case 2:
-        return <Third forms={formData} setFormData={setFormData} />;
+        return <Third forms={formData} setFormData={setFormData}  transition={transitionState} timeout={300}/>;
       default:
-        return <First forms={formData} setFormData={setFormData} />;
+        return <First forms={formData} setFormData={setFormData}  />;
     }
   };
   function handleSubmit() {
+    
     //...stuff
     if (page != 2) {
       setPage(page + 1);
+      setTransitionState(!transitionState)
     } else {
       console.log(formData);
       (async () => {
@@ -82,15 +86,17 @@ const MultiStepForm: React.FC = () => {
   const [page, setPage] = useState(0);
 
   return (
-    <Flex direction="column" align="center" h="100vh">
+    <Flex direction="column" align="center" h="100vh" justify="center">
+      <Heading fontSize='5xl'>TripTrove</Heading>
+      <Text mt={2}>Discover Your Next Trip</Text>
       {conditionalComponent()}
       <Flex direction="row" align="center" justify="space-evenly" d="flex">
         {page > 0 && (
-          <Button w={20} mt={3} onClick={() => setPage(page - 1)}>
+          <Button  colorScheme="blue"   variant='outline'  w={20} mt={3} onClick={() => setPage(page - 1)}>
             Back
           </Button>
         )}
-        <Button onClick={handleSubmit} w={20} mt={3} ml={3}>
+        <Button colorScheme="blue" color="white" onClick={handleSubmit} w={20} mt={3} ml={3}>
           {page === 0 || page === 1 ? "Next" : "Submit"}
         </Button>
       </Flex>
