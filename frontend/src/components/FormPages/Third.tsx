@@ -157,6 +157,7 @@ const Third: React.FC<ThirdProp> = ({
               endDate={endDate}
               selectsRange
               customInput={customInput}
+              minDate={new Date()}
               onChange={([start, end]: [Date, Date]) => {
                 onChange([start, end]);
                 setFormData({ ...forms, startDate: start.toISOString().split("T")[0], endDate: end ? end.toISOString().split("T")[0] : "" });

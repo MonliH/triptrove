@@ -67,7 +67,6 @@ const Second: React.FC<SecondProps> = ({
   const { ref } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
     onPlaceSelected: (place) => {
-      console.log("hi");
       setFormData((f) => ({ ...f, ...place }));
     },
     options: {
@@ -76,7 +75,6 @@ const Second: React.FC<SecondProps> = ({
   });
 
   useEffect(() => {
-    console.log(forms);
     if (
       forms.formatted_address &&
       forms.interests &&
@@ -101,7 +99,6 @@ const Second: React.FC<SecondProps> = ({
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${query}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setAutocomplete(data);
       });
   }, 200);
@@ -237,6 +234,9 @@ const Second: React.FC<SecondProps> = ({
                             key={i}
                             mb="3"
                             cursor="pointer"
+                            _hover={{
+                              bgColor: "gray.50",
+                            }}
                             onClick={() => {
                               setFormData((f) => ({
                                 ...f,

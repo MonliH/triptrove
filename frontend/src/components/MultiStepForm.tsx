@@ -131,7 +131,6 @@ const MultiStepForm: React.FC = () => {
       setPage(page + 1);
       setTransitionState(!transitionState);
     } else {
-      console.log(formData);
       if (
         (formData.continent || formData.city) &&
         formData.formatted_address &&
