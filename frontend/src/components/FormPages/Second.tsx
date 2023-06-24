@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dispatch, SetStateAction } from "react";
 import {
   Flex,
@@ -13,6 +13,8 @@ import {
   IconButton,
   Image,
   Button,
+  Portal,
+  Popover,
 } from "@chakra-ui/react";
 import { usePlacesWidget } from "react-google-autocomplete";
 
@@ -21,6 +23,7 @@ import Fade from "react-reveal/Fade";
 import { X } from "react-feather";
 
 import debounce from "lodash.debounce";
+import theme from "@/lib/theme";
 
 type SecondProps = {
   forms: FormValues;
@@ -49,7 +52,7 @@ const transitions = {
 
 interface Auto {
   cityName: string;
-  countryName: string;
+  country: string;
   imageUrl: string;
   ufi: number;
 }
@@ -64,6 +67,7 @@ const Second: React.FC<SecondProps> = ({
   const { ref } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
     onPlaceSelected: (place) => {
+      console.log("hi");
       setFormData((f) => ({ ...f, ...place }));
     },
     options: {
@@ -72,6 +76,7 @@ const Second: React.FC<SecondProps> = ({
   });
 
   useEffect(() => {
+    console.log(forms);
     if (
       forms.formatted_address &&
       forms.interests &&
@@ -83,12 +88,14 @@ const Second: React.FC<SecondProps> = ({
     }
   }, [forms]);
 
+  const [query, setQuery] = useState<string>("");
   useEffect(() => {
     (ref.current as unknown as HTMLInputElement).value =
       forms.formatted_address || "";
+    setQuery((forms.city && forms.city[0]) || "");
+    updateAutoComplete((forms.city && forms.city[0]) || "");
   }, []);
 
-  const [query, setQuery] = useState<string>("");
   const [autocomplete, setAutocomplete] = useState<Auto[]>();
   const updateAutoComplete = debounce((query: string) => {
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${query}`)
@@ -104,10 +111,13 @@ const Second: React.FC<SecondProps> = ({
   };
 
   const [show, setShowAuto] = useState<boolean>(false);
+  const [hovering, setHovering] = useState<boolean>(false);
+  const continentRef = useRef<HTMLSelectElement>(null!);
 
   return (
-    <Fade right>
-      <Flex direction="column" align="center" justify="centert">
+    <Box zIndex="1000">
+    <Fade right >
+      <Flex direction="column" align="center" justify="centert" >
         <Flex direction="column" width="100%" mt={3}>
           <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
             Enter Your City of Departure:
@@ -170,7 +180,7 @@ const Second: React.FC<SecondProps> = ({
               <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
                 What city do you want to visit?
               </Text>
-              <InputGroup position="relative">
+              <InputGroup position="relative" zIndex="10000">
                 <Input
                   onChange={handleChange}
                   value={query}
@@ -196,6 +206,7 @@ const Second: React.FC<SecondProps> = ({
                 />
                 <InputRightElement>
                   <IconButton
+                  display={query ? "block" : "none"}
                     bgColor="transparent"
                     size="xs"
                     aria-label="X"
@@ -206,47 +217,53 @@ const Second: React.FC<SecondProps> = ({
                     }}
                   ></IconButton>
                 </InputRightElement>
-                <Box
-                  position="absolute"
-                  bgColor="white"
-                  borderRadius="md"
-                  p="3"
-                  w="300px"
-                  top="50"
-                  h="fit-content"
-                >
-                  <Text>Destinations</Text>
-                  {autocomplete &&
-                    autocomplete.map((auto) => {
-                      return (
-                        <HStack
-                          mb="3"
-                          cursor="pointer"
-                          onClick={() => {
-                            console.log("hi");
-                            setFormData((f) => ({
-                              ...f,
-                              city: auto.cityName,
-                              continent: null,
-                            }));
-                          }}
-                        >
-                          <Image
-                            src={`${IMAGE_CDN}${auto.imageUrl}`}
-                            width="50px"
-                            height="50px"
-                            borderRadius="3"
-                          />
-                          <Box>
-                            <Text>{auto.cityName}</Text>
-                            <Text fontSize="xs" mt="-1">
-                              {auto.country}
-                            </Text>
-                          </Box>
-                        </HStack>
-                      );
-                    })}
-                </Box>
+                  <Box
+                    zIndex="popover"
+                    position="absolute"
+                    mt="12"
+                    bgColor="white"
+                    borderRadius="md"
+                    p="3"
+                    w="300px"
+                    onMouseEnter={() => setHovering(true)}
+                    onMouseLeave={() => setHovering(false)}
+                    display={hovering || show ? "block" : "none"}
+                  >
+                    <Text>{query ? "Destinations" : "Type a destination..."}</Text>
+                    {autocomplete &&
+                      autocomplete.map((auto, i) => {
+                        return (
+                          <HStack
+                            key={i}
+                            mb="3"
+                            cursor="pointer"
+                            onClick={() => {
+                              setFormData((f) => ({
+                                ...f,
+                                city: [auto.cityName, auto.ufi],
+                                continent: null,
+                              }));
+                              setQuery(auto.cityName);
+                              setHovering(false);
+                            }}
+                          >
+                            <Image
+                              src={`${IMAGE_CDN}${auto.imageUrl}`}
+                              width="50px"
+                              height="50px"
+                              borderRadius="3"
+                            />
+                            <Box>
+                              <Text>{auto.cityName}</Text>
+                              <Text fontSize="xs" mt="-1">
+                                {auto.country}
+                              </Text>
+                            </Box>
+                          </HStack>
+                        );
+                      })}
+                  </Box>
+                
               </InputGroup>
             </Flex>
             <Box
@@ -261,7 +278,7 @@ const Second: React.FC<SecondProps> = ({
                 top="50%"
                 transform="translateY(-50%)"
                 left="-2"
-                bgColor="#FFEEAD"
+                bgColor={"gray.100"}
               >
                 or
               </Text>
@@ -291,9 +308,15 @@ const Second: React.FC<SecondProps> = ({
                 }}
                 defaultValue={"Europe"}
                 placeholder="Select a continent"
-                value={forms.continent ?? undefined}
+                ref={continentRef}
+                value={forms.continent ?? ""}
                 onChange={(e: any) => {
-                  setFormData((f) => ({ ...f, continent: e.target.value }));
+                  setFormData((f) => ({
+                    ...f,
+                    continent: e.target.value,
+                    city: null,
+                  }));
+                  setQuery("");
                 }}
               >
                 <option value="na">North America</option>
@@ -309,7 +332,7 @@ const Second: React.FC<SecondProps> = ({
           </HStack>
         </Flex>
       </Flex>
-    </Fade>
+    </Fade></Box>
   );
 };
 

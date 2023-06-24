@@ -1,4 +1,4 @@
-export const places = {
+export const places: Record<string, string[]> = {
   sa: ["Rio de Janeiro", "Cusco", "S\u00e3o Paulo", "Lima"],
   asia: [
     "Ubud",
@@ -269,3 +269,8 @@ export const places = {
     "Jerusalem",
   ],
 };
+
+export function randomRoll(continent: string) {
+  const randomIndex = Math.floor(Math.random() * places[continent].length);
+  return places[continent][randomIndex];
+}
