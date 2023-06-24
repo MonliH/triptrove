@@ -15,7 +15,16 @@
     
   }
 
-
+.Pushdisabled{
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: filter 250ms;
+    margin-top: 2rem;
+}
    .disabled{
     display: block;
     position: relative;
@@ -23,8 +32,8 @@
     border-radius: 12px;
     font-size: 1.25rem;
     width:10rem;
-    color: red;
-    background: white;
+    color: white;
+    background: #008a9f;
     will-change: transform;
     
     transform: translateY(-4px);

@@ -277,7 +277,6 @@ class HotelRequest(BaseModel):
     returnDate: str
     maxPrice: int
 
-
 @app.post("/hotels")
 async def hotels(body: HotelRequest):
     async with httpx.AsyncClient() as client:
