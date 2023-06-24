@@ -57,7 +57,7 @@ const Second: React.FC<SecondProps> = ({
     >
       <Flex direction="column" width="100%" mt={3}>
         <Text>Enter Your Location</Text>
-        <Input ref={ref} style={{ width: "90%" }} />
+        <Input ref={ref as any} style={{ width: "90%" }} />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
         <Text>What kind of trip would you like this to be?</Text>

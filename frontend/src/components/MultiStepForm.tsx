@@ -167,7 +167,7 @@ const MultiStepForm: React.FC = () => {
       <Heading fontSize="5xl">TripTrove</Heading>
       <Text mt={2}>Discover Your Next Trip</Text>
       {conditionalComponent()}
-      <Flex direction="row" align="center" justify="space-evenly" d="flex">
+      <Flex direction="row" align="center" justify="space-evenly" display="flex">
         {page > 0 && page < 3 && (
           <Button
             colorScheme="blue"
