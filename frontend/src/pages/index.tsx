@@ -4,7 +4,6 @@ import Main from "@/components/Main";
 import MultiStepForm from "@/components/MultiStepForm";
 
 export default function Home() {
-
   return (
     <>
       <Head>

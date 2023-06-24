@@ -80,6 +80,8 @@ const MultiStepForm: React.FC = () => {
             transition={transitionState}
             timeout={300}
             setDisabled={setDisable}
+            dates={dates}
+            setDates ={setDates}
           />
         );
       case 3:
@@ -109,8 +111,11 @@ const MultiStepForm: React.FC = () => {
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
-  const startDate = formData.startDate.split("T")[0];
-  const endDate = formData.endDate.split("T")[0];
+  const [dates,setDates] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+
 
   function handleSubmit() {
     //...stuff
@@ -130,6 +135,7 @@ const MultiStepForm: React.FC = () => {
       ) {
         if (page == 2) {
           setPage(page + 1);
+          console.log(formData)
         }
         (async () => {
           setLoadingFlights(true);
@@ -168,12 +174,12 @@ const MultiStepForm: React.FC = () => {
                   body: JSON.stringify({
                     adults: formData.adults,
                     children: formData.children,
-                    departDate: startDate,
-                    returnDate: endDate,
+                    departDate: formData.startDate,
+                    returnDate: formData.endDate,
                     maxPrice:
                       (formData.budget * 0.3) /
-                      ((new Date(endDate).getTime() -
-                        new Date(startDate).getTime()) /
+                      ((new Date(formData.endDate).getTime() -
+                        new Date(formData.startDate).getTime()) /
                         (1000 * 60 * 60 * 24)),
                     ufi: toLocationUfi,
                     cityName: toInfo[0].cityName,
@@ -198,7 +204,7 @@ const MultiStepForm: React.FC = () => {
                   " children and " +
                   (formData.adults ? formData.adults : "no") +
                   " adults."
-              )}&end_date=${endDate}&start_date=${startDate}`
+              )}&end_date=${formData.endDate}&start_date=${formData.startDate}`
             ).then((response) => response.json());
 
             setAttractions(attractions);
@@ -217,8 +223,8 @@ const MultiStepForm: React.FC = () => {
                 toLocation: toAirport,
                 adults: formData.adults,
                 children: formData.children,
-                departDate: startDate,
-                returnDate: endDate,
+                departDate: formData.startDate,
+                returnDate: formData.endDate,
                 flightBudget: formData.budget * 0.3,
               }),
             }
@@ -244,10 +250,11 @@ const MultiStepForm: React.FC = () => {
       <VStack
         direction="column"
         w="full"
-        h={page == 3 ? "50vh" : "100vh"}
+        h={page == 3 ? "60vh" : "100vh"}
         align="center"
         justify="center"
         overflowY="hidden"
+        mb={10}
       >
         <img src={"/tripLogo.png"} />
         {conditionalComponent()}
@@ -284,7 +291,7 @@ const MultiStepForm: React.FC = () => {
           </button>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"}>
+      <Box w={"min(800px,95vw)"} mt={10}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
             <HStack align="center">
@@ -310,6 +317,7 @@ const MultiStepForm: React.FC = () => {
                     const carrier = flight.legs[0].carriersData[0];
 
                     return (
+                      <Zoom>
                       <Box key={i + " flights"}>
                         <HStack
                           bg="#ffffff"
@@ -375,6 +383,7 @@ const MultiStepForm: React.FC = () => {
                           </Box>
                         </HStack>
                       </Box>
+                      </Zoom>
                     );
                   })}
                 </Box>
@@ -406,6 +415,7 @@ const MultiStepForm: React.FC = () => {
               </Skeleton>
             </HStack>
             <Skeleton isLoaded={hotel !== null}>
+              <Zoom>
               <Box>
                 <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
                   <Image
@@ -458,6 +468,7 @@ const MultiStepForm: React.FC = () => {
                   </Box>
                 </HStack>
               </Box>
+              </Zoom>
             </Skeleton>
           </>
         )}
@@ -534,7 +545,7 @@ const MultiStepForm: React.FC = () => {
                                 bg="#ffffff"
                                 p={5}
                                 borderRadius={20}
-                                shadow="base"
+                                className="eventBox"
                               >
                                 <HStack>
                                   <Image
@@ -603,7 +614,9 @@ const MultiStepForm: React.FC = () => {
         {attractions !== null && (
           <Box mt="2">
             <Heading>Budget Breakdown</Heading>
-            <Box></Box>
+            <Box>
+
+            </Box>
           </Box>
         )}
       </Box>
