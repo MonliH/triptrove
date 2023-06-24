@@ -27,6 +27,7 @@ origins = [
     "http://triptrove.vercel.app",
     "https://triptrove.tech",
     "http://triptrove.tech"
+    "www.triptrove.tech",
 ]
 
 app.add_middleware(
