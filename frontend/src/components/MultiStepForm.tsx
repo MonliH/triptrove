@@ -80,6 +80,8 @@ const MultiStepForm: React.FC = () => {
             transition={transitionState}
             timeout={300}
             setDisabled={setDisable}
+            dates={dates}
+            setDates ={setDates}
           />
         );
       case 3:
@@ -109,7 +111,11 @@ const MultiStepForm: React.FC = () => {
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
- 
+  const [dates,setDates] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+
 
   function handleSubmit() {
     //...stuff

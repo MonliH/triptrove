@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   Flex,
@@ -20,6 +20,8 @@ type ThirdProp = {
   transition: boolean;
   timeout: Number;
   setDisabled: Dispatch<SetStateAction<boolean>>;
+  dates: { startDate: Date; endDate: Date };
+  setDates: Dispatch<SetStateAction<{ startDate: Date; endDate: Date }>>;
 };
 
 const Third: React.FC<ThirdProp> = ({
@@ -28,6 +30,8 @@ const Third: React.FC<ThirdProp> = ({
   transition,
   timeout,
   setDisabled,
+  dates,
+  setDates
 }) => {
   useEffect(() => {
     if (forms.adults && forms.children && forms.startDate && forms.endDate) {
@@ -36,17 +40,17 @@ const Third: React.FC<ThirdProp> = ({
       setDisabled(true);
     }
   }, [forms]);
- 
-  function formatDate(dateStr:string) {
-    const dateObj = new Date(dateStr);
+
+
+  function formatDate(dateStr: string) {
+    var newD = dateStr.toString().split(" ").slice(0, 4).join(" ");
+    const dateObj = new Date(newD);
     const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const day = String(dateObj.getDate()).padStart(2, '0');
-  
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   }
-  const [date,setDate] = useState(new Date())
-  const [endDate,setEndDate] = useState(new Date())
 
   return (
     <Fade right>
@@ -118,10 +122,10 @@ const Third: React.FC<ThirdProp> = ({
             When are you planning on going?
           </Text>
           <Flex direction="row" align="center">
-            <Text mr={2}>From </Text>
+            <Text mr={2}>From: </Text>
             <DatePicker
-            className="date"
-            format='yyyy-MM-dd'
+              className="date"
+              format="yyyy-MM-dd"
               boxShadow=" 0px 2px 3px #ccc"
               borderBottom="0.25em solid #c6be9f"
               borderTop="1px solid #ffffff"
@@ -139,19 +143,16 @@ const Third: React.FC<ThirdProp> = ({
               _hover={{
                 outline: "none",
               }}
-              selected={date}
+              selected={dates.startDate}
               onChange={(date: any) => {
-              var newD = date.toString().split(' ').slice(0, 4).join(' ')
-              const formattedDate = formatDate(newD);
-
-                setFormData({ ...forms, startDate: formattedDate });
-                setDate(date)
+                setFormData({ ...forms, startDate: formatDate(date) });
+                setDates({...dates, startDate:date});
               }}
             />
             <Text mr={2}>To:</Text>
             <DatePicker
               className="date"
-              format='yyyy-MM-dd'
+              format="yyyy-MM-dd"
               borderRadius="20px"
               outlineColor="transparent"
               fontSize={16}
@@ -163,13 +164,13 @@ const Third: React.FC<ThirdProp> = ({
               _hover={{
                 outline: "none",
               }}
-              selected={endDate}
+              selected={dates.endDate}
               onChange={(date: any) => {
-              var newD = date.toString().split(' ').slice(0, 4).join(' ')
-              const formattedDate = formatDate(newD);
+                var newD = date.toString().split(" ").slice(0, 4).join(" ");
+                const formattedDate = formatDate(newD);
 
                 setFormData({ ...forms, endDate: formattedDate });
-                setEndDate(date)
+                setDates({...dates, endDate:date});
               }}
             />
           </Flex>
