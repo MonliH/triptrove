@@ -18,6 +18,7 @@ import End from "./FormPages/End";
 import { placeholderAttraction } from "@/lib/placeholder";
 import Zoom from "react-reveal/Zoom";
 import Fade from "react-reveal/Fade";
+import BudgetBreakDown from "./BudgetBreakDown";
 
 export const IMAGE_CDN = "https://cf2.bstatic.com";
 
@@ -290,6 +291,7 @@ const MultiStepForm: React.FC = () => {
                 : "Re-roll"}
             </span>
           </button>
+
         </Flex>
       </VStack>
       <Box w={"min(800px,95vw)"} mt={10}>
@@ -614,10 +616,8 @@ const MultiStepForm: React.FC = () => {
         )}
         {attractions !== null && (
           <Box mt="2">
-            <Heading>Budget Breakdown</Heading>
-            <Box>
-
-            </Box>
+            <Heading mt={10}>Budget Breakdown</Heading>
+            <BudgetBreakDown />
           </Box>
         )}
       </Box>

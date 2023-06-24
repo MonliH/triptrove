@@ -72,7 +72,11 @@ const Second: React.FC<SecondProps> = ({
   });
 
   useEffect(() => {
-    if (forms.formatted_address && forms.interests && (forms.continent || forms.city)) {
+    if (
+      forms.formatted_address &&
+      forms.interests &&
+      (forms.continent || forms.city)
+    ) {
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -105,7 +109,7 @@ const Second: React.FC<SecondProps> = ({
     <Fade right>
       <Flex direction="column" align="center" justify="centert">
         <Flex direction="column" width="100%" mt={3}>
-          <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+          <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
             Enter Your City of Departure:
           </Text>
           <Input
@@ -129,7 +133,7 @@ const Second: React.FC<SecondProps> = ({
           />
         </Flex>
         <Flex direction="column" width="100%" mt={3}>
-          <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+          <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
             My goals and wishes for this trip are...
           </Text>
           <Input
@@ -163,7 +167,7 @@ const Second: React.FC<SecondProps> = ({
         <Flex direction="column" width="100%" mt={3}>
           <HStack>
             <Flex direction="column">
-              <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+              <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
                 What city do you want to visit?
               </Text>
               <InputGroup position="relative">
@@ -181,9 +185,10 @@ const Second: React.FC<SecondProps> = ({
                   onFocus={() => setShowAuto(true)}
                   onBlur={() => setShowAuto(false)}
                   _focus={{
-                    // outline: "none",
-                    border: "1px solid #ffffff",
-                    boxShadow: "none",
+                    borderBottom: "0.25em solid #c6be9f",
+                    borderTop: "1px solid #ffffff",
+                    outline: "none",
+                    borderColor: "transparent",
                   }}
                   _hover={{
                     outline: "none",
@@ -219,7 +224,11 @@ const Second: React.FC<SecondProps> = ({
                           cursor="pointer"
                           onClick={() => {
                             console.log("hi");
-                            setFormData((f) => ({ ...f, city: auto.cityName, continent: null }));
+                            setFormData((f) => ({
+                              ...f,
+                              city: auto.cityName,
+                              continent: null,
+                            }));
                           }}
                         >
                           <Image
@@ -258,7 +267,7 @@ const Second: React.FC<SecondProps> = ({
               </Text>
             </Box>
             <Flex direction="column">
-              <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+              <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
                 Not sure which city? Choose a continent <br></br>and we'll pick
                 for you!
               </Text>
@@ -272,9 +281,10 @@ const Second: React.FC<SecondProps> = ({
                 borderRadius="20px"
                 outlineColor="transparent"
                 _focus={{
-                  // outline: "none",
-                  border: "1px solid #ffffff",
-                  boxShadow: "none",
+                  borderBottom: "0.25em solid #c6be9f",
+                  borderTop: "1px solid #ffffff",
+                  outline: "none",
+                  borderColor: "transparent",
                 }}
                 _hover={{
                   outline: "none",

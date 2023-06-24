@@ -33,7 +33,7 @@ const First: React.FC<FirstProps> = ({ forms, setFormData, setDisabled }) => {
 
   return (
     <>
-      <Text textAlign="left" fontWeight="bold">Enter Your Budget:</Text>
+      <Text textAlign="left" fontWeight={400}>Enter Your Budget:</Text>
       <Flex direction="column" w="100%" align="center">
         <NumberInput
           w="50rem"
