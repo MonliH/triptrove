@@ -28,7 +28,8 @@ origins = [
     "https://triptrove.tech",
     "http://triptrove.tech"
     "www.triptrove.tech",
-    "https://www.triptrove.tech/"
+    "https://www.triptrove.tech/",
+    "http://www.triptrove.tech/"
 ]
 
 app.add_middleware(
@@ -278,6 +279,7 @@ class HotelRequest(BaseModel):
     departDate: str
     returnDate: str
     maxPrice: int
+
 
 @app.post("/hotels")
 async def hotels(body: HotelRequest):
