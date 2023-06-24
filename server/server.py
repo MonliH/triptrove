@@ -64,7 +64,7 @@ Justification: <justification>
 MODEL = "gpt-3.5-turbo"
 
 @app.get("/results")
-async def locations(ufi: int, personalization: str):
+async def locations(ufi: int, personalization: str, end_date: str, start_date: str):
     async with httpx.AsyncClient() as client:
         res = await client.post(
             BOOKING_URL,
@@ -73,8 +73,8 @@ async def locations(ufi: int, personalization: str):
                 "operationName": "SearchProducts",
                 "variables": {
                     "input": {
-                        "filterByEndDate": "2023-06-30",
-                        "filterByStartDate": "2023-06-23",
+                        "filterByEndDate": end_date,
+                        "filterByStartDate": start_date,
                         "ufi": ufi,
                         "extractFilterStats": True,
                         "extractFilterOptions": True,
