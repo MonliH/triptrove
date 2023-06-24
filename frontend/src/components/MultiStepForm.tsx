@@ -1,5 +1,15 @@
-import React, { useState } from "react";
-import { Flex, Center, Heading, Text, Input, Button } from "@chakra-ui/react";
+import React, { Fragment, useState } from "react";
+import {
+  Flex,
+  Center,
+  Heading,
+  Text,
+  Input,
+  Button,
+  Box,
+  Skeleton,
+  HStack,
+} from "@chakra-ui/react";
 import First from "./FormPages/First";
 import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
@@ -39,6 +49,13 @@ const MultiStepForm: React.FC = () => {
         return <First forms={formData} setFormData={setFormData} />;
     }
   };
+
+  const [flights, setFlights] = useState<null | {
+    details: any[];
+    price: number;
+  }>(null);
+  const [loadingFlights, setLoadingFlights] = useState(false);
+
   function handleSubmit() {
     //...stuff
     if (page != 2) {
@@ -46,8 +63,14 @@ const MultiStepForm: React.FC = () => {
     } else {
       console.log(formData);
       (async () => {
+        setLoadingFlights(true);
+        setFlights(null);
         const from = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${encodeURIComponent(formData.formatted_address.split(",")[0])}`
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL
+          }/flightDestinations?query=${encodeURIComponent(
+            formData.formatted_address.split(",")[0]
+          )}`
         ).then((response) => response.json());
         const to = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=paris`
@@ -60,21 +83,29 @@ const MultiStepForm: React.FC = () => {
 
         const flight = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
-          {method: "POST",
-          headers: {
-          "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-          fromLocation: fromAirport,
-          toLocation: toAirport,
-          adults: formData.adults,
-          children: formData.children,
-          departDate: formData.startDate,
-          returnDate: formData.endDate,
-          })
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fromLocation: fromAirport,
+              toLocation: toAirport,
+              adults: formData.adults,
+              children: formData.children,
+              departDate: formData.startDate,
+              returnDate: formData.endDate,
+            }),
           }
         ).then((response) => response.json());
-        console.log(flight);
+
+        if (flight.length == 0) {
+          setFlights({ details: [], price: 0 });
+        } else {
+          console.log(flight);
+          setFlights(flight);
+        }
+        setLoadingFlights(false);
       })();
     }
   }
@@ -94,6 +125,84 @@ const MultiStepForm: React.FC = () => {
           {page === 0 || page === 1 ? "Next" : "Submit"}
         </Button>
       </Flex>
+      {(loadingFlights || flights !== null) && (
+        <Box>
+          <Skeleton isLoaded={flights !== null}>
+            <Heading>Flight</Heading>
+          </Skeleton>
+          <Skeleton isLoaded={flights !== null}>
+            {flights && flights.details.length > 0 ? (
+              <Box>
+                {flights.details.map((flight, i) => {
+                  const departDate = new Date(flight.departureTime);
+                  const arriveDate = new Date(flight.arrivalTime);
+                  const carrier = flight.legs[0].carriersData[0];
+
+                  return (
+                    <Box key={i}>
+                      <HStack>
+                        <Box mr="4">
+                          <img src={carrier.logo}></img>
+                          <Text>{carrier.name}</Text>
+                        </Box>
+                        <Box>
+                          <Text fontSize="4xl">
+                            {departDate.toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
+                          </Text>
+                          <HStack>
+                            <Text>{flight.legs[0].departureAirport.code}</Text>
+                            <Box w={1} h={1} bg="black" borderRadius="50%" />
+                            <Text>
+                              {departDate.toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </Text>
+                          </HStack>
+                        </Box>
+                        <Box w={40} border="1px solid" borderColor="gray.300" mx="5"></Box>
+                        <Box>
+                          <Text fontSize="4xl">
+                            {arriveDate.toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
+                          </Text>
+                          <HStack>
+                            <Text>
+                              {
+                                flight.legs[flight.legs.length - 1]
+                                  .arrivalAirport.code
+                              }
+                            </Text>
+                            <Box w={1} h={1} bg="black" borderRadius="50%" />
+                            <Text>
+                              {arriveDate.toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </Text>
+                          </HStack>
+                        </Box>
+                      </HStack>
+                    </Box>
+                  );
+                })}
+              </Box>
+            ) : (
+              <Text>
+                No flights found. Don't worry! We've still put together a plan
+                with activies to do there.
+              </Text>
+            )}
+          </Skeleton>
+        </Box>
+      )}
     </Flex>
   );
 };
