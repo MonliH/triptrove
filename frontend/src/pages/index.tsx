@@ -1,6 +1,7 @@
-import Head from 'next/head'
-import { Heading } from '@chakra-ui/react'
-import Main from '@/components/Main'
+import Head from "next/head";
+import { Heading } from "@chakra-ui/react";
+import Main from "@/components/Main";
+import MultiStepForm from "@/components/MultiStepForm";
 
 export default function Home() {
   return (
@@ -13,7 +14,8 @@ export default function Home() {
       </Head>
       <main>
         <Main />
+        <MultiStepForm />
       </main>
     </>
-  )
+  );
 }
