@@ -7,6 +7,7 @@ import {
   NumberInput,
   NumberInputField,
   Button,
+  SlideFade
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
 import { FormValues } from "../MultiStepForm";

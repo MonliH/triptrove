@@ -74,8 +74,8 @@ const MultiStepForm: React.FC = () => {
             timeout={300}
           />
         );
-      // case 3:
-      //   return <End loading={loadingFlights} />;
+       case 3:
+         return <End loading={loadingFlights} />;
       default:
         return <First forms={formData} setFormData={setFormData} />;
     }
@@ -100,11 +100,13 @@ const MultiStepForm: React.FC = () => {
 
   function handleSubmit() {
     //...stuff
-    if (page != 2) {
+    if (page <2) {
       setPage(page + 1);
       setTransitionState(!transitionState);
     } else {
-      // setPage(page + 1);
+      if(page==2){
+       setPage(page + 1);
+      }
       (async () => {
         setLoadingFlights(true);
         setFlights(null);
@@ -213,7 +215,7 @@ const MultiStepForm: React.FC = () => {
 
   return (
     <Flex direction="column" align="center"  justify="center">
-      <VStack direction="column" w="full" h="100vh" align="center" justify="center">
+      <VStack direction="column" w="full" h={page==3? "50vh" : "100vh"} align="center" justify="center">
       <Heading fontSize="5xl">TripTrove</Heading>
       <Text mt={2}>Discover Your Next Trip</Text>
       {conditionalComponent()}
@@ -223,7 +225,7 @@ const MultiStepForm: React.FC = () => {
         justify="space-evenly"
         display="flex"
       >
-        {page > 0 && page < 3 && (
+        {page > 0 && (
           <button
           className="pushable back"
             onClick={() => setPage(page - 1)}
@@ -231,30 +233,30 @@ const MultiStepForm: React.FC = () => {
              <span className="shadow"></span>
             <span className="edge"></span>
             <span className="front">
-            Back
+            {page<3? "Back" : "Edit"}
             </span>
           </button>
         )}
-        {page < 3 && (
+         
           <button onClick={handleSubmit} className="pushable">
             <span className="shadow"></span>
             <span className="edge"></span>
             <span className="front">
-              {page === 0 || page === 1 ? "Next" : "Submit"}
+              {page === 0 || page === 1 ? "Next" : page==2? "Submit" :"ReRoll"}
             </span>
           </button>
-        )}
+        
       </Flex>
       </VStack>
       <Box w={"min(800px,95vw)"}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
             <Skeleton isLoaded={flights !== null}>
-              <HStack>
-                <Heading>Flight</Heading>
+              <HStack align="center">
+                <Heading mb={5} color="#54C4D6">Flight</Heading>
                 <Spacer />
                 {flights && flights.details.length > 0 && (
-                  <Text fontSize="2xl">${flights.price}</Text>
+                  <Text fontSize="2xl" color="#54C4D6">Total Ticket Price: ${flights.price}</Text>
                 )}
               </HStack>
             </Skeleton>
@@ -268,8 +270,8 @@ const MultiStepForm: React.FC = () => {
 
                     return (
                       <Box key={i + " flights"}>
-                        <HStack>
-                          <Box mr="7">
+                        <HStack bg="#ffffff" borderRadius="20px" mt={5} p={10} boxShadow="base">
+                          < Box mr="7">
                             <img src={carrier.logo}></img>
                             <Text>{carrier.name}</Text>
                           </Box>
@@ -342,9 +344,10 @@ const MultiStepForm: React.FC = () => {
           <Skeleton isLoaded={hotel !== null}>
             <Box>
               <HStack>
-                <Heading>Hotel</Heading>
+                <Heading mb={5} color="#54C4D6" >Hotel</Heading>
                 <Spacer />
-                <Text fontSize="2xl">
+                <Text fontSize="2xl" color="#54C4D6">
+                  Hotel Price:
                   $
                   {hotel &&
                     Math.round(
@@ -353,7 +356,7 @@ const MultiStepForm: React.FC = () => {
                     )}
                 </Text>
               </HStack>
-              <HStack>
+              <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
                 <Image
                   borderRadius={20}
                   src={
@@ -362,6 +365,7 @@ const MultiStepForm: React.FC = () => {
                       ?.relativeUrl
                   }
                 ></Image>
+                <Spacer />
                 <Box>
                   <HStack>
                     <Box>
@@ -381,13 +385,14 @@ const MultiStepForm: React.FC = () => {
                     </Box>
                     <Spacer></Spacer>
                   </HStack>
+                  <Text mt={5} color="#54C4D6">Rating:</Text>
                   <Box
                     p="3"
                     border="1px solid"
-                    borderColor="black.100"
+                    borderColor="#54C4D6"
                     borderRadius="md"
                   >
-                    <Box fontSize="2xl">
+                    <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
                       {hotel?.basicPropertyData?.reviewScore?.score}/10
                     </Box>
                     <Text>
@@ -466,6 +471,7 @@ const MultiStepForm: React.FC = () => {
                                 borderRadius={6}
                                 h={"44"}
                               ></Image>
+                            
                               <Box ml="2">
                                 <HStack>
                                   <Link
