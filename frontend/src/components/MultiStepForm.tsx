@@ -109,8 +109,7 @@ const MultiStepForm: React.FC = () => {
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
-  const startDate = formData.startDate.split("T")[0];
-  const endDate = formData.endDate.split("T")[0];
+ 
 
   function handleSubmit() {
     //...stuff
@@ -130,6 +129,7 @@ const MultiStepForm: React.FC = () => {
       ) {
         if (page == 2) {
           setPage(page + 1);
+          console.log(formData)
         }
         (async () => {
           setLoadingFlights(true);
@@ -168,12 +168,12 @@ const MultiStepForm: React.FC = () => {
                   body: JSON.stringify({
                     adults: formData.adults,
                     children: formData.children,
-                    departDate: startDate,
-                    returnDate: endDate,
+                    departDate: formData.startDate,
+                    returnDate: formData.endDate,
                     maxPrice:
                       (formData.budget * 0.3) /
-                      ((new Date(endDate).getTime() -
-                        new Date(startDate).getTime()) /
+                      ((new Date(formData.endDate).getTime() -
+                        new Date(formData.startDate).getTime()) /
                         (1000 * 60 * 60 * 24)),
                     ufi: toLocationUfi,
                     cityName: toInfo[0].cityName,
@@ -198,7 +198,7 @@ const MultiStepForm: React.FC = () => {
                   " children and " +
                   (formData.adults ? formData.adults : "no") +
                   " adults."
-              )}&end_date=${endDate}&start_date=${startDate}`
+              )}&end_date=${formData.endDate}&start_date=${formData.startDate}`
             ).then((response) => response.json());
 
             setAttractions(attractions);
@@ -217,8 +217,8 @@ const MultiStepForm: React.FC = () => {
                 toLocation: toAirport,
                 adults: formData.adults,
                 children: formData.children,
-                departDate: startDate,
-                returnDate: endDate,
+                departDate: formData.startDate,
+                returnDate: formData.endDate,
                 flightBudget: formData.budget * 0.3,
               }),
             }
@@ -244,10 +244,11 @@ const MultiStepForm: React.FC = () => {
       <VStack
         direction="column"
         w="full"
-        h={page == 3 ? "50vh" : "100vh"}
+        h={page == 3 ? "60vh" : "100vh"}
         align="center"
         justify="center"
         overflowY="hidden"
+        mb={10}
       >
         <img src={"/tripLogo.png"} />
         {conditionalComponent()}
@@ -284,7 +285,7 @@ const MultiStepForm: React.FC = () => {
           </button>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"}>
+      <Box w={"min(800px,95vw)"} mt={10}>
         {(loadingFlights || flights !== null) && (
           <Box mb="4">
             <HStack align="center">
