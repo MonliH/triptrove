@@ -24,7 +24,7 @@ type ThirdProp = {
 const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout,setDisabled }) => {
  
  useEffect(()=>{
-  if(forms.adults && forms.children && forms.startDate && forms.endDate){
+  if(forms.startDate && forms.endDate){
     setDisabled(false)
   }
   else{

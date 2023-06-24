@@ -59,6 +59,10 @@ const Second: React.FC<SecondProps> = ({
     }
   },[forms])
 
+  useEffect(() => {
+    (ref.current as unknown as HTMLInputElement).value = forms.formatted_address || "";
+  }, []);
+
   return (
     <Fade right >
     <Flex
@@ -89,7 +93,6 @@ const Second: React.FC<SecondProps> = ({
             outline: "none",
           }}
           ref={ref as any}
-          
         />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
@@ -142,6 +145,7 @@ const Second: React.FC<SecondProps> = ({
            outline: "none",
          }}
           placeholder="Continent"
+          value={forms.continent}
           onChange={(e: any) => {
             setFormData(f => ({ ...f, continent: e.target.value }));
           }}
