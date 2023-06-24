@@ -9,6 +9,8 @@ import {
   Box,
   Skeleton,
   HStack,
+  Spacer,
+  Image,
 } from "@chakra-ui/react";
 import First from "./FormPages/First";
 import Second from "./FormPages/Second";
@@ -70,9 +72,17 @@ const MultiStepForm: React.FC = () => {
 
   const [flights, setFlights] = useState<null | {
     details: any[];
+    info: any;
     price: number;
   }>(null);
   const [loadingFlights, setLoadingFlights] = useState(false);
+
+  const [attractions, setAttractions] = useState<null | {
+    bookings: Record<number, any>;
+    attractions: [number, string][];
+  }>(null);
+  const [loadingAttractions, setLoadingAttractions] = useState(false);
+  const destination = "paris";
 
   function handleSubmit() {
     //...stuff
@@ -85,6 +95,8 @@ const MultiStepForm: React.FC = () => {
       (async () => {
         setLoadingFlights(true);
         setFlights(null);
+        setLoadingAttractions(true);
+        setAttractions(null);
         const from = await fetch(
           `${
             process.env.NEXT_PUBLIC_BACKEND_URL
@@ -93,13 +105,32 @@ const MultiStepForm: React.FC = () => {
           )}`
         ).then((response) => response.json());
         const to = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=paris`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${destination}`
         ).then((response) => response.json());
 
         const fromCity = from.find((e: any) => e.type == "CITY");
         const fromAirport = from.find((e: any) => e.type == "AIRPORT");
         const toCity = to.find((e: any) => e.type == "CITY");
         const toAirport = to.find((e: any) => e.type == "AIRPORT");
+
+        (async () => {
+          const fromLocationUfi = (
+            await fetch(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${destination}`
+            ).then((response) => response.json())
+          )[0].ufi;
+
+          const attractions = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_BACKEND_URL
+            }/results?ufi=${fromLocationUfi}&personalization=${encodeURIComponent(
+              formData.interests
+            )}&end_date=${formData.endDate}&start_date=${formData.startDate}`
+          ).then((response) => response.json());
+
+          setAttractions(attractions);
+          setLoadingAttractions(false);
+        })();
 
         const flight = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
@@ -120,9 +151,8 @@ const MultiStepForm: React.FC = () => {
         ).then((response) => response.json());
 
         if (flight.length == 0) {
-          setFlights({ details: [], price: 0 });
+          setFlights({ details: [], info: null, price: 0 });
         } else {
-          console.log(flight);
           setFlights(flight);
         }
         setLoadingFlights(false);
@@ -137,7 +167,7 @@ const MultiStepForm: React.FC = () => {
       <Heading fontSize="5xl">TripTrove</Heading>
       <Text mt={2}>Discover Your Next Trip</Text>
       {conditionalComponent()}
-      <Flex direction="row" align="center" justify="space-evenly" d="flex">
+      <Flex direction="row" align="center" justify="space-evenly" display="flex">
         {page > 0 && page < 3 && (
           <button
           className="pushable back"
@@ -161,9 +191,15 @@ const MultiStepForm: React.FC = () => {
         )}
       </Flex>
       {(loadingFlights || flights !== null) && (
-        <Box mt={10}>
+        <Box>
           <Skeleton isLoaded={flights !== null}>
-            <Heading textAlign="center">Flight</Heading>
+            <HStack>
+              <Heading>Flight</Heading>
+              <Spacer />
+              {flights && flights.details.length > 0 && (
+                <Text fontSize="2xl">${flights.price}</Text>
+              )}
+            </HStack>
           </Skeleton>
           <Skeleton isLoaded={flights !== null}>
             {flights && flights.details.length > 0 ? (
@@ -176,7 +212,7 @@ const MultiStepForm: React.FC = () => {
                   return (
                     <Box key={i}>
                       <HStack>
-                        <Box mr="4">
+                        <Box mr="7">
                           <img src={carrier.logo}></img>
                           <Text>{carrier.name}</Text>
                         </Box>
@@ -243,6 +279,32 @@ const MultiStepForm: React.FC = () => {
           </Skeleton>
         </Box>
       )}
+      {loadingAttractions ||
+        (attractions !== null && (
+          <Skeleton isLoaded={attractions !== null}>
+            <Box>
+              {attractions.attractions.map(([index, reasoning]) => {
+                const attra = attractions.bookings[index];
+                return (
+                  <Box w="60%">
+                    <HStack>
+                      <Image
+                        src={attra.primaryPhoto.small}
+                        borderRadius={6}
+                        w={52}
+                      ></Image>
+                      <Box>
+                        <Heading>{attra.name}</Heading>
+                        <Text>{attra.shortDescription}</Text>
+                        <Text>{reasoning}</Text>
+                      </Box>
+                    </HStack>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Skeleton>
+        ))}
     </Flex>
   );
 };
