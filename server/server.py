@@ -53,9 +53,9 @@ def json_to_text(data, dates):
     return options
 
 
-SYSTEM_PROMPT = """You are to be a travel agent who takes in a large number of attractions in a city and compiles them into an itinerary for a person who is looking to visit that region. The person will specify their goals and wishes for the trip, and you must personalize the itinerary for the person.
+SYSTEM_PROMPT = """You are to be a travel agent who takes in a large number of attractions in a city and compiles them into an itinerary for a person who is looking to visit that region. The person will specify their goals and wishes for the trip, and you must personalize the itinerary for the person. Always reply with a travel plan, even if you don't have much data about a person.
 
-You should not schedule multiple events that overlap. Only state the ID of the attraction, the date of the attraction, and justify why you chose that attraction for the specific person. You may schedule multiple attractions on one day if they are short. Always reply with a travel plan, even if you don't have much data about a person.
+You may schedule multiple attractions on one day if the time can fit, but should not schedule multiple events if they might overlap in time. Only state the ID of the attraction, the date of the attraction, and justify why you chose that attraction for the specific person. Justify how the attraction will help the person achieve their goals and wishes that they specify.
 
 For example:
 
@@ -135,12 +135,12 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
         dates = await asyncio.gather(*[get_dates(client, info["id"], start_date, end_date) for info in information])
 
         model_input = "\n\n".join(json_to_text(information, dates))
-        response = openai.ChatCompletion.create(
-            model=MODEL,
-            messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
-        )  
-        print(response)
-        content = response["choices"][0]["message"]["content"]
+        # response = openai.ChatCompletion.create(
+        #     model=MODEL,
+        #     messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
+        # )  
+        # content = response["choices"][0]["message"]["content"]
+        content = "Based on your arrival and departure dates, I have created a personalized itinerary for you, which includes attraction ID 2.\n\nDay 1 (2023-07-18):\nID: 2\nDate: 2023-07-18\nJustification: Begin your trip with a relaxing Seine River Sightseeing Cruise. This 70-minute cruise will allow you to take in the famous attractions of Paris from the water, including the Grand Palais, the Eiffel Tower, the Louver Museum, and the Arc de Triomphe. The audio commentary will help you learn about the history of Paris.\n\nDay 2 (2023-07-19):\nID: 0\nDate: 2023-07-19\nJustification: Enjoy the City Sightseeing Cruise to marvel at the top sites of the French capital. Departing from the Eiffel Tower, you'll sail along the Seine River and admire landmarks like Notre-Dame, Palais Bourbon, and Louvre, making your trip a memorable one. The live commentary will provide you insights into the history of Paris and its monuments.  \n\nDay 3 (2023-07-20):\nID: 6\nDate: 2023-07-20\nJustification: Explore the iconic Eiffel Tower with skip-the-line access. Catch a breathtaking view of Paris from the first and second floors of the tower. This experience will help you see famous landmarks like Notre-Dame Cathedral, the Sacré-Coeur, and the Arc de Triomphe.\n\nDay 4 (2023-07-21):\nID: 5\nDate: 2023-07-21\nJustification: Visit the Arc de Triomphe's rooftop with a skip-the-line ticket. The rooftop offers panoramic views of Paris, contributing to a perfect photo opportunity. This visit will allow you to enjoy a clear view of landmarks like the Eiffel Tower, Louvre, and Montmartre.\n\nDay 5 (2023-07-22):\nID: 1\nDate: 2023-07-22\nJustification: Experience the magic of Disneyland Paris. Explore one or both Disney Parks and hop between them as many times as you like. Discover thrilling attractions and entertaining shows from MARVEL, Pixar, and Disney. This day will fulfill your wish for excitement and entertainment.\n\nDay 6 (2023-07-23):\nID: 8\nDate: 2023-07-23\nJustification: Discover the wonders of the Louvre Museum on a guided tour. You'll get to see the world-famous Mona Lisa by Leonardo da Vinci and appreciate Michelangelo's sculpture gallery. Learn about the history of the building and admire the collection of crown jewels. This experience will help you immerse yourself in art and history.\n\nDay 7 (2023-07-24):\nID: 3\nDate: 2023-07-24\nJustification: Finish your trip with the Montparnasse Tower Observation Deck for an impressive panoramic view of Paris. The observation deck offers a unique vantage point to take memorable photographs and relax at the on-site cafe before your departure."
         days = content.split("\nDay ")
         schedule_per_day = {}
         ids = []

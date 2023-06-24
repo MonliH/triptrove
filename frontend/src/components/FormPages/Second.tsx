@@ -38,7 +38,7 @@ const Second: React.FC<SecondProps> = ({
   const { ref } = usePlacesWidget({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
     onPlaceSelected: (place) => {
-      setFormData(place);
+      setFormData(f => ({...f, ...place}));
     },
     options: {
       types: ["(regions)"],
@@ -80,7 +80,7 @@ const Second: React.FC<SecondProps> = ({
         />
       </Flex>
       <Flex direction="column" width="100%" mt={3}>
-        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">What kind of trip would you like this to be?</Text>
+        <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">My goals and wishes for this trip are...</Text>
         <Input
          boxShadow=" 0px 2px 3px #ccc"
          borderBottom="0.25em solid #c6be9f"
@@ -99,13 +99,13 @@ const Second: React.FC<SecondProps> = ({
          _hover={{
            outline: "none",
          }}
-          placeholder="What kind of Trip? i.e. relaxation"
+          placeholder="have fun and relax"
           value={forms.interests}
           onChange={(e: any) => {
-            setFormData({
-              ...forms,
+            setFormData(f => ({
+              ...f,
               interests: e.target.value,
-            });
+            }));
           }}
         />
       </Flex>
@@ -130,7 +130,7 @@ const Second: React.FC<SecondProps> = ({
          }}
           placeholder="Continent"
           onChange={(e: any) => {
-            setFormData({ ...forms, continent: e.target.value });
+            setFormData(f => ({ ...f, continent: e.target.value }));
           }}
         >
           <option value="North America">North America</option>

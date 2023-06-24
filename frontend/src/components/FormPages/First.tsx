@@ -48,11 +48,11 @@ const First: React.FC<FirstProps> = ({ forms, setFormData }) => {
         value={forms.budget ? format(forms.budget.toString()) : format("0")}
         width="50%"
         mt={2}
-        onChange={(valueString: string) => {
-          setFormData({
-            ...forms,
+        onChange={(valueString:string) => {
+          setFormData( f => ({
+            ...f,
             budget: parseInt(parse(valueString)),
-          });
+          }));
         }}
         isRequired
       >

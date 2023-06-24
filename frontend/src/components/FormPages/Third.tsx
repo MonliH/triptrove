@@ -43,7 +43,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
               outline: "none",
             }}
             onChange={(e: any) =>
-              setFormData({ ...forms, adults: parseInt(e.target.value) })
+              setFormData(f => ({ ...f, adults: parseInt(e.target.value) }))
             }
           />
         </NumberInput>
@@ -70,7 +70,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
               outline: "none",
             }}
             onChange={(e: any) =>
-              setFormData({ ...forms, children: parseInt(e.target.value) })
+              setFormData(f => ({ ...f, children: parseInt(e.target.value) }))
             }
           />
         </NumberInput>
@@ -101,10 +101,10 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             type="datetime-local"
             mr={2}
             onChange={(e: any) => {
-              setFormData({
-                ...forms,
+              setFormData(f => ({
+                ...f,
                 startDate: e.target.value.split("T")[0],
-              });
+              }));
             }}
           />
           <Text mr={2}>To:</Text>
@@ -130,7 +130,7 @@ const Third: React.FC<ThirdProp> = ({ forms, setFormData,transition,timeout }) =
             type="datetime-local"
             mr={2}
             onChange={(e: any) => {
-              setFormData({ ...forms, endDate: e.target.value.split("T")[0] });
+              setFormData(f => ({ ...f, endDate: e.target.value.split("T")[0] }));
             }}
           />
         </Flex>
