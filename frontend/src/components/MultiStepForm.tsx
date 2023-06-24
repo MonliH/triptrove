@@ -247,6 +247,8 @@ const MultiStepForm: React.FC = () => {
           align="center"
           justify="space-evenly"
           display="flex"
+          mb={10}
+
         >
           {page > 0 && (
             <button className="pushable back" onClick={() => setPage(page - 1)}>
