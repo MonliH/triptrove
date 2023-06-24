@@ -19,10 +19,11 @@ import { placeholderAttraction } from "@/lib/placeholder";
 import Zoom from "react-reveal/Zoom";
 import Fade from "react-reveal/Fade";
 
-const IMAGE_CDN = "https://cf2.bstatic.com";
+export const IMAGE_CDN = "https://cf2.bstatic.com";
 
 export interface FormValues {
-  continent: string;
+  continent: string | null;
+  city: string | null;
   formatted_address: string;
   interests: string;
   adults: number;
@@ -40,7 +41,8 @@ export type AttractionsReq = {
 
 const MultiStepForm: React.FC = () => {
   const [formData, setFormData] = useState<FormValues>({
-    continent: "",
+    continent: null,
+    city: null,
     formatted_address: "",
     interests: "",
     adults: 0,
@@ -264,7 +266,6 @@ const MultiStepForm: React.FC = () => {
           justify="space-evenly"
           display="flex"
           mb={10}
-
         >
           {page > 0 && (
             <button className="pushable back" onClick={() => setPage(page - 1)}>
