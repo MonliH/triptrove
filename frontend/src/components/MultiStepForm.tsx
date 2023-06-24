@@ -196,23 +196,24 @@ const MultiStepForm: React.FC = () => {
             setLoadingAttractions(false);
           })();
 
-          const flight = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                fromLocation: fromAirport,
-                toLocation: toAirport,
-                adults: formData.adults,
-                children: formData.children,
-                departDate: startDate,
-                returnDate: endDate,
-              }),
-            }
-          ).then((response) => response.json());
+        const flight = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightsToDestination`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fromLocation: fromAirport,
+              toLocation: toAirport,
+              adults: formData.adults,
+              children: formData.children,
+              departDate: startDate,
+              returnDate: endDate,
+              flightBudget: formData.budget * 0.3,
+            }),
+          }
+        ).then((response) => response.json());
 
           if (flight.length == 0) {
             setFlights({ details: [], info: null, price: 0 });
@@ -264,7 +265,7 @@ const MultiStepForm: React.FC = () => {
                 ? "Next"
                 : page == 2
                 ? "Submit"
-                : "ReRoll"}
+                : "Re-roll"}
             </span>
           </button>
         </Flex>
@@ -289,9 +290,28 @@ const MultiStepForm: React.FC = () => {
               {flights && flights.details.length > 0 ? (
                 <Box>
                   {flights.details.map((flight, i) => {
+                    console.log(flights);
+
+                    const token = "d6a1f_H4sIAAAAAAAA_0WQbY-iMBSFf43zjUJbsDJJM2FUXEZeXARd_dJgRWR0ZGM7I_rr9w5MsrnpPc85aW5vetT6r3o2zcO5ro5aGbJAVaObqtAlks2HebhC2zXNqb5UZlFfzU2WLLyU2G95bJG3PDSJaUDJ581L2WpDXSV_qnclKpTkeDpPfsyVDxFZzRds60VdJBvNbURf3Qgnsf0r7sMrnyXeyk87t-fR-HYLJ1MVZarX-nZPrJOKH7mKJuoe32_fp00e0zacBHAnJ8kjHie51WYWnq39QEVW4GSZv8jy7WaZ6eJ3flLrkz8P_e12-a5f00cA845pOPEGdNI9XErYHSGbubjzTaE4c-2epebE7XGvebpOo3zTW83pEFM26lzLMcFDF2FCXAp96LAnVZ5LqevmMi_vfGlTQgz4yM8LoUYqsoQxCxvE6YN4QHxP-IFjMwM--vMM2Qr80HL--wEZN4V1OlQAAwr7e5WwUFfAx44xwsCF2IRoZqPlGP1h4HfCXoFI4VCQvaC0sPcSsBSUHdgI6CCm0GtBfsa9i2AN8hDHj9FXS_4BoOCoLjoCAAA.";
                     const departDate = new Date(flight.departureTime);
                     const arriveDate = new Date(flight.arrivalTime);
                     const carrier = flight.legs[0].carriersData[0];
+                    const params = {
+                      type: "ROUNDTRIP",
+                      adults: formData.adults,
+                      cabinClass: "ECONOMY",
+                      children: formData.children,
+                      from: flight.departureAirport.city + ".CITY",
+                      to: flight.arrivalAirport.city + ".CITY",
+                      fromCountry: flight.departureAirport.country,
+                      toCountry: flight.arrivalAirport.country,
+                      fromLocationName: flight.departureAirport.cityName,
+                      toLocationName: flight.arrivalAirport.cityName,
+                      depart: flight.departureTime.split("T")[0],
+                      return: flight.arrivalTime.split("T")[0],
+                      sort: "BEST",
+                      travelPurpose: "leisure",
+                    };
 
                     return (
                       <Box key={i + " flights"}>
@@ -304,7 +324,8 @@ const MultiStepForm: React.FC = () => {
                         >
                           <Box mr="7">
                             <img src={carrier.logo}></img>
-                            <Text>{carrier.name}</Text>
+                            <Link href={`https://flights.booking.com/flights/${flight.departureAirport.city}.CITY-${flight.arrivalAirport.city}/${token}/`+new URLSearchParams(params).toString()}>
+                            {carrier.name}</Link>
                           </Box>
                           <Box>
                             <Text fontSize="4xl">
