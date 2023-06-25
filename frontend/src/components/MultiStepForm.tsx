@@ -176,12 +176,11 @@ const MultiStepForm: React.FC = () => {
           ).then((response) => response.json());
           const to = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${newDest}`,
-{
-
+            {
               headers: new Headers({
                 "ngrok-skip-browser-warning": "true",
               }),
-}
+            }
           ).then((response) => response.json());
 
           const fromCity = from.find((e: any) => e.type == "CITY");
@@ -197,10 +196,9 @@ const MultiStepForm: React.FC = () => {
             const toInfo = await fetch(
               `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${newDest}`,
               {
-
-              headers: new Headers({
-                "ngrok-skip-browser-warning": "true",
-              }),
+                headers: new Headers({
+                  "ngrok-skip-browser-warning": "true",
+                }),
               }
             ).then((response) => response.json());
             const toLocationUfi = formData.city
@@ -776,7 +774,11 @@ const MultiStepForm: React.FC = () => {
         {attractions !== null && (
           <Box mt="2">
             <Heading mt={10}>Budget Breakdown</Heading>
-            <BudgetBreakDown budgets={budget}  changebudget={setbudget} actualBudget={formData.budget}/>
+            <BudgetBreakDown
+              budgets={budget}
+              changebudget={setbudget}
+              actualBudget={formData.budget}
+            />
           </Box>
         )}
       </Box>

@@ -338,7 +338,7 @@ const Second: React.FC<SecondProps> = ({
                     outline: "none",
                   }}
                   defaultValue={"Europe"}
-                  placeholder="Select a continent"
+                  placeholder="Select a region"
                   ref={continentRef}
                   value={forms.continent ?? ""}
                   onChange={(e: any) => {
