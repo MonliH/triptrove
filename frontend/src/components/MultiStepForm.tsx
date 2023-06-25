@@ -341,29 +341,7 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          <Tooltip
-            label={"Fill in all fields before continuing!"}
-            isDisabled={!disable}
-          >
-            <button
-              disabled={disable}
-              onClick={handleSubmit}
-              className={`${disable ? "Pushdisabled" : "pushable"}`}
-              style={{
-                cursor: disable ? "not-allowed" : "pointer",
-              }}
-            >
-              <span className={`shadow`}></span>
-              <span className={`${disable ? "dedge" : "edge"}`}></span>
-              <span className={`${disable ? "disabled" : "front"}`}>
-                {page === 0 || page === 1
-                  ? "Next"
-                  : page == 2
-                  ? "Submit"
-                  : "Re-roll"}
-              </span>
-            </button>
-          </Tooltip>
+          
           <Tooltip
             label={"Fill in all fields before continuing!"}
             isDisabled={!disable}
@@ -389,7 +367,6 @@ const MultiStepForm: React.FC = () => {
           </Tooltip>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"}>
       <Box w={"min(800px,95vw)"}>
         {destination && (
           <Box borderLeft="3px solid" pl="3" mb="10">
