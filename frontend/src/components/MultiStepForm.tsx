@@ -17,7 +17,7 @@ import First from "./FormPages/First";
 import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
 import End from "./FormPages/End";
-import { placeholderAttraction } from "@/lib/placeholder";
+import { flightPlaceholder, hotelPlaceholder, placeholderAttraction } from "@/lib/placeholder";
 import Zoom from "react-reveal/Zoom";
 import Fade from "react-reveal/Fade";
 import BudgetBreakDown from "./BudgetBreakDown";
@@ -143,9 +143,6 @@ const MultiStepForm: React.FC = () => {
         const newDest = formData.city
           ? formData.city[0]
           : randomRoll(formData.continent ?? "Europe");
-        setDestination((p) =>
-          p ? { ...p, cityName: newDest } : { cityName: newDest, country: "" }
-        );
         if (page == 2) {
           setPage(page + 1);
         }
@@ -170,7 +167,11 @@ const MultiStepForm: React.FC = () => {
           const fromCity = from.find((e: any) => e.type == "CITY");
           const fromAirport = from.find((e: any) => e.type == "AIRPORT");
           const toAirport = to.find((e: any) => e.type == "AIRPORT");
-          setDestination((p) => (p ? { ...p, country: toAirport.countryName } : {country: toAirport.countryName, cityName: ""}));
+          setDestination((p) =>
+            p
+              ? { ...p, cityName: newDest, country: toAirport.countryName }
+              : { country: toAirport.countryName, cityName: newDest }
+          );
 
           (async () => {
             const toInfo = await fetch(
@@ -258,6 +259,8 @@ const MultiStepForm: React.FC = () => {
   }
 
   const [page, setPage] = useState(0);
+  const hotelOrPlaceholder = (hotel??hotelPlaceholder);
+  const flightOrPlaceholder = (flights??flightPlaceholder);
 
   return (
     <Flex direction="column" align="center" justify="center" overflowY="hidden">
@@ -287,34 +290,42 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          <Tooltip label={"Fill in all fields before continuing!"} isDisabled={!disable}>
-          <button
-            disabled={disable}
-            onClick={handleSubmit}
-            className={`${disable ? "Pushdisabled" : "pushable"}`}
-            style={{
-              cursor: disable ? "not-allowed" : "pointer",
-            }}
+          <Tooltip
+            label={"Fill in all fields before continuing!"}
+            isDisabled={!disable}
           >
-            <span className={`shadow`}></span>
-            <span className={`${disable ? "dedge" : "edge"}`}></span>
-            <span className={`${disable ? "disabled" : "front"}`}>
-              {page === 0 || page === 1
-                ? "Next"
-                : page == 2
-                ? "Submit"
-                : "Re-roll"}
-            </span>
-          </button></Tooltip>
+            <button
+              disabled={disable}
+              onClick={handleSubmit}
+              className={`${disable ? "Pushdisabled" : "pushable"}`}
+              style={{
+                cursor: disable ? "not-allowed" : "pointer",
+              }}
+            >
+              <span className={`shadow`}></span>
+              <span className={`${disable ? "dedge" : "edge"}`}></span>
+              <span className={`${disable ? "disabled" : "front"}`}>
+                {page === 0 || page === 1
+                  ? "Next"
+                  : page == 2
+                  ? "Submit"
+                  : "Re-roll"}
+              </span>
+            </button>
+          </Tooltip>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"} >
+      <Box w={"min(800px,95vw)"}>
         {destination && (
           <Box borderLeft="3px solid" pl="3" mb="10">
-          <Text fontSize="lg" fontWeight="bold">Your Destination</Text>
-          <Heading fontSize="5xl">
-            {[destination?.cityName, destination?.country].filter((e) => e).join(", ")}
-          </Heading>
+            <Text fontSize="lg" fontWeight="bold">
+              Your Destination
+            </Text>
+            <Heading fontSize="5xl">
+              {[destination?.cityName, destination?.country]
+                .filter((e) => e)
+                .join(", ")}
+            </Heading>
           </Box>
         )}
         {(loadingFlights || flights !== null) && (
@@ -334,9 +345,9 @@ const MultiStepForm: React.FC = () => {
               </Skeleton>
             </HStack>
             <Skeleton isLoaded={flights !== null}>
-              {flights && flights.details.length > 0 ? (
+              {flightOrPlaceholder && flightOrPlaceholder.details.length > 0 ? (
                 <Box>
-                  {flights.details.map((flight, i) => {
+                  {flightOrPlaceholder.details.map((flight, i) => {
                     const departDate = new Date(flight.departureTime);
                     const arriveDate = new Date(flight.arrivalTime);
                     const carrier = flight.legs[0].carriersData[0];
@@ -441,9 +452,8 @@ const MultiStepForm: React.FC = () => {
               <Skeleton isLoaded={hotel !== null}>
                 <Text fontSize="2xl" color="#54C4D6">
                   Hotel Price: $
-                  {hotel &&
-                    Math.round(
-                      hotel.priceDisplayInfo.displayPrice.amountPerStay
+                    {Math.round(
+                      hotelOrPlaceholder.priceDisplayInfo.displayPrice.amountPerStay
                         .amountUnformatted
                     )}
                 </Text>
@@ -457,26 +467,25 @@ const MultiStepForm: React.FC = () => {
                       borderRadius={20}
                       src={
                         IMAGE_CDN +
-                        hotel?.basicPropertyData?.photos?.main?.lowResJpegUrl
+                        hotelOrPlaceholder.basicPropertyData?.photos?.main?.lowResJpegUrl
                           ?.relativeUrl
                       }
                     ></Image>
-                    <Spacer />
-                    <Box>
+                    <Box ml="4">
                       <HStack>
                         <Box>
                           <Link
                             fontWeight="bold"
                             fontSize="2xl"
-                            href={`https://booking.com/hotel/${hotel?.basicPropertyData?.location?.countryCode}/${hotel?.basicPropertyData?.pageName}.html`}
+                            href={`https://booking.com/hotel/${hotelOrPlaceholder?.basicPropertyData?.location?.countryCode}/${hotelOrPlaceholder?.basicPropertyData?.pageName}.html`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {hotel?.displayName?.text}
+                            {hotelOrPlaceholder?.displayName?.text}
                           </Link>
                           <Text>
-                            {hotel?.basicPropertyData?.location?.address},{" "}
-                            {hotel?.basicPropertyData?.location?.city}
+                            {hotelOrPlaceholder?.basicPropertyData?.location?.address},{" "}
+                            {hotelOrPlaceholder?.basicPropertyData?.location?.city}
                           </Text>
                         </Box>
                         <Spacer></Spacer>
@@ -490,12 +499,18 @@ const MultiStepForm: React.FC = () => {
                         borderColor="#54C4D6"
                         borderRadius="md"
                       >
-                        <Box fontSize="2xl" fontWeight={800} color="#54C4D6">
-                          {hotel?.basicPropertyData?.reviewScore?.score}/10
-                        </Box>
+                        {hotelOrPlaceholder?.basicPropertyData?.reviewScore?.score ? (
+                          <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
+                            {hotelOrPlaceholder?.basicPropertyData?.reviewScore?.score}/10
+                          </Text>
+                        ) : (
+                          <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
+                            None
+                          </Text>
+                        )}
                         <Text>
                           {
-                            hotel?.basicPropertyData?.reviewScore
+                            hotelOrPlaceholder?.basicPropertyData?.reviewScore
                               ?.totalScoreTextTag?.translation
                           }
                         </Text>

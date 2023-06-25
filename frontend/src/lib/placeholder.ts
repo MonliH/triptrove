@@ -5211,3 +5211,846 @@ export const placeholderAttraction: AttractionsReq = {
       }
   }
 }
+
+export const flightPlaceholder = {
+    "details": [
+        {
+            "departureAirport": {
+                "type": "AIRPORT",
+                "code": "YYZ",
+                "city": "YTO",
+                "cityName": "Toronto",
+                "country": "CA",
+                "countryName": "Canada",
+                "name": "Toronto Lester B Pearson Intl Apt"
+            },
+            "arrivalAirport": {
+                "type": "AIRPORT",
+                "code": "LAS",
+                "city": "LAS",
+                "cityName": "Las Vegas",
+                "country": "US",
+                "countryName": "United States",
+                "name": "Las Vegas Mccarran International Apt"
+            },
+            "departureTime": "2023-06-30T06:33:00",
+            "arrivalTime": "2023-06-30T10:31:00",
+            "legs": [
+                {
+                    "departureTime": "2023-06-30T06:33:00",
+                    "arrivalTime": "2023-06-30T07:26:00",
+                    "departureAirport": {
+                        "type": "AIRPORT",
+                        "code": "YYZ",
+                        "city": "YTO",
+                        "cityName": "Toronto",
+                        "country": "CA",
+                        "countryName": "Canada",
+                        "name": "Toronto Lester B Pearson Intl Apt"
+                    },
+                    "arrivalAirport": {
+                        "type": "AIRPORT",
+                        "code": "ORD",
+                        "city": "CHI",
+                        "cityName": "Chicago",
+                        "country": "US",
+                        "countryName": "United States",
+                        "name": "Chicago O'Hare International Apt"
+                    },
+                    "cabinClass": "ECONOMY",
+                    "flightInfo": {
+                        "facilities": [],
+                        "flightNumber": 6225,
+                        "planeType": "",
+                        "carrierInfo": {
+                            "operatingCarrier": "AA",
+                            "marketingCarrier": "AA",
+                            "operatingCarrierDisclosureText": "Air Wisconsin As American Eagle"
+                        }
+                    },
+                    "carriers": [
+                        "AA",
+                        "AA"
+                    ],
+                    "carriersData": [
+                        {
+                            "name": "American Airlines",
+                            "code": "AA",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/AA.png"
+                        },
+                        {
+                            "name": "American Airlines",
+                            "code": "AA",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/AA.png"
+                        }
+                    ],
+                    "totalTime": 6780,
+                    "flightStops": []
+                },
+                {
+                    "departureTime": "2023-06-30T08:38:00",
+                    "arrivalTime": "2023-06-30T10:31:00",
+                    "departureAirport": {
+                        "type": "AIRPORT",
+                        "code": "ORD",
+                        "city": "CHI",
+                        "cityName": "Chicago",
+                        "country": "US",
+                        "countryName": "United States",
+                        "name": "Chicago O'Hare International Apt"
+                    },
+                    "arrivalAirport": {
+                        "type": "AIRPORT",
+                        "code": "LAS",
+                        "city": "LAS",
+                        "cityName": "Las Vegas",
+                        "country": "US",
+                        "countryName": "United States",
+                        "name": "Las Vegas Mccarran International Apt"
+                    },
+                    "cabinClass": "ECONOMY",
+                    "flightInfo": {
+                        "facilities": [],
+                        "flightNumber": 1693,
+                        "planeType": "",
+                        "carrierInfo": {
+                            "operatingCarrier": "AA",
+                            "marketingCarrier": "AA",
+                            "operatingCarrierDisclosureText": ""
+                        }
+                    },
+                    "carriers": [
+                        "AA",
+                        "AA"
+                    ],
+                    "carriersData": [
+                        {
+                            "name": "American Airlines",
+                            "code": "AA",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/AA.png"
+                        },
+                        {
+                            "name": "American Airlines",
+                            "code": "AA",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/AA.png"
+                        }
+                    ],
+                    "totalTime": 13980,
+                    "flightStops": []
+                }
+            ],
+            "totalTime": 25080,
+            "travellerCheckedLuggage": [],
+            "travellerCabinLuggage": [
+                {
+                    "travellerReference": "1",
+                    "luggageAllowance": {
+                        "luggageType": "HAND",
+                        "maxPiece": 1
+                    },
+                    "personalItem": true
+                }
+            ],
+            "isAtolProtected": false,
+            "showWarningDestinationAirport": false,
+            "showWarningOriginAirport": false
+        },
+        {
+            "departureAirport": {
+                "type": "AIRPORT",
+                "code": "LAS",
+                "city": "LAS",
+                "cityName": "Las Vegas",
+                "country": "US",
+                "countryName": "United States",
+                "name": "Las Vegas Mccarran International Apt"
+            },
+            "arrivalAirport": {
+                "type": "AIRPORT",
+                "code": "YYZ",
+                "city": "YTO",
+                "cityName": "Toronto",
+                "country": "CA",
+                "countryName": "Canada",
+                "name": "Toronto Lester B Pearson Intl Apt"
+            },
+            "departureTime": "2023-07-01T23:15:00",
+            "arrivalTime": "2023-07-02T06:29:00",
+            "legs": [
+                {
+                    "departureTime": "2023-07-01T23:15:00",
+                    "arrivalTime": "2023-07-02T06:29:00",
+                    "departureAirport": {
+                        "type": "AIRPORT",
+                        "code": "LAS",
+                        "city": "LAS",
+                        "cityName": "Las Vegas",
+                        "country": "US",
+                        "countryName": "United States",
+                        "name": "Las Vegas Mccarran International Apt"
+                    },
+                    "arrivalAirport": {
+                        "type": "AIRPORT",
+                        "code": "YYZ",
+                        "city": "YTO",
+                        "cityName": "Toronto",
+                        "country": "CA",
+                        "countryName": "Canada",
+                        "name": "Toronto Lester B Pearson Intl Apt"
+                    },
+                    "cabinClass": "ECONOMY",
+                    "flightInfo": {
+                        "facilities": [],
+                        "flightNumber": 1119,
+                        "planeType": "7M8",
+                        "carrierInfo": {
+                            "operatingCarrier": "WS",
+                            "marketingCarrier": "WS",
+                            "operatingCarrierDisclosureText": ""
+                        }
+                    },
+                    "carriers": [
+                        "WS",
+                        "WS"
+                    ],
+                    "carriersData": [
+                        {
+                            "name": "WestJet",
+                            "code": "WS",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/WS.png"
+                        },
+                        {
+                            "name": "WestJet",
+                            "code": "WS",
+                            "logo": "https://r-xx.bstatic.com/data/airlines_logo/WS.png"
+                        }
+                    ],
+                    "totalTime": 15240,
+                    "flightStops": [],
+                    "departureTerminal": "3",
+                    "arrivalTerminal": "3"
+                }
+            ],
+            "totalTime": 15240,
+            "travellerCheckedLuggage": [],
+            "travellerCabinLuggage": [
+                {
+                    "travellerReference": "1",
+                    "luggageAllowance": {
+                        "luggageType": "HAND",
+                        "maxPiece": 1
+                    },
+                    "personalItem": true
+                }
+            ],
+            "isAtolProtected": false,
+            "showWarningDestinationAirport": false,
+            "showWarningOriginAirport": false
+        }
+    ],
+    "price": 894
+};
+
+export const hotelPlaceholder = {
+    "blocks": [
+        {
+            "hasCrib": false,
+            "originalPrice": {
+                "amount": 179,
+                "__typename": "Price",
+                "currency": "USD"
+            },
+            "finalPrice": {
+                "amount": 179,
+                "__typename": "Price",
+                "currency": "USD"
+            },
+            "freeCancellationUntil": "2023-06-27T10:00:00Z",
+            "blockId": {
+                "mealPlanId": 0,
+                "occupancy": 2,
+                "roomId": "4844813",
+                "__typename": "BlockId",
+                "packageId": "0",
+                "policyGroupId": "371207721"
+            },
+            "thirdPartyInventoryContext": {
+                "__typename": "ThirdPartyInventoryContext",
+                "isTpiBlock": false
+            },
+            "onlyXLeftMessage": null,
+            "__typename": "Block",
+            "blockMatchTags": {
+                "childStaysForFree": false,
+                "__typename": "BlockMatchTags"
+            }
+        }
+    ],
+    "customBadges": {
+        "showIsWorkFriendly": false,
+        "__typename": "CustomBadges",
+        "showBhTravelCreditBadge": false,
+        "showSkiToDoor": false,
+        "showParkAndFly": false,
+        "showOnlineCheckinBadge": null
+    },
+    "basicPropertyData": {
+        "ufi": 20030916,
+        "accommodationTypeId": 204,
+        "paymentConfig": null,
+        "__typename": "BasicPropertyData",
+        "photos": {
+            "main": {
+                "lowResUrl": {
+                    "relativeUrl": "/xdata/images/hotel/square200/405213527.webp?k=5acb9629cc01751b9276a30c25fafbe83b1b0041ce86d03155ba1b93be8f785c&o=",
+                    "__typename": "PhotoResource"
+                },
+                "highResJpegUrl": {
+                    "__typename": "PhotoResource",
+                    "relativeUrl": "/xdata/images/hotel/square600/405213527.jpg?k=83d87af95f19f2c9d855100d7e176ad1f556418ed5a97b19229e880a60e462a0&o="
+                },
+                "lowResJpegUrl": {
+                    "__typename": "PhotoResource",
+                    "relativeUrl": "/xdata/images/hotel/square200/405213527.jpg?k=83d87af95f19f2c9d855100d7e176ad1f556418ed5a97b19229e880a60e462a0&o="
+                },
+                "__typename": "Photo",
+                "highResUrl": {
+                    "relativeUrl": "/xdata/images/hotel/square600/405213527.webp?k=5acb9629cc01751b9276a30c25fafbe83b1b0041ce86d03155ba1b93be8f785c&o=",
+                    "__typename": "PhotoResource"
+                }
+            },
+            "__typename": "PropertyPhotos"
+        },
+        "reviewScore": {
+            "score": 7.4,
+            "showScore": true,
+            "totalScoreTextTag": {
+                "translation": "Good",
+                "__typename": "TranslationTag"
+            },
+            "secondaryScore": 0,
+            "secondaryTextTag": {
+                "__typename": "TranslationTag",
+                "translation": null
+            },
+            "__typename": "Reviews",
+            "reviewCount": 1608,
+            "showSecondaryScore": false
+        },
+        "isTestProperty": false,
+        "location": {
+            "city": "Honolulu (Oahu, Hawaii)",
+            "countryCode": "us",
+            "address": "3401 North Nimitz Highway",
+            "__typename": "Location"
+        },
+        "starRating": {
+            "__typename": "StarRating",
+            "showAdditionalInfoIcon": false,
+            "tocLink": {
+                "translation": null,
+                "__typename": "TranslationTag"
+            },
+            "symbol": "NONE",
+            "caption": {
+                "translation": null,
+                "__typename": "TranslationTag"
+            },
+            "value": 3
+        },
+        "alternativeExternalReviewsScore": null,
+        "id": 48448,
+        "externalReviewScore": null,
+        "isClosed": false,
+        "pageName": "ohana-honolulu-airport"
+    },
+    "acceptsWalletCredit": false,
+    "bookerExperienceContentUIComponentProps": [],
+    "showAdLabel": false,
+    "__typename": "SearchResultProperty",
+    "badges": [],
+    "relocationMode": null,
+    "visibilityBoosterEnabled": null,
+    "nbWishlists": 0,
+    "recommendedDate": {
+        "__typename": "RecommendedDate",
+        "checkin": "",
+        "checkout": "",
+        "lengthOfStay": 0
+    },
+    "policies": {
+        "__typename": "Policies",
+        "showNoPrepayment": false,
+        "enableJapaneseUsersSpecialCase": null,
+        "showFreeCancellation": true
+    },
+    "soldOutInfo": {
+        "__typename": "SoldOutInfo",
+        "isSoldOut": false,
+        "alternativeDatesMessages": [],
+        "messages": []
+    },
+    "bundleRatesAvailable": false,
+    "matchingUnitConfigurations": {
+        "unitConfigurations": [
+            {
+                "bedConfigurations": [
+                    {
+                        "nbAllBeds": 2,
+                        "__typename": "BedConfiguration",
+                        "beds": [
+                            {
+                                "type": 2,
+                                "count": 2,
+                                "__typename": "Bed"
+                            }
+                        ]
+                    }
+                ],
+                "nbLivingrooms": 0,
+                "nbUnits": 1,
+                "nbPools": 0,
+                "__typename": "UnitConfiguration",
+                "name": "Two Double Beds",
+                "nbAllBeds": 2,
+                "unitId": 4844813,
+                "localizedArea": null,
+                "nbBedrooms": 0,
+                "nbKitchens": 0,
+                "apartmentRooms": [],
+                "nbBathrooms": 0,
+                "unitTypeNames": []
+            }
+        ],
+        "commonConfiguration": {
+            "localizedArea": null,
+            "unitId": 0,
+            "nbAllBeds": 2,
+            "name": null,
+            "__typename": "UnitConfiguration",
+            "nbPools": 0,
+            "bedConfigurations": [
+                {
+                    "__typename": "BedConfiguration",
+                    "beds": [
+                        {
+                            "type": 2,
+                            "count": 2,
+                            "__typename": "Bed"
+                        }
+                    ],
+                    "nbAllBeds": 2
+                }
+            ],
+            "nbUnits": 1,
+            "nbLivingrooms": 0,
+            "unitTypeNames": [],
+            "nbBathrooms": 0,
+            "nbKitchens": 0,
+            "nbBedrooms": 0
+        },
+        "__typename": "MatchingUnitConfigurations"
+    },
+    "seoThemes": [],
+    "showPrivateHostMessage": false,
+    "priceDisplayInfo": {
+        "taxExceptions": [],
+        "priceBeforeDiscount": {
+            "amountPerStay": {
+                "amountUnformatted": 0,
+                "__typename": "PriceDisplay",
+                "currency": "",
+                "amountRounded": "",
+                "amount": ""
+            },
+            "copy": {
+                "translation": null,
+                "__typename": "TranslationTag"
+            },
+            "__typename": "PriceDisplayAggregated"
+        },
+        "__typename": "PriceDisplayInfo",
+        "discounts": [],
+        "badges": [],
+        "rewards": {
+            "rewardsList": [],
+            "__typename": "Rewards",
+            "rewardsAggregated": {
+                "__typename": "PriceDisplayAggregated",
+                "copy": {
+                    "translation": "Earn $0 Credits",
+                    "__typename": "TranslationTag"
+                },
+                "amountPerStay": {
+                    "amount": "$0",
+                    "__typename": "PriceDisplay",
+                    "amountUnformatted": 0,
+                    "amountRounded": "$0",
+                    "currency": "USD"
+                }
+            }
+        },
+        "chargesInfo": {
+            "translation": null,
+            "__typename": "TranslationTag"
+        },
+        "useRoundedAmount": true,
+        "excludedCharges": {
+            "excludeChargesList": [
+                {
+                    "__typename": "ChargeDisplay",
+                    "chargeInclusion": "EXCLUDED",
+                    "amountPerStay": {
+                        "currency": "USD",
+                        "amountRounded": "$10",
+                        "amountUnformatted": 10,
+                        "__typename": "PriceDisplay",
+                        "amount": "$10"
+                    },
+                    "chargeMode": "PER_NIGHT"
+                },
+                {
+                    "__typename": "ChargeDisplay",
+                    "chargeMode": "PERCENTAGE",
+                    "chargeInclusion": "EXCLUDED",
+                    "amountPerStay": {
+                        "amount": "$19.37",
+                        "__typename": "PriceDisplay",
+                        "amountUnformatted": 19.3725,
+                        "amountRounded": "$19",
+                        "currency": "USD"
+                    }
+                },
+                {
+                    "__typename": "ChargeDisplay",
+                    "chargeMode": "PERCENTAGE",
+                    "amountPerStay": {
+                        "amount": "$0.95",
+                        "__typename": "PriceDisplay",
+                        "amountUnformatted": 0.945,
+                        "amountRounded": "$1",
+                        "currency": "USD"
+                    },
+                    "chargeInclusion": "EXCLUDED"
+                },
+                {
+                    "amountPerStay": {
+                        "amount": "$5.67",
+                        "amountUnformatted": 5.67,
+                        "__typename": "PriceDisplay",
+                        "currency": "USD",
+                        "amountRounded": "$6"
+                    },
+                    "chargeInclusion": "EXCLUDED",
+                    "chargeMode": "PERCENTAGE",
+                    "__typename": "ChargeDisplay"
+                },
+                {
+                    "__typename": "ChargeDisplay",
+                    "chargeMode": "PERCENTAGE",
+                    "amountPerStay": {
+                        "amount": "$7.96",
+                        "amountRounded": "$8",
+                        "currency": "USD",
+                        "__typename": "PriceDisplay",
+                        "amountUnformatted": 7.9569
+                    },
+                    "chargeInclusion": "EXCLUDED"
+                }
+            ],
+            "excludeChargesAggregated": {
+                "copy": {
+                    "translation": null,
+                    "__typename": "TranslationTag"
+                },
+                "__typename": "PriceDisplayAggregated",
+                "amountPerStay": {
+                    "amount": "$43.94",
+                    "amountRounded": "$44",
+                    "currency": "USD",
+                    "__typename": "PriceDisplay",
+                    "amountUnformatted": 43.9444
+                }
+            },
+            "__typename": "ExcludeCharges"
+        },
+        "displayPrice": {
+            "copy": {
+                "__typename": "TranslationTag",
+                "translation": "Total"
+            },
+            "__typename": "PriceDisplayAggregated",
+            "amountPerStay": {
+                "amount": "$179",
+                "currency": "USD",
+                "amountRounded": "$179",
+                "amountUnformatted": 179,
+                "__typename": "PriceDisplay"
+            }
+        }
+    },
+    "displayName": {
+        "__typename": "TextWithTranslationTag",
+        "translationTag": {
+            "translation": null,
+            "__typename": "TranslationTag"
+        },
+        "text": "Airport Honolulu Hotel"
+    },
+    "isNewlyOpened": false,
+    "mealPlanIncluded": null,
+    "location": {
+        "nearbyBeachNames": [],
+        "beachDistance": null,
+        "mainDistance": "4.4 miles from center",
+        "skiLiftDistance": null,
+        "beachWalkingTime": null,
+        "geoDistanceMeters": null,
+        "__typename": "SearchResultsPropertyLocation",
+        "displayLocation": "Western Honolulu, Honolulu",
+        "publicTransportDistanceDescription": null
+    },
+    "recommendedDatesLabel": null,
+    "showGeniusLoginMessage": false,
+    "description": null,
+    "isInCompanyBudget": null,
+    "persuasion": {
+        "preferred": true,
+        "geniusRateAvailable": false,
+        "highlighted": false,
+        "autoextended": false,
+        "nativeAdsTracking": null,
+        "preferredPlus": false,
+        "nativeAdId": null,
+        "nativeAdsCpc": null,
+        "__typename": "SearchResultPersuasion",
+        "bookedXTimesMessage": null,
+        "showNativeAdLabel": false
+    },
+    "ribbon": null,
+    "licenseDetails": null,
+    "inferredLocationScore": 0,
+    "geniusInfo": null,
+    "propertySustainability": {
+        "facilities": [
+            {
+                "id": 182,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 436
+            },
+            {
+                "id": 439,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "id": 440,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "id": 441,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 443
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 445
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 446
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 448
+            },
+            {
+                "id": 490,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 491
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 492
+            },
+            {
+                "id": 495,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "id": 498,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 499
+            },
+            {
+                "id": 504,
+                "__typename": "SrPropertySustainabilityFacility"
+            },
+            {
+                "__typename": "SrPropertySustainabilityFacility",
+                "id": 506
+            }
+        ],
+        "tier": {
+            "__typename": "SrPropertySustainabilityTier",
+            "type": "SILVER"
+        },
+        "__typename": "SrPropertySustainability",
+        "levelId": "L2",
+        "chainProgrammes": null,
+        "isSustainable": true,
+        "certifications": null
+    },
+    "priceDisplayInfoIrene": {
+        "__typename": "PriceDisplayInfoIrene",
+        "badges": [],
+        "discounts": [],
+        "taxExceptions": [],
+        "priceBeforeDiscount": {
+            "amountPerStay": {
+                "amountRounded": "",
+                "currency": "",
+                "__typename": "PriceDisplayIrene",
+                "amountUnformatted": 0,
+                "amount": ""
+            },
+            "copy": {
+                "translation": null,
+                "__typename": "TranslationTag"
+            },
+            "__typename": "PriceDisplayAggregatedIrene"
+        },
+        "displayPrice": {
+            "amountPerStay": {
+                "amount": "$179",
+                "__typename": "PriceDisplayIrene",
+                "amountUnformatted": 179,
+                "amountRounded": "$179",
+                "currency": "USD"
+            },
+            "__typename": "PriceDisplayAggregatedIrene",
+            "copy": {
+                "__typename": "TranslationTag",
+                "translation": "Total"
+            }
+        },
+        "chargesInfo": {
+            "translation": null,
+            "__typename": "TranslationTag"
+        },
+        "useRoundedAmount": true,
+        "excludedCharges": {
+            "excludeChargesList": [
+                {
+                    "chargeMode": "PER_NIGHT",
+                    "chargeInclusion": "EXCLUDED",
+                    "amountPerStay": {
+                        "currency": "USD",
+                        "amountRounded": "$10",
+                        "amountUnformatted": 10,
+                        "__typename": "PriceDisplayIrene",
+                        "amount": "$10"
+                    },
+                    "__typename": "ChargeDisplayIrene",
+                    "chargeType": 2
+                },
+                {
+                    "chargeType": 23,
+                    "__typename": "ChargeDisplayIrene",
+                    "amountPerStay": {
+                        "__typename": "PriceDisplayIrene",
+                        "amountUnformatted": 19.3725,
+                        "amountRounded": "$19",
+                        "currency": "USD",
+                        "amount": "$19.37"
+                    },
+                    "chargeInclusion": "EXCLUDED",
+                    "chargeMode": "PERCENTAGE"
+                },
+                {
+                    "__typename": "ChargeDisplayIrene",
+                    "chargeType": 149,
+                    "amountPerStay": {
+                        "currency": "USD",
+                        "amountRounded": "$1",
+                        "amountUnformatted": 0.945,
+                        "__typename": "PriceDisplayIrene",
+                        "amount": "$0.95"
+                    },
+                    "chargeInclusion": "EXCLUDED",
+                    "chargeMode": "PERCENTAGE"
+                },
+                {
+                    "__typename": "ChargeDisplayIrene",
+                    "chargeType": 142,
+                    "chargeMode": "PERCENTAGE",
+                    "amountPerStay": {
+                        "currency": "USD",
+                        "amountRounded": "$6",
+                        "amountUnformatted": 5.67,
+                        "__typename": "PriceDisplayIrene",
+                        "amount": "$5.67"
+                    },
+                    "chargeInclusion": "EXCLUDED"
+                },
+                {
+                    "chargeInclusion": "EXCLUDED",
+                    "amountPerStay": {
+                        "currency": "USD",
+                        "amountRounded": "$8",
+                        "amountUnformatted": 7.9569,
+                        "__typename": "PriceDisplayIrene",
+                        "amount": "$7.96"
+                    },
+                    "chargeMode": "PERCENTAGE",
+                    "chargeType": 22,
+                    "__typename": "ChargeDisplayIrene"
+                }
+            ],
+            "__typename": "ExcludeChargesIrene",
+            "excludeChargesAggregated": {
+                "amountPerStay": {
+                    "__typename": "PriceDisplayIrene",
+                    "amountUnformatted": 43.9444,
+                    "amountRounded": "$44",
+                    "currency": "USD",
+                    "amount": "$43.94"
+                },
+                "__typename": "PriceDisplayAggregatedIrene",
+                "copy": {
+                    "translation": null,
+                    "__typename": "TranslationTag"
+                }
+            }
+        },
+        "rewards": {
+            "rewardsList": [],
+            "__typename": "RewardsIrene",
+            "rewardsAggregated": {
+                "amountPerStay": {
+                    "__typename": "PriceDisplayIrene",
+                    "amountUnformatted": 0,
+                    "amountRounded": "$0",
+                    "currency": "USD",
+                    "amount": "$0"
+                },
+                "__typename": "PriceDisplayAggregatedIrene",
+                "copy": {
+                    "__typename": "TranslationTag",
+                    "translation": "Earn $0 Credits"
+                }
+            }
+        }
+    }
+};

@@ -42,23 +42,19 @@ const Third: React.FC<ThirdProp> = ({
   }, [forms]);
 
 
-  function formatDate(dateStr: string) {
-    var newD = dateStr.toString().split(" ").slice(0, 4).join(" ");
-    const dateObj = new Date(newD);
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-    const day = String(dateObj.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const onChange = (dates: [Date, Date]) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
   };
+
+  useEffect(() => {
+    setStartDate(new Date(forms.startDate));
+    setEndDate(new Date(forms.endDate));
+  }, []);
+
 
   const customInput = <Input
               boxShadow="0px 2px 3px #ccc"
