@@ -96,7 +96,9 @@ const Second: React.FC<SecondProps> = ({
   }, []);
 
   const [autocomplete, setAutocomplete] = useState<Auto[]>();
+  const [isLoadingAutocomplete, setLoading] = useState(false);
   const updateAutoComplete = debounce((query: string) => {
+    setLoading(true);
     fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${query}`,
       {
@@ -107,9 +109,12 @@ const Second: React.FC<SecondProps> = ({
     )
       .then((response) => response.json())
       .then((data) => {
-        setAutocomplete(data.filter((d: Auto) => {
-          return isAGoodPlace(d.cityName);
-        }));
+        setAutocomplete(
+          data.filter((d: Auto) => {
+            return isAGoodPlace(d.cityName);
+          })
+        );
+        setLoading(false);
       });
   }, 200);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +132,7 @@ const Second: React.FC<SecondProps> = ({
         <Flex direction="column" align="center" justify="centert">
           <Flex direction="column" width="100%" mt={3}>
             <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
-              Enter Your City of Departure:
+              Enter your city of departure:
             </Text>
             <Input
               boxShadow=" 0px 2px 3px #ccc"
@@ -185,7 +190,7 @@ const Second: React.FC<SecondProps> = ({
             <HStack>
               <Flex direction="column">
                 <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="left">
-                  Enter A City:
+                  Enter a city:
                 </Text>
                 <InputGroup position="relative" zIndex="10000" w="80%">
                   <Input
@@ -255,6 +260,15 @@ const Second: React.FC<SecondProps> = ({
                     <Text mb={2}>
                       {query ? "Destinations" : "Type a destination..."}
                     </Text>
+                    {query &&
+                      autocomplete &&
+                      autocomplete.length == 0 &&
+                      !isLoadingAutocomplete && (
+                        <Text fontWeight="bold" fontSize="xs">
+                          No destinations found with enough tourist attractions
+                          in this area!
+                        </Text>
+                      )}
                     {autocomplete &&
                       autocomplete.map((auto, i) => {
                         return (
@@ -320,7 +334,7 @@ const Second: React.FC<SecondProps> = ({
                   color="#54C4D6"
                   textAlign="center"
                 >
-                  Let Us Choose
+                  Let us choose
                 </Text>
                 <Select
                   boxShadow=" 0px 2px 3px #ccc"
