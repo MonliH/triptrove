@@ -17,7 +17,11 @@ import First from "./FormPages/First";
 import Second from "./FormPages/Second";
 import Third from "./FormPages/Third";
 import End from "./FormPages/End";
-import { flightPlaceholder, hotelPlaceholder, placeholderAttraction } from "@/lib/placeholder";
+import {
+  flightPlaceholder,
+  hotelPlaceholder,
+  placeholderAttraction,
+} from "@/lib/placeholder";
 import Zoom from "react-reveal/Zoom";
 import Fade from "react-reveal/Fade";
 import BudgetBreakDown from "./BudgetBreakDown";
@@ -248,10 +252,12 @@ const MultiStepForm: React.FC = () => {
                 item.name === "itenaries"
                   ? {
                       ...item,
-                      value:  Math.round(
-                        Object.values((attractions ?? placeholderAttraction).bookings)
+                      value: Math.round(
+                        Object.values(
+                          (attractions ?? placeholderAttraction).bookings
+                        )
                           .map(
-                            (booking:any) =>
+                            (booking: any) =>
                               booking.representativePrice.publicAmount *
                               (formData.adults + formData.children)
                           )
@@ -293,8 +299,7 @@ const MultiStepForm: React.FC = () => {
                 item.name === "flights"
                   ? {
                       ...item,
-                      value:  flight.price
-                      
+                      value: flight.price,
                     }
                   : item
               )
@@ -309,8 +314,8 @@ const MultiStepForm: React.FC = () => {
   }
 
   const [page, setPage] = useState(0);
-  const hotelOrPlaceholder = (hotel??hotelPlaceholder);
-  const flightOrPlaceholder = (flights??flightPlaceholder);
+  const hotelOrPlaceholder = hotel ?? hotelPlaceholder;
+  const flightOrPlaceholder = flights ?? flightPlaceholder;
 
   return (
     <Flex direction="column" align="center" justify="center" overflowY="hidden">
@@ -340,7 +345,6 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          
           <Tooltip
             label={"Fill in all fields before continuing!"}
             isDisabled={!disable}
@@ -377,7 +381,6 @@ const MultiStepForm: React.FC = () => {
                 .filter((e) => e)
                 .join(", ")}
             </Heading>
-           
           </Box>
         )}
         {(loadingFlights || flights !== null) && (
@@ -504,10 +507,10 @@ const MultiStepForm: React.FC = () => {
               <Skeleton isLoaded={hotel !== null}>
                 <Text fontSize="2xl" color="#54C4D6">
                   Hotel Price: $
-                    {Math.round(
-                      hotelOrPlaceholder.priceDisplayInfo.displayPrice.amountPerStay
-                        .amountUnformatted
-                    )}
+                  {Math.round(
+                    hotelOrPlaceholder.priceDisplayInfo.displayPrice
+                      .amountPerStay.amountUnformatted
+                  )}
                 </Text>
               </Skeleton>
             </HStack>
@@ -519,8 +522,8 @@ const MultiStepForm: React.FC = () => {
                       borderRadius={20}
                       src={
                         IMAGE_CDN +
-                        hotelOrPlaceholder.basicPropertyData?.photos?.main?.lowResJpegUrl
-                          ?.relativeUrl
+                        hotelOrPlaceholder.basicPropertyData?.photos?.main
+                          ?.lowResJpegUrl?.relativeUrl
                       }
                     ></Image>
                     <Box ml="4">
@@ -536,8 +539,15 @@ const MultiStepForm: React.FC = () => {
                             {hotelOrPlaceholder?.displayName?.text}
                           </Link>
                           <Text>
-                            {hotelOrPlaceholder?.basicPropertyData?.location?.address},{" "}
-                            {hotelOrPlaceholder?.basicPropertyData?.location?.city}
+                            {
+                              hotelOrPlaceholder?.basicPropertyData?.location
+                                ?.address
+                            }
+                            ,{" "}
+                            {
+                              hotelOrPlaceholder?.basicPropertyData?.location
+                                ?.city
+                            }
                           </Text>
                         </Box>
                         <Spacer></Spacer>
@@ -551,9 +561,14 @@ const MultiStepForm: React.FC = () => {
                         borderColor="#54C4D6"
                         borderRadius="md"
                       >
-                        {hotelOrPlaceholder?.basicPropertyData?.reviewScore?.score ? (
+                        {hotelOrPlaceholder?.basicPropertyData?.reviewScore
+                          ?.score ? (
                           <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
-                            {hotelOrPlaceholder?.basicPropertyData?.reviewScore?.score}/10
+                            {
+                              hotelOrPlaceholder?.basicPropertyData?.reviewScore
+                                ?.score
+                            }
+                            /10
                           </Text>
                         ) : (
                           <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
@@ -655,7 +670,7 @@ const MultiStepForm: React.FC = () => {
                                     h={"44"}
                                   ></Image>
 
-                  <Box ml="2">
+                                  <Box ml="2">
                                     <HStack>
                                       <Link
                                         href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
