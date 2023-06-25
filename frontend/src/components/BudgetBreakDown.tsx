@@ -18,9 +18,16 @@ import {
 } from "@chakra-ui/react";
 import Zoom from "react-reveal/Zoom";
 
+type MyObject = {
+    name: String;
+    value: string;
+  };
+
 interface BudgetBreakDownProps {
-  budget: { hotels: number; flights: number; itenaries: number; extra: number } [];
+  budgets: MyObject[];
 }
+
+
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -51,8 +58,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   return null;
 };
 
-const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
+const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets }) => {
  
+console.log(budgets)
 
   const RADIAN = Math.PI / 180;
 
@@ -95,13 +103,13 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
         mt={10}
         mb={2}
       >
-        <Heading color="#54C4D6">Total Price: </Heading>
+        <Heading color="#54C4D6">Total Price: $</Heading>
         <HStack>
           <PieChart width={400} height={400}>
             <Pie
               dataKey="value"
               isAnimationActive={false}
-              data={budget}
+              data={budgets}
               cx="50%"
               cy="50%"
               labelLine={false}
@@ -109,7 +117,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
               outerRadius={140}
               fill="#8884d8"
             >
-              {budget.map((entry, index) => (
+              {budgets.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
