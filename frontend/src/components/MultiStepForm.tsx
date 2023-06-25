@@ -120,7 +120,7 @@ const MultiStepForm: React.FC = () => {
     country: string;
   } | null>(null);
 
-  const [budget, setbudget] = useState<{ name: string; value: Number }[]>([
+  const [budget, setbudget] = useState<{ name: string; value: number }[]>([
     { name: "hotels", value: 0 },
     { name: "flights", value: 0 },
     { name: "itenaries", value: 0 },
@@ -214,8 +214,9 @@ const MultiStepForm: React.FC = () => {
                 }
               ).then((response) => response.json());
               setHotel(hotel);
-              setbudget(
-                budget.map((item) =>
+              console.log(hotel);
+              setbudget((b) =>
+                b.map((item) =>
                   item.name === "hotels"
                     ? {
                         ...item,
@@ -247,8 +248,8 @@ const MultiStepForm: React.FC = () => {
 
             setAttractions(attractions);
 
-            setbudget(
-              budget.map((item) =>
+            setbudget((b) =>
+              b.map((item) =>
                 item.name === "itenaries"
                   ? {
                       ...item,
@@ -294,8 +295,8 @@ const MultiStepForm: React.FC = () => {
             setFlights({ details: [], info: null, price: 0 });
           } else {
             setFlights(flight);
-            setbudget(
-              budget.map((item) =>
+            setbudget((b) =>
+              b.map((item) =>
                 item.name === "flights"
                   ? {
                       ...item,
