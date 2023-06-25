@@ -17,14 +17,18 @@ import {
   Circle,
 } from "@chakra-ui/react";
 import Zoom from "react-reveal/Zoom";
+import { Dispatch, SetStateAction } from "react";
+
 
 type MyObject = {
-    name: String;
-    value: string;
+    name: string;
+    value: number;
   };
 
 interface BudgetBreakDownProps {
   budgets: MyObject[];
+  changebudget: Dispatch<React.SetStateAction<MyObject[]>>;
+  actualBudget:number;
 }
 
 
@@ -58,8 +62,21 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   return null;
 };
 
-const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets }) => {
+const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,actualBudget }) => {
  
+
+    useEffect(()=>{
+        changebudget((b) =>
+        b.map((item) =>
+          item.name === "extra"
+            ? {
+                ...item,
+                value: actualBudget - (budgets[0].value+budgets[1].value+budgets[2].value),
+              }
+            : item
+        )
+      );
+    },[budgets])
 console.log(budgets)
 
   const RADIAN = Math.PI / 180;
@@ -134,12 +151,12 @@ console.log(budgets)
               <HStack align="center" justify="center">
                 <Circle size="40px" bg="#0088FE" color="white" />
 
-                <Text>Flights</Text>
+                <Text>Hotels</Text>
               </HStack>
               <HStack align="center" justify="center">
                 <Circle size="40px" bg="#00C49F" color="white" />
 
-                <Text>Hotels</Text>
+                <Text>Flights</Text>
               </HStack>
 
               <HStack align="center" justify="center">

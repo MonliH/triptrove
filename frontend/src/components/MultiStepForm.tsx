@@ -731,7 +731,7 @@ const MultiStepForm: React.FC = () => {
         {attractions !== null && (
           <Box mt="2">
             <Heading mt={10}>Budget Breakdown</Heading>
-            <BudgetBreakDown budgets={budget} />
+            <BudgetBreakDown budgets={budget}  changebudget={setbudget} actualBudget={formData.budget}/>
           </Box>
         )}
       </Box>
