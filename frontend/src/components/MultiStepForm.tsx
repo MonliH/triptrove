@@ -117,6 +117,12 @@ const MultiStepForm: React.FC = () => {
     country: string;
   } | null>(null);
 
+  const [budget, setbudget] = useState<{ name: string; value: Number }[]>([
+    { name: "hotels", value: 0 },
+    { name: "flights", value: 0 },
+    { name: "itenaries", value: 0 },
+    { name: "extra", value: 0 },
+  ]);
   const [hotel, setHotel] = useState<null | any>(null);
   const [loadingHotel, setLoadingHotel] = useState(false);
 
@@ -170,7 +176,11 @@ const MultiStepForm: React.FC = () => {
           const fromCity = from.find((e: any) => e.type == "CITY");
           const fromAirport = from.find((e: any) => e.type == "AIRPORT");
           const toAirport = to.find((e: any) => e.type == "AIRPORT");
-          setDestination((p) => (p ? { ...p, country: toAirport.countryName } : {country: toAirport.countryName, cityName: ""}));
+          setDestination((p) =>
+            p
+              ? { ...p, country: toAirport.countryName }
+              : { country: toAirport.countryName, cityName: "" }
+          );
 
           (async () => {
             const toInfo = await fetch(
@@ -204,6 +214,20 @@ const MultiStepForm: React.FC = () => {
                 }
               ).then((response) => response.json());
               setHotel(hotel);
+              setbudget(
+                budget.map((item) =>
+                  item.name === "hotels"
+                    ? {
+                        ...item,
+                        value: Math.round(
+                          hotel.priceDisplayInfo.displayPrice.amountPerStay
+                            .amountUnformatted
+                        ),
+                      }
+                    : item
+                )
+              );
+
               setLoadingHotel(false);
             })();
 
@@ -222,6 +246,26 @@ const MultiStepForm: React.FC = () => {
             ).then((response) => response.json());
 
             setAttractions(attractions);
+
+            setbudget(
+              budget.map((item) =>
+                item.name === "itenaries"
+                  ? {
+                      ...item,
+                      value:  Math.round(
+                        Object.values((attractions ?? placeholderAttraction).bookings)
+                          .map(
+                            (booking:any) =>
+                              booking.representativePrice.publicAmount *
+                              (formData.adults + formData.children)
+                          )
+                          .reduce((a, b) => a + b, 0)
+                      ),
+                    }
+                  : item
+              )
+            );
+
             setLoadingAttractions(false);
           })();
 
@@ -248,6 +292,17 @@ const MultiStepForm: React.FC = () => {
             setFlights({ details: [], info: null, price: 0 });
           } else {
             setFlights(flight);
+            setbudget(
+              budget.map((item) =>
+                item.name === "flights"
+                  ? {
+                      ...item,
+                      value:  flight.price
+                      
+                    }
+                  : item
+              )
+            );
           }
           setLoadingFlights(false);
         })();
@@ -264,7 +319,7 @@ const MultiStepForm: React.FC = () => {
       <VStack
         direction="column"
         w="full"
-        h={page == 3 ? "60vh" : "100vh"}
+        h={page == 3 ? "70vh" : "105vh"}
         align="center"
         justify="center"
         overflowY="hidden"
@@ -287,34 +342,42 @@ const MultiStepForm: React.FC = () => {
             </button>
           )}
 
-          <Tooltip label={"Fill in all fields before continuing!"} isDisabled={!disable}>
-          <button
-            disabled={disable}
-            onClick={handleSubmit}
-            className={`${disable ? "Pushdisabled" : "pushable"}`}
-            style={{
-              cursor: disable ? "not-allowed" : "pointer",
-            }}
+          <Tooltip
+            label={"Fill in all fields before continuing!"}
+            isDisabled={!disable}
           >
-            <span className={`shadow`}></span>
-            <span className={`${disable ? "dedge" : "edge"}`}></span>
-            <span className={`${disable ? "disabled" : "front"}`}>
-              {page === 0 || page === 1
-                ? "Next"
-                : page == 2
-                ? "Submit"
-                : "Re-roll"}
-            </span>
-          </button></Tooltip>
+            <button
+              disabled={disable}
+              onClick={handleSubmit}
+              className={`${disable ? "Pushdisabled" : "pushable"}`}
+              style={{
+                cursor: disable ? "not-allowed" : "pointer",
+              }}
+            >
+              <span className={`shadow`}></span>
+              <span className={`${disable ? "dedge" : "edge"}`}></span>
+              <span className={`${disable ? "disabled" : "front"}`}>
+                {page === 0 || page === 1
+                  ? "Next"
+                  : page == 2
+                  ? "Submit"
+                  : "Re-roll"}
+              </span>
+            </button>
+          </Tooltip>
         </Flex>
       </VStack>
-      <Box w={"min(800px,95vw)"} >
+      <Box w={"min(800px,95vw)"}>
         {destination && (
           <Box borderLeft="3px solid" pl="3" mb="10">
-          <Text fontSize="lg" fontWeight="bold">Your Destination</Text>
-          <Heading fontSize="5xl">
-            {[destination?.cityName, destination?.country].filter((e) => e).join(", ")}
-          </Heading>
+            <Text fontSize="lg" fontWeight="bold">
+              Your Destination
+            </Text>
+            <Heading fontSize="5xl">
+              {[destination?.cityName, destination?.country]
+                .filter((e) => e)
+                .join(", ")}
+            </Heading>
           </Box>
         )}
         {(loadingFlights || flights !== null) && (
@@ -648,7 +711,7 @@ const MultiStepForm: React.FC = () => {
         {attractions !== null && (
           <Box mt="2">
             <Heading mt={10}>Budget Breakdown</Heading>
-            <BudgetBreakDown />
+            <BudgetBreakDown budget={budget} />
           </Box>
         )}
       </Box>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import {
   PieChart,
   Pie,
@@ -18,7 +18,9 @@ import {
 } from "@chakra-ui/react";
 import Zoom from "react-reveal/Zoom";
 
-interface BudgetBreakDownProps {}
+interface BudgetBreakDownProps {
+  budget: { hotels: number; flights: number; itenaries: number; extra: number };
+}
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -49,12 +51,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   return null;
 };
 
-const BudgetBreakDown: React.FC<BudgetBreakDownProps> = () => {
-  const data = [
-    { name: "Flight", value: 1600 },
-    { name: "Hotel", value: 2000 },
-    { name: "Itineraries", value: 500 },
-  ];
+const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
+ 
+
   const RADIAN = Math.PI / 180;
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -87,63 +86,63 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = () => {
 
   return (
     <Zoom>
-    <Flex
-      direction="column"
-      bg="#ffffff"
-      borderRadius="20px"
-      shadow="base"
-      p={10}
-      mt={10}
-      mb={2}
-    >
-      <Heading color="#54C4D6">Total Price: $3000</Heading>
-      <HStack>
-        <PieChart width={400} height={400}>
-          <Pie
-            dataKey="value"
-            isAnimationActive={false}
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderCustomizedLabel}
-            outerRadius={140}
-            fill="#8884d8"
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{ fill: "transparent" }}
-          />
-        </PieChart>
-        <Flex direction="column" align="center" justify="center">
-          <VStack display="flex" align="center" justify="center">
-            <HStack align="center" justify="center">
-              <Circle size="40px" bg="#0088FE" color="white" />
+      <Flex
+        direction="column"
+        bg="#ffffff"
+        borderRadius="20px"
+        shadow="base"
+        p={10}
+        mt={10}
+        mb={2}
+      >
+        <Heading color="#54C4D6">Total Price: $3000</Heading>
+        <HStack>
+          <PieChart width={400} height={400}>
+            <Pie
+              dataKey="value"
+              isAnimationActive={false}
+              data={budget}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderCustomizedLabel}
+              outerRadius={140}
+              fill="#8884d8"
+            >
+              {budget.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "transparent" }}
+            />
+          </PieChart>
+          <Flex direction="column" align="center" justify="center">
+            <VStack display="flex" align="center" justify="center">
+              <HStack align="center" justify="center">
+                <Circle size="40px" bg="#0088FE" color="white" />
 
-              <Text>Flights</Text>
-            </HStack>
-            <HStack align="center" justify="center">
-              <Circle size="40px" bg="#00C49F" color="white" />
+                <Text>Flights</Text>
+              </HStack>
+              <HStack align="center" justify="center">
+                <Circle size="40px" bg="#00C49F" color="white" />
 
-              <Text>Hotels</Text>
-            </HStack>
+                <Text>Hotels</Text>
+              </HStack>
 
-            <HStack align="center" justify="center">
-              <Circle size="40px" bg="#FFBB28" color="white" />
+              <HStack align="center" justify="center">
+                <Circle size="40px" bg="#FFBB28" color="white" />
 
-              <Text>Events</Text>
-            </HStack>
-          </VStack>
-        </Flex>
-      </HStack>
-    </Flex>
+                <Text>Events</Text>
+              </HStack>
+            </VStack>
+          </Flex>
+        </HStack>
+      </Flex>
     </Zoom>
   );
 };

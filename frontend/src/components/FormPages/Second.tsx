@@ -215,24 +215,42 @@ const Second: React.FC<SecondProps> = ({
                   ></IconButton>
                 </InputRightElement>
                   <Box
-                    zIndex="popover"
+                   zIndex="popover"
+                   overflowY="scroll"
                     position="absolute"
                     mt="12"
+                    height={32}
                     bgColor="white"
-                    borderRadius="md"
+                    borderLeftRadius="20px"
                     p="3"
                     w="300px"
+                    css={{
+                      '&::-webkit-scrollbar': {
+                        width: '8px',
+                      },
+                      '&::-webkit-scrollbar-track': {
+                        width: '8px',
+                        height:32
+                      },
+                      '&::-webkit-scrollbar-thumb': {
+                        background: "#008A9F",
+                        borderRadius: '24px',
+                        height:'12px'
+                      },
+                    }}
                     onMouseEnter={() => setHovering(true)}
                     onMouseLeave={() => setHovering(false)}
                     display={hovering || show ? "block" : "none"}
                   >
-                    <Text>{query ? "Destinations" : "Type a destination..."}</Text>
+                    <Text mb={2}>{query ? "Destinations" : "Type a destination..."}</Text>
                     {autocomplete &&
                       autocomplete.map((auto, i) => {
                         return (
                           <HStack
                             key={i}
                             mb="3"
+                            p={3}
+                            borderRadius="20px"
                             cursor="pointer"
                             _hover={{
                               bgColor: "gray.50",
@@ -285,8 +303,7 @@ const Second: React.FC<SecondProps> = ({
             </Box>
             <Flex direction="column">
               <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
-                Not sure which city? Choose a continent <br></br>and we'll pick
-                for you!
+                Let Us Choose
               </Text>
               <Select
                 boxShadow=" 0px 2px 3px #ccc"
