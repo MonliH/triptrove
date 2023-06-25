@@ -167,10 +167,21 @@ const MultiStepForm: React.FC = () => {
               process.env.NEXT_PUBLIC_BACKEND_URL
             }/flightDestinations?query=${encodeURIComponent(
               formData.formatted_address.split(",")[0]
-            )}`
+            )}`,
+            {
+              headers: new Headers({
+                "ngrok-skip-browser-warning": "true",
+              }),
+            }
           ).then((response) => response.json());
           const to = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${newDest}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/flightDestinations?query=${newDest}`,
+{
+
+              headers: new Headers({
+                "ngrok-skip-browser-warning": "true",
+              }),
+}
           ).then((response) => response.json());
 
           const fromCity = from.find((e: any) => e.type == "CITY");
@@ -184,7 +195,13 @@ const MultiStepForm: React.FC = () => {
 
           (async () => {
             const toInfo = await fetch(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${newDest}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/destinations?query=${newDest}`,
+              {
+
+              headers: new Headers({
+                "ngrok-skip-browser-warning": "true",
+              }),
+              }
             ).then((response) => response.json());
             const toLocationUfi = formData.city
               ? formData.city[1]
@@ -210,6 +227,7 @@ const MultiStepForm: React.FC = () => {
                   }),
                   headers: {
                     "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true",
                   },
                 }
               ).then((response) => response.json());
@@ -244,7 +262,12 @@ const MultiStepForm: React.FC = () => {
                   " children and " +
                   (formData.adults ? formData.adults : "no") +
                   " adults."
-              )}&end_date=${formData.endDate}&start_date=${formData.startDate}`
+              )}&end_date=${formData.endDate}&start_date=${formData.startDate}`,
+              {
+                headers: new Headers({
+                  "ngrok-skip-browser-warning": "true",
+                }),
+              }
             ).then((response) => response.json());
 
             setAttractions(attractions);
@@ -279,6 +302,7 @@ const MultiStepForm: React.FC = () => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
               },
               body: JSON.stringify({
                 fromLocation: fromAirport,

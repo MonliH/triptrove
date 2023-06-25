@@ -178,7 +178,6 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
                             continue
                         ids.extend([int(r["ID"]) for r in rest])
                         schedule_per_day[day_id] = rest
-                
                 break
             except:
                 print("regenerating content (in try/except)...")
