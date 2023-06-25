@@ -1,8 +1,8 @@
-## TripTrove
+# TripTrove
 
 ![TripTrove](./figures/screenshot4.png)
 
-TripTrove is an application that generates a personalized travel plan based on a user's budget, dream destination, requirements, geographical location, and more! It provides plane tickets, hotels, and an itinerary (of real attractions!) for each day of your trip. Finally, it comments on why a specific attraction is perfect for you! Submission for [Wafflehacks 2023](https://wafflehacks-2023.devpost.com/).
+TripTrove is an application that generates a personalized travel plan based on a user's budget, dream destination, requirements, geographical location, and more! It provides plane tickets, hotels, and an itinerary (of real attractions!) for each day of your trip. Finally, it comments on why a specific attraction is perfect for you! Submission for [Wafflehacks 2023](https://devpost.com/software/triptrove/), winning **best travel hack** (no overall winner category).
 
 **Try it at [triptove.tech](https://triptrove.tech)!**
 
