@@ -263,7 +263,6 @@ const Second: React.FC<SecondProps> = ({
                         );
                       })}
                   </Box>
-                
               </InputGroup>
             </Flex>
             <Box

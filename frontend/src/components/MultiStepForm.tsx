@@ -505,7 +505,7 @@ const MultiStepForm: React.FC = () => {
                           </Text>
                         ) : (
                           <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
-                            None
+                            No Rating
                           </Text>
                         )}
                         <Text>
@@ -603,7 +603,7 @@ const MultiStepForm: React.FC = () => {
                                     h={"44"}
                                   ></Image>
 
-                                  <Box ml="2">
+                  <Box ml="2">
                                     <HStack>
                                       <Link
                                         href={`https://booking.com/attractions/${attra.ufiDetails.url.country}/${attra.slug}.html`}
