@@ -33,8 +33,8 @@ export interface FormValues {
   adults: number;
   budget: number;
   children: number;
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
 }
 
 type Attractions = { ID: string; Date: string; Justification: string }[];
@@ -52,8 +52,8 @@ const MultiStepForm: React.FC = () => {
     adults: 0,
     children: 0,
     budget: 0,
-    startDate: "",
-    endDate: "",
+    startDate: null,
+    endDate: null,
   });
   const [transitionState, setTransitionState] = useState(false);
   const [disable, setDisable] = useState(true);
@@ -87,7 +87,6 @@ const MultiStepForm: React.FC = () => {
             timeout={300}
             setDisabled={setDisable}
             dates={dates}
-            setDates={setDates}
           />
         );
       case 3:
@@ -199,8 +198,8 @@ const MultiStepForm: React.FC = () => {
                     returnDate: formData.endDate,
                     maxPrice:
                       (formData.budget * 0.3) /
-                      ((new Date(formData.endDate).getTime() -
-                        new Date(formData.startDate).getTime()) /
+                      ((new Date(formData.endDate!).getTime() -
+                        new Date(formData.startDate!).getTime()) /
                         (1000 * 60 * 60 * 24)),
                     ufi: toLocationUfi,
                     cityName: toInfo[0].cityName,
