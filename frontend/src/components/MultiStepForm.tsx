@@ -214,7 +214,6 @@ const MultiStepForm: React.FC = () => {
                 }
               ).then((response) => response.json());
               setHotel(hotel);
-              console.log(hotel);
               setbudget((b) =>
                 b.map((item) =>
                   item.name === "hotels"
