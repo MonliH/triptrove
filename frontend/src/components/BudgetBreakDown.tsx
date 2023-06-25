@@ -39,6 +39,10 @@ interface CustomTooltipProps {
   label?: string;
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
   active,
   payload,
@@ -50,7 +54,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         <div>
           {payload.map((pld: any) => (
             <div className="custom" key={pld.name}>
-              <p>{pld.name}:</p>
+              <p>{capitalizeFirstLetter(pld.name)}:</p>
               <div style={{ color: pld.fill }}>${pld.value}</div>
             </div>
           ))}
@@ -170,7 +174,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
             </VStack>
           </Flex>
         </HStack>
-        <Text>As chart above demonstrates, you have a budget of <strong>${actualBudget}</strong> for the trip. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities, and places to visit. 
+        <Text>As chart above demonstrates, you have a budget of <strong>${actualBudget}</strong> for the trip. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities/places to visit. 
         After all these expenses you will have <strong>${budgets[3].value}</strong> leftover to spend on your other needs such as food, souvenirs etc.
         </Text>
       </Flex>
