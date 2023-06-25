@@ -12,6 +12,7 @@ import {
   VStack,
   Popover,
   Tooltip,
+  Spinner,
 } from "@chakra-ui/react";
 import First from "./FormPages/First";
 import Second from "./FormPages/Second";
@@ -634,7 +635,7 @@ const MultiStepForm: React.FC = () => {
           </>
         )}
         {(loadingAttractions || attractions !== null) && (
-          <>
+          <Box position="relative">
             <HStack mt={10}>
               <Heading color="#54C4D6">Selected Itinerary</Heading>
               <Spacer />
@@ -655,6 +656,14 @@ const MultiStepForm: React.FC = () => {
                 </Text>
               </Skeleton>
             </HStack>
+            {attractions === null && (
+              <HStack position={"absolute"} top="12">
+                <Spinner />
+                <Text>
+                  Processing may take up to a minute...
+                </Text>
+              </HStack>
+            )}
             <Skeleton mt={10} isLoaded={attractions !== null}>
               <Box>
                 {Object.entries(
@@ -699,7 +708,7 @@ const MultiStepForm: React.FC = () => {
                           const attra = (attractions ?? placeholderAttraction)
                             .bookings[event.ID];
                           return (
-                            <Zoom key={j + " info"}>
+                            <Zoom key={j + " info"} delay={0}>
                               <Box
                                 my="3"
                                 bg="#ffffff"
@@ -769,7 +778,7 @@ const MultiStepForm: React.FC = () => {
                 })}
               </Box>
             </Skeleton>
-          </>
+          </Box>
         )}
         {attractions !== null && (
           <Box mt="2">
