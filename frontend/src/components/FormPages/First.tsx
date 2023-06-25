@@ -43,6 +43,9 @@ const First: React.FC<FirstProps> = ({ forms, setFormData, setDisabled }) => {
           Enter Your Budget:
         </Text>
           <NumberInput
+          outline="none"
+          border="transparent"
+          boxShadow="none"
             w="50rem"
             value={forms.budget ? format(forms.budget.toString()) : format("0")}
             width="50%"
@@ -56,14 +59,16 @@ const First: React.FC<FirstProps> = ({ forms, setFormData, setDisabled }) => {
             isRequired
           >
             <NumberInputField
-              boxShadow=" 0px 2px 3px #ccc"
-              borderBottom="0.25em solid #c6be9f"
-              borderTop="1px solid #ffffff"
+                // boxShadow=" 0px 2px 3px #ccc"
+               borderBottom="0.25em solid #c6be9f"
+                // borderTop="1px solid #ffffff"
               bg="#ffffff"
               outline="none"
-              borderColor="transparent"
+              borderColor="transparent !important"
               borderRadius="20px"
-              outlineColor="transparent"
+              outlineColor="none !important"
+              boxShadow="none !important"
+             
               _focus={{
                 outline: "none",
                 border: "1px solid #ffffff",

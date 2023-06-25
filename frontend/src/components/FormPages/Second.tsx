@@ -174,10 +174,10 @@ const Second: React.FC<SecondProps> = ({
         <Flex direction="column" width="100%" mt={3}>
           <HStack>
             <Flex direction="column">
-              <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="center">
-                What city do you want to visit?
+              <Text fontWeight={400} mb={1} color="#54C4D6" textAlign="left">
+               Enter A City:
               </Text>
-              <InputGroup position="relative" zIndex="10000">
+              <InputGroup position="relative" zIndex="10000" w="80%">
                 <Input
                   onChange={handleChange}
                   value={query}

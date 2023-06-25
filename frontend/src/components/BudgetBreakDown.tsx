@@ -77,7 +77,6 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
         )
       );
     },[budgets])
-console.log(budgets)
 
   const RADIAN = Math.PI / 180;
 
@@ -164,9 +163,18 @@ console.log(budgets)
 
                 <Text>Events</Text>
               </HStack>
+
+              <HStack align="center" justify="center">
+                <Circle size="40px" bg="#FF8042" color="white" />
+
+                <Text>Extras</Text>
+              </HStack>
             </VStack>
           </Flex>
         </HStack>
+        <Text>As chart above chart demonstrates that for this trip, you have a budget of: ${actualBudget}. For this trip you need to spend ${budgets[0].value} on hotels, ${budgets[1].value} on your round-trip flight, and ${budgets[3].value} on activities, and places to visit. 
+        After all these expenses you will have ${budgets[3].value} leftover to spend on your other needs such as food, souvenirs etc.
+        </Text>
       </Flex>
     </Zoom>
   );
