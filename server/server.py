@@ -158,7 +158,7 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
                     messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
                 )
                 content = response["choices"][0]["message"]["content"]
-                content = re.sub(r'\s\(ID \d+\)\s', ' ', content)
+                content = re.sub(r'\s\(ID \d+?\)\s', ' ', content)
                 days = content.replace("):\n\nID:", "):\nID:").split("\nDay ")
                 schedule_per_day = {}
                 ids = []
