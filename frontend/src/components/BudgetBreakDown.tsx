@@ -19,7 +19,7 @@ import {
 import Zoom from "react-reveal/Zoom";
 
 interface BudgetBreakDownProps {
-  budget: { hotels: number; flights: number; itenaries: number; extra: number } [];
+  budget: { name: string, value: number }[];
 }
 
 interface CustomTooltipProps {
@@ -52,8 +52,6 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 };
 
 const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
- 
-
   const RADIAN = Math.PI / 180;
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
