@@ -161,7 +161,7 @@ const Second: React.FC<SecondProps> = ({
             _hover={{
               outline: "none",
             }}
-            placeholder="have fun and relax"
+            placeholder="have fun with family"
             value={forms.interests}
             onChange={(e: any) => {
               setFormData((f) => ({

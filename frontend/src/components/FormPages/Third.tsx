@@ -21,7 +21,6 @@ type ThirdProp = {
   timeout: Number;
   setDisabled: Dispatch<SetStateAction<boolean>>;
   dates: { startDate: Date; endDate: Date };
-  setDates: Dispatch<SetStateAction<{ startDate: Date; endDate: Date }>>;
 };
 
 const Third: React.FC<ThirdProp> = ({
@@ -31,7 +30,6 @@ const Third: React.FC<ThirdProp> = ({
   timeout,
   setDisabled,
   dates,
-  setDates
 }) => {
   useEffect(() => {
     if (forms.adults && forms.startDate && forms.endDate) {
@@ -40,7 +38,6 @@ const Third: React.FC<ThirdProp> = ({
       setDisabled(true);
     }
   }, [forms]);
-
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -51,10 +48,16 @@ const Third: React.FC<ThirdProp> = ({
   };
 
   useEffect(() => {
-    setStartDate(new Date(forms.startDate));
-    setEndDate(new Date(forms.endDate));
+    try {
+      if (forms.startDate) setStartDate(new Date(forms.startDate));
+      if (forms.endDate) setEndDate(new Date(forms.endDate));
+    } catch {
+      setStartDate(null);
+      setEndDate(null);
+    }
   }, []);
 
+  console.log(startDate, endDate);
 
   const customInput = <Input
               boxShadow="0px 2px 3px #ccc"
