@@ -19,7 +19,7 @@ import {
 import Zoom from "react-reveal/Zoom";
 
 interface BudgetBreakDownProps {
-  budget: { hotels: number; flights: number; itenaries: number; extra: number };
+  budget: { hotels: number; flights: number; itenaries: number; extra: number } [];
 }
 
 interface CustomTooltipProps {
@@ -95,7 +95,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budget }) => {
         mt={10}
         mb={2}
       >
-        <Heading color="#54C4D6">Total Price: $3000</Heading>
+        <Heading color="#54C4D6">Total Price: </Heading>
         <HStack>
           <PieChart width={400} height={400}>
             <Pie

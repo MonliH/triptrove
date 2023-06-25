@@ -377,14 +377,7 @@ const MultiStepForm: React.FC = () => {
                 .filter((e) => e)
                 .join(", ")}
             </Heading>
-            <Text fontSize="lg" fontWeight="bold">
-              Your Destination
-            </Text>
-            <Heading fontSize="5xl">
-              {[destination?.cityName, destination?.country]
-                .filter((e) => e)
-                .join(", ")}
-            </Heading>
+           
           </Box>
         )}
         {(loadingFlights || flights !== null) && (
