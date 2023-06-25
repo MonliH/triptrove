@@ -117,7 +117,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
         shadow="base"
         p={10}
         mt={10}
-        mb={2}
+        mb={4}
       >
         <Heading color="#54C4D6">Total Price: $</Heading>
         <HStack>
@@ -172,8 +172,8 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
             </VStack>
           </Flex>
         </HStack>
-        <Text>As chart above chart demonstrates that for this trip, you have a budget of: ${actualBudget}. For this trip you need to spend ${budgets[0].value} on hotels, ${budgets[1].value} on your round-trip flight, and ${budgets[3].value} on activities, and places to visit. 
-        After all these expenses you will have ${budgets[3].value} leftover to spend on your other needs such as food, souvenirs etc.
+        <Text>As chart above chart demonstrates that for this trip, you have a budget of: <strong>${actualBudget}</strong>. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities, and places to visit. 
+        After all these expenses you will have <strong>${budgets[3].value}</strong> leftover to spend on your other needs such as food, souvenirs etc.
         </Text>
       </Flex>
     </Zoom>

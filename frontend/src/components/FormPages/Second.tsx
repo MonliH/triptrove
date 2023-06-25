@@ -289,6 +289,7 @@ const Second: React.FC<SecondProps> = ({
               borderColor="black"
               position="relative"
               mx="5"
+              right="7"
             >
               <Text
                 position="absolute"
