@@ -90,7 +90,7 @@ Date: 2021-06-02
 Justification: <justification>
 
 ..."""
-MODEL = "gpt-3.5-turbo-16k"
+MODEL = "gpt-4"
 
 
 @app.get("/results")
@@ -110,7 +110,7 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
                         "extractFilterOptions": True,
                         "extractSorters": True,
                         "extractSections": False,
-                        "limit": 50,
+                        "limit": 25,
                         "source": "search_results",
                         "page": 1
                     },
@@ -150,38 +150,14 @@ async def locations(ufi: int, personalization: str, end_date: str, start_date: s
 
         dates = await asyncio.gather(*[get_dates(client, info["id"], start_date, end_date) for info in information])
 
-        content = "Day 1 (2023-11-23):\nID: 1\nDate: 2023-11-23\nJustification: Relaxing first day at the hotel with spa and pool (ID 1) to help you unwind from the journey and begin your honeymoon experience, while the kids can enjoy some activities at the hotel's kids club.\n\nDay 2 (2023-11-24):\nID: 2\nDate: 2023-11-24\nJustification: Family-friendly theme park (ID 2) to create fun memories together and keep the children entertained during the day.\n\nDay 3 (2023-11-25):\nID: 3\nDate: 2023-11-25\nJustification: Visit to a beautiful botanical garden (ID 3) offering a romantic setting for you and your spouse, along with a children's playground to keep the kids entertained.\n\nDay 4 (2023-11-26):\nID: 4\nDate: 2023-11-26\nJustification: Historical site tour with a family-friendly twist (ID 4) - provides a mix of cultural experience and interactive activities for the whole family.\n\nDay 5 (2023-11-27):\nID: 5\nDate: 2023-11-27\nJustification: Beach day with water activities (ID 5) - a chance to relax and build sandcastles as a family while also providing a romantic setting for your honeymoon.\n\nDay 6 (2023-11-28):\nID: 6\nDate: 2023-11-28\nJustification: Sign up for a fun cooking class (ID 6) suitable for the entire family, allowing you to bond over a unique experience and learn new recipes together.\n\nDay 7 (2023-11-29):\nID: 7\nDate: 2023-11-29\nJustification: Visit a local village market (ID 7) for souvenir shopping and witnessing the local culture and crafts as a family before departure."
-#         content = """Based on your goals and wishes, here is a personalized itinerary for your trip to Playa del Carmen and Cozumel:
-
-# Day 1 (2023-07-02):
-# ID: 1
-# Date: 2023-07-02
-# Justification: On your first day, start your trip with the Chichen Itza, Cenote & Valladolid Tour. This tour will allow you to explore one of the most famous archaeological sites of the Yucatan Peninsula, Chichen Itza, and also visit a cenote and the colonial city of Valladolid. It's a great way to kick off your trip and immerse yourself in the history and culture of the region.
-
-# Day 2 (2023-07-03):
-# ID: 5
-# Date: 2023-07-03
-# Justification: Experience some adventure on this day by going on the ATV, Zipline and Cenote Experience. This tour will take you deep into the Mayan jungle for exciting activities like ziplining, off-roading in an ATV, and swimming in a cenote. It's a thrilling day full of adrenaline and natural beauty.
-
-# Day 3 (2023-07-04):
-# ID: 11
-# Date: 2023-07-04
-# Justification: Take a break from adventure and enjoy some shopping on this day. Go on the Playa del Carmen Shopping Tour & Tequila Tasting to explore Fifth Avenue, shop for souvenirs, and enjoy tequila tasting. It's a great way to relax and soak in the local culture.
-
-# Day 4 (2023-07-05):
-# ID: 13
-# Date: 2023-07-05
-# Justification: Embark on the Chichen Itza Tour with Cenote Swim. This tour will give you a chance to visit the famous archaeological site of Chichen Itza, learn about Mayan civilization, and take a refreshing swim in a cenote. It's a day filled with history and natural beauty.
-
-# Please note that the attractions and dates are subject to availability, and it's recommended to book in advance to secure your spots. Enjoy your trip to Playa del Carmen and Cozumel!"""
         while True:
             try:
-                # model_input = "\n\n".join(json_to_text(information, dates))
-                # response = openai.ChatCompletion.create(
-                #     model=MODEL,
-                #     messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
-                # )
-                # content = response["choices"][0]["message"]["content"]
+                model_input = "\n\n".join(json_to_text(information, dates))
+                response = openai.ChatCompletion.create(
+                    model=MODEL,
+                    messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": model_input}, {"role": "user", "content": personalization + f"\n\nI will arrive {start_date} and depart {end_date}"}],
+                )
+                content = response["choices"][0]["message"]["content"]
                 content = re.sub(r'\s\(ID \d+\)\s', ' ', content)
                 days = content.replace("):\n\nID:", "):\nID:").split("\nDay ")
                 schedule_per_day = {}

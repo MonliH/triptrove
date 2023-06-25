@@ -63,8 +63,6 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 };
 
 const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,actualBudget }) => {
- 
-
     useEffect(()=>{
         changebudget((b) =>
         b.map((item) =>
@@ -119,7 +117,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
         mt={10}
         mb={4}
       >
-        <Heading color="#54C4D6">Total Price: $</Heading>
+        <Heading color="#54C4D6">Total Price: ${budgets[0].value + budgets[1].value + budgets[2].value}</Heading>
         <HStack>
           <PieChart width={400} height={400}>
             <Pie
@@ -172,7 +170,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
             </VStack>
           </Flex>
         </HStack>
-        <Text>As chart above chart demonstrates that for this trip, you have a budget of: <strong>${actualBudget}</strong>. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities, and places to visit. 
+        <Text>As chart above demonstrates, you have a budget of <strong>${actualBudget}</strong> for the trip. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities, and places to visit. 
         After all these expenses you will have <strong>${budgets[3].value}</strong> leftover to spend on your other needs such as food, souvenirs etc.
         </Text>
       </Flex>

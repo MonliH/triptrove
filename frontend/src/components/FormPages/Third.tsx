@@ -7,6 +7,7 @@ import {
   Input,
   NumberInput,
   NumberInputField,
+  Box,
 } from "@chakra-ui/react";
 
 import { FormValues } from "../MultiStepForm";
@@ -79,6 +80,7 @@ const Third: React.FC<ThirdProp> = ({
 
 
   return (
+    <Box zIndex="999">
     <Fade right>
       <Flex direction="column" align="center">
         <Flex direction="column" width="100%" mt={3}>
@@ -151,6 +153,7 @@ const Third: React.FC<ThirdProp> = ({
               className="date"
               selected={startDate}
               startDate={startDate}
+              popperPlacement="bottom"
               endDate={endDate}
               selectsRange
               customInput={customInput}
@@ -162,7 +165,7 @@ const Third: React.FC<ThirdProp> = ({
             />
         </Flex>
       </Flex>
-    </Fade>
+    </Fade></Box>
   );
 };
 
