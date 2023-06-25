@@ -359,7 +359,7 @@ async def hotels(body: HotelRequest):
         result = res.json()
         hotels = result["data"]["searchQueries"]["search"]["results"]
         if len(hotels) == 0:
-            return {"error": "No hotels found to satisfy your budget!"}
+            return {"error": "No hotels found to satisfy your budget! Try increasing your budget or decreasing the duration of your trip."}
         offers = hotels[0]
 
         return offers

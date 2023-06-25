@@ -57,8 +57,6 @@ const Third: React.FC<ThirdProp> = ({
     }
   }, []);
 
-  console.log(startDate, endDate);
-
   const customInput = <Input
               boxShadow="0px 2px 3px #ccc"
               borderBottom="0.25em solid #c6be9f"

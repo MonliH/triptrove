@@ -221,8 +221,10 @@ const MultiStepForm: React.FC = () => {
                     ? {
                         ...item,
                         value: Math.round(
-                          hotel.priceDisplayInfo.displayPrice.amountPerStay
-                            .amountUnformatted
+                          hotel.error
+                            ? 0
+                            : hotel.priceDisplayInfo.displayPrice.amountPerStay
+                                .amountUnformatted
                         ),
                       }
                     : item
@@ -392,7 +394,7 @@ const MultiStepForm: React.FC = () => {
               </Heading>
               <Spacer />
               <Skeleton isLoaded={flights !== null}>
-                {((flights && flights.details.length > 0) ||
+                {((flights && flights.details?.length > 0) ||
                   flights === null) && (
                   <Text fontSize="2xl" color="#54C4D6">
                     Total Ticket Price: ${flights?.price}
@@ -401,7 +403,8 @@ const MultiStepForm: React.FC = () => {
               </Skeleton>
             </HStack>
             <Skeleton isLoaded={flights !== null}>
-              {flightOrPlaceholder && flightOrPlaceholder.details.length > 0 ? (
+              {flightOrPlaceholder &&
+              flightOrPlaceholder.details?.length > 0 ? (
                 <Box>
                   {flightOrPlaceholder.details.map((flight, i) => {
                     const departDate = new Date(flight.departureTime);
@@ -506,86 +509,105 @@ const MultiStepForm: React.FC = () => {
               </Heading>
               <Spacer />
               <Skeleton isLoaded={hotel !== null}>
-                <Text fontSize="2xl" color="#54C4D6">
-                  Hotel Price: $
-                  {Math.round(
-                    hotelOrPlaceholder.priceDisplayInfo.displayPrice
-                      .amountPerStay.amountUnformatted
-                  )}
-                </Text>
+                {hotelOrPlaceholder.error ? null : (
+                  <Text fontSize="2xl" color="#54C4D6">
+                    Hotel Price: $
+                    {Math.round(
+                      hotelOrPlaceholder.priceDisplayInfo.displayPrice
+                        .amountPerStay.amountUnformatted
+                    )}
+                  </Text>
+                )}
               </Skeleton>
             </HStack>
             <Skeleton isLoaded={hotel !== null}>
               <Zoom>
-                <Box>
-                  <HStack bg="#ffffff" borderRadius="20px" p={4} shadow="base">
-                    <Image
-                      borderRadius={20}
-                      src={
-                        IMAGE_CDN +
-                        hotelOrPlaceholder.basicPropertyData?.photos?.main
-                          ?.lowResJpegUrl?.relativeUrl
-                      }
-                    ></Image>
-                    <Box ml="4">
-                      <HStack>
-                        <Box>
-                          <Link
-                            fontWeight="bold"
-                            fontSize="2xl"
-                            href={`https://booking.com/hotel/${hotelOrPlaceholder?.basicPropertyData?.location?.countryCode}/${hotelOrPlaceholder?.basicPropertyData?.pageName}.html`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {hotelOrPlaceholder?.displayName?.text}
-                          </Link>
+                {hotelOrPlaceholder.error ? (
+                  <Text>{hotelOrPlaceholder.error}</Text>
+                ) : (
+                  <Box>
+                    <HStack
+                      bg="#ffffff"
+                      borderRadius="20px"
+                      p={4}
+                      shadow="base"
+                    >
+                      <Image
+                        borderRadius={20}
+                        src={
+                          IMAGE_CDN +
+                          hotelOrPlaceholder.basicPropertyData?.photos?.main
+                            ?.lowResJpegUrl?.relativeUrl
+                        }
+                      ></Image>
+                      <Box ml="4">
+                        <HStack>
+                          <Box>
+                            <Link
+                              fontWeight="bold"
+                              fontSize="2xl"
+                              href={`https://booking.com/hotel/${hotelOrPlaceholder?.basicPropertyData?.location?.countryCode}/${hotelOrPlaceholder?.basicPropertyData?.pageName}.html`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {hotelOrPlaceholder?.displayName?.text}
+                            </Link>
+                            <Text>
+                              {
+                                hotelOrPlaceholder?.basicPropertyData?.location
+                                  ?.address
+                              }
+                              ,{" "}
+                              {
+                                hotelOrPlaceholder?.basicPropertyData?.location
+                                  ?.city
+                              }
+                            </Text>
+                          </Box>
+                          <Spacer></Spacer>
+                        </HStack>
+                        <Text mt={5} color="#54C4D6">
+                          Rating:
+                        </Text>
+                        <Box
+                          p="3"
+                          border="1px solid"
+                          borderColor="#54C4D6"
+                          borderRadius="md"
+                        >
+                          {hotelOrPlaceholder?.basicPropertyData?.reviewScore
+                            ?.score ? (
+                            <Text
+                              fontSize="2xl"
+                              fontWeight={800}
+                              color="#54C4D6"
+                            >
+                              {
+                                hotelOrPlaceholder?.basicPropertyData
+                                  ?.reviewScore?.score
+                              }
+                              /10
+                            </Text>
+                          ) : (
+                            <Text
+                              fontSize="2xl"
+                              fontWeight={800}
+                              color="#54C4D6"
+                            >
+                              No Rating
+                            </Text>
+                          )}
                           <Text>
                             {
-                              hotelOrPlaceholder?.basicPropertyData?.location
-                                ?.address
-                            }
-                            ,{" "}
-                            {
-                              hotelOrPlaceholder?.basicPropertyData?.location
-                                ?.city
+                              hotelOrPlaceholder?.basicPropertyData?.reviewScore
+                                ?.totalScoreTextTag?.translation
                             }
                           </Text>
                         </Box>
-                        <Spacer></Spacer>
-                      </HStack>
-                      <Text mt={5} color="#54C4D6">
-                        Rating:
-                      </Text>
-                      <Box
-                        p="3"
-                        border="1px solid"
-                        borderColor="#54C4D6"
-                        borderRadius="md"
-                      >
-                        {hotelOrPlaceholder?.basicPropertyData?.reviewScore
-                          ?.score ? (
-                          <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
-                            {
-                              hotelOrPlaceholder?.basicPropertyData?.reviewScore
-                                ?.score
-                            }
-                            /10
-                          </Text>
-                        ) : (
-                          <Text fontSize="2xl" fontWeight={800} color="#54C4D6">
-                            No Rating
-                          </Text>
-                        )}
-                        <Text>
-                          {
-                            hotelOrPlaceholder?.basicPropertyData?.reviewScore
-                              ?.totalScoreTextTag?.translation
-                          }
-                        </Text>
                       </Box>
-                    </Box>
-                  </HStack>
-                </Box>
+                    </HStack>
+                  </Box>
+                )}
               </Zoom>
             </Skeleton>
           </>
