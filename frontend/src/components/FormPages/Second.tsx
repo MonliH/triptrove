@@ -24,6 +24,7 @@ import { X } from "react-feather";
 
 import debounce from "lodash.debounce";
 import theme from "@/lib/theme";
+import { isAGoodPlace } from "@/lib/places";
 
 type SecondProps = {
   forms: FormValues;
@@ -106,7 +107,9 @@ const Second: React.FC<SecondProps> = ({
     )
       .then((response) => response.json())
       .then((data) => {
-        setAutocomplete(data);
+        setAutocomplete(data.filter((d: Auto) => {
+          return isAGoodPlace(d.cityName);
+        }));
       });
   }, 200);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

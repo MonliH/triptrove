@@ -24,6 +24,11 @@ type ThirdProp = {
   dates: { startDate: Date; endDate: Date };
 };
 
+function addDays(d: Date, days: number) {
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
 const Third: React.FC<ThirdProp> = ({
   forms,
   setFormData,
@@ -58,97 +63,98 @@ const Third: React.FC<ThirdProp> = ({
     }
   }, []);
 
-  const customInput = <Input
-              boxShadow="0px 2px 3px #ccc"
-              borderBottom="0.25em solid #c6be9f"
-              borderTop="1px solid #ffffff"
-              bg="#ffffff"
-              outline="none"
-              borderColor="transparent"
-              borderRadius="20px"
-              outlineColor="transparent"
-              fontSize={16}
-              _focus={{
-                // outline: "none",
-                border: "1px solid #ffffff",
-                boxShadow: "none",
-              }}
-              _hover={{
-                outline: "none",
-              }}
-  ></Input>;
-
+  const customInput = (
+    <Input
+      boxShadow="0px 2px 3px #ccc"
+      borderBottom="0.25em solid #c6be9f"
+      borderTop="1px solid #ffffff"
+      bg="#ffffff"
+      outline="none"
+      borderColor="transparent"
+      borderRadius="20px"
+      outlineColor="transparent"
+      fontSize={16}
+      _focus={{
+        // outline: "none",
+        border: "1px solid #ffffff",
+        boxShadow: "none",
+      }}
+      _hover={{
+        outline: "none",
+      }}
+    ></Input>
+  );
 
   return (
     <Box zIndex="999">
-    <Fade right>
-      <Flex direction="column" align="center">
-        <Flex direction="column" width="100%" mt={3}>
-          <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
-            How Many Adults?
-          </Text>
-          <NumberInput
-            value={forms.adults}
-            onChange={(e: any) => {
-              setFormData((f) => ({ ...f, adults: parseInt(e || "0") }));
-            }}
-          >
-            <NumberInputField
-              boxShadow=" 0px 2px 3px #ccc"
-              borderBottom="0.25em solid #c6be9f"
-              borderTop="1px solid #ffffff"
-              bg="#ffffff"
-              outline="none"
-              borderColor="transparent"
-              borderRadius="20px"
-              outlineColor="transparent"
-              fontSize={16}
-              _focus={{
-                // outline: "none",
-                border: "1px solid #ffffff",
-                boxShadow: "none",
+      <Fade right>
+        <Flex direction="column" align="center">
+          <Flex direction="column" width="100%" mt={3}>
+            <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+              How Many Adults?
+            </Text>
+            <NumberInput
+              value={forms.adults}
+              onChange={(e: any) => {
+                setFormData((f) => ({ ...f, adults: parseInt(e || "0") }));
               }}
-              _hover={{
-                outline: "none",
-              }}
-            />
-          </NumberInput>
-        </Flex>
-        <Flex direction="column" width="100%" mt={3}>
-          <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
-            How Many Children?
-          </Text>
-          <NumberInput
-            value={forms.children}
-            onChange={(e: any) =>
-              setFormData((f) => ({ ...f, children: parseInt(e || "0") }))
-            }
-          >
-            <NumberInputField
-              boxShadow=" 0px 2px 3px #ccc"
-              borderBottom="0.25em solid #c6be9f"
-              borderTop="1px solid #ffffff"
-              bg="#ffffff"
-              outline="none"
-              borderColor="transparent"
-              borderRadius="20px"
-              outlineColor="transparent"
-              fontSize={16}
-              _focus={{
-                // outline: "none",
-                border: "1px solid #ffffff",
-                boxShadow: "none",
-              }}
-              _hover={{
-                outline: "none",
-              }}
-            />
-          </NumberInput>
-        </Flex>
-        <Flex direction="column" width="100%" mt={3}>
-          <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
-            When are you planning on going?
-          </Text>
+            >
+              <NumberInputField
+                boxShadow=" 0px 2px 3px #ccc"
+                borderBottom="0.25em solid #c6be9f"
+                borderTop="1px solid #ffffff"
+                bg="#ffffff"
+                outline="none"
+                borderColor="transparent"
+                borderRadius="20px"
+                outlineColor="transparent"
+                fontSize={16}
+                _focus={{
+                  // outline: "none",
+                  border: "1px solid #ffffff",
+                  boxShadow: "none",
+                }}
+                _hover={{
+                  outline: "none",
+                }}
+              />
+            </NumberInput>
+          </Flex>
+          <Flex direction="column" width="100%" mt={3}>
+            <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+              How Many Children?
+            </Text>
+            <NumberInput
+              value={forms.children}
+              onChange={(e: any) =>
+                setFormData((f) => ({ ...f, children: parseInt(e || "0") }))
+              }
+            >
+              <NumberInputField
+                boxShadow=" 0px 2px 3px #ccc"
+                borderBottom="0.25em solid #c6be9f"
+                borderTop="1px solid #ffffff"
+                bg="#ffffff"
+                outline="none"
+                borderColor="transparent"
+                borderRadius="20px"
+                outlineColor="transparent"
+                fontSize={16}
+                _focus={{
+                  // outline: "none",
+                  border: "1px solid #ffffff",
+                  boxShadow: "none",
+                }}
+                _hover={{
+                  outline: "none",
+                }}
+              />
+            </NumberInput>
+          </Flex>
+          <Flex direction="column" width="100%" mt={3}>
+            <Text fontWeight={800} mb={1} color="#54C4D6" textAlign="center">
+              When are you planning on going?
+            </Text>
             <DatePicker
               className="date"
               selected={startDate}
@@ -158,14 +164,20 @@ const Third: React.FC<ThirdProp> = ({
               selectsRange
               customInput={customInput}
               minDate={new Date()}
+              maxDate={startDate ? addDays(new Date(startDate), 30) : undefined}
               onChange={([start, end]: [Date, Date]) => {
                 onChange([start, end]);
-                setFormData({ ...forms, startDate: start.toISOString().split("T")[0], endDate: end ? end.toISOString().split("T")[0] : "" });
+                setFormData({
+                  ...forms,
+                  startDate: start.toISOString().split("T")[0],
+                  endDate: end ? end.toISOString().split("T")[0] : "",
+                });
               }}
             />
+          </Flex>
         </Flex>
-      </Flex>
-    </Fade></Box>
+      </Fade>
+    </Box>
   );
 };
 

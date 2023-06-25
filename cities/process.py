@@ -18,6 +18,6 @@ for file in glob("*.txt"):
 
 for place in places:
     places[place] = sorted(places[place], key=lambda x: -x[-1])
-    places[place] = list(map(lambda x: x[0], filter(lambda x: x[-1] > 35, places[place])))
+    places[place] = list(map(lambda x: x[0], filter(lambda x: x[-1] > 15, places[place])))
 
 json.dump(places, open("places.json", "w"))

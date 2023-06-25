@@ -659,9 +659,7 @@ const MultiStepForm: React.FC = () => {
             {attractions === null && (
               <HStack position={"absolute"} top="12">
                 <Spinner />
-                <Text>
-                  Processing may take up to a minute...
-                </Text>
+                <Text>Processing may take up to a minute...</Text>
               </HStack>
             )}
             <Skeleton mt={10} isLoaded={attractions !== null}>

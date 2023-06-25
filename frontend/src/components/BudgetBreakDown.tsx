@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -18,20 +18,18 @@ import {
 } from "@chakra-ui/react";
 import Zoom from "react-reveal/Zoom";
 import { Dispatch, SetStateAction } from "react";
-
+import useDeepCompareEffect from "@/lib/useDeepEffect";
 
 type MyObject = {
-    name: string;
-    value: number;
-  };
+  name: string;
+  value: number;
+};
 
 interface BudgetBreakDownProps {
   budgets: MyObject[];
   changebudget: Dispatch<React.SetStateAction<MyObject[]>>;
-  actualBudget:number;
+  actualBudget: number;
 }
-
-
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -66,19 +64,25 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   return null;
 };
 
-const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,actualBudget }) => {
-    useEffect(()=>{
-        changebudget((b) =>
-        b.map((item) =>
-          item.name === "extra"
-            ? {
-                ...item,
-                value: actualBudget - (budgets[0].value+budgets[1].value+budgets[2].value),
-              }
-            : item
-        )
-      );
-    },[budgets])
+const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({
+  budgets,
+  changebudget,
+  actualBudget,
+}) => {
+  useDeepCompareEffect(() => {
+    changebudget((b) =>
+      b.map((item) =>
+        item.name === "extra"
+          ? {
+              ...item,
+              value:
+                actualBudget -
+                (budgets[0].value + budgets[1].value + budgets[2].value),
+            }
+          : item
+      )
+    );
+  }, [budgets]);
 
   const RADIAN = Math.PI / 180;
 
@@ -97,6 +101,7 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
+    if (percent < 0.005) return null;
     return (
       <text
         x={x}
@@ -121,7 +126,9 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
         mt={10}
         mb={4}
       >
-        <Heading color="#54C4D6">Total Price: ${budgets[0].value + budgets[1].value + budgets[2].value}</Heading>
+        <Heading color="#54C4D6">
+          Total Price: ${budgets[0].value + budgets[1].value + budgets[2].value}
+        </Heading>
         <HStack>
           <PieChart width={400} height={400}>
             <Pie
@@ -174,8 +181,15 @@ const BudgetBreakDown: React.FC<BudgetBreakDownProps> = ({ budgets,changebudget,
             </VStack>
           </Flex>
         </HStack>
-        <Text>As chart above demonstrates, you have a budget of <strong>${actualBudget}</strong> for the trip. For this trip you need to spend <strong>${budgets[0].value}</strong> on hotels, <strong>${budgets[1].value}</strong> on your round-trip flight, and <strong>${budgets[2].value}</strong> on activities/places to visit. 
-        After all these expenses you will have <strong>${budgets[3].value}</strong> leftover to spend on your other needs such as food, souvenirs etc.
+        <Text>
+          As chart above demonstrates, you have a budget of{" "}
+          <strong>${actualBudget}</strong> for the trip. For this trip you need
+          to spend <strong>${budgets[0].value}</strong> on hotels,{" "}
+          <strong>${budgets[1].value}</strong> on your round-trip flight, and{" "}
+          <strong>${budgets[2].value}</strong> on activities/places to visit.
+          After all these expenses you will have{" "}
+          <strong>${budgets[3].value}</strong> leftover to spend on your other
+          needs such as food, souvenirs etc.
         </Text>
       </Flex>
     </Zoom>
